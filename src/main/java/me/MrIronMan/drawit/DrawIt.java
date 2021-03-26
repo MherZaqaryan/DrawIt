@@ -261,6 +261,7 @@ public class DrawIt extends JavaPlugin {
     }
 
     public void restartGame(String gameName) {
+        if (this.getGame(gameName) == null) return;
         Game gameToRestart = this.getGame(gameName);
         this.games.remove(gameToRestart);
         gameToRestart = new Game(gameName);

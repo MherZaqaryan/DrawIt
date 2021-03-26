@@ -14,6 +14,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.BlockIterator;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -127,6 +130,19 @@ public class OtherUtils {
         String pitch = df.format(loc.getPitch());
         String world = loc.getWorld().getName();
         return advanced ? x + regex + y + regex + z + regex + yaw + regex + pitch + regex + world : x + regex + y + regex + z + regex + world;
+    }
+
+    public static void returnLobby(Player player) {
+        Bukkit.getMessenger().registerOutgoingPluginChannel(DrawIt.getInstance(), "BungeeCord");
+        ByteArrayOutputStream b = new ByteArrayOutputStream();
+        DataOutputStream out = new DataOutputStream(b);
+        try {
+            out.writeUTF("Connect");
+            out.writeUTF(ConfigUtils.LOBBY_SERVER);
+        } catch (IOException ex) {
+            DrawIt.getInstance().getLogger().warning("Cant connect to lobby server!");
+        }
+        player.sendPluginMessage(DrawIt.getInstance(), "BungeeCord", b.toByteArray());
     }
 
 }

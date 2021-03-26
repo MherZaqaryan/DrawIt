@@ -29,6 +29,8 @@ public class ConfigUtils {
     public static String MYSQL_USERNAME = getData().getString("mysql.username");
     public static String MYSQL_PASSWORD = getData().getString("mysql.password");
 
+    public static String LOBBY_SERVER = getData().getString("lobby-server");
+
     // Lobby Items
 
     public static ItemStack getLobbyItem(String subPath) {

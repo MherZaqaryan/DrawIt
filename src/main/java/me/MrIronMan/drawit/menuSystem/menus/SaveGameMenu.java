@@ -15,9 +15,17 @@ public class SaveGameMenu extends Menu {
 
     private SetupGame setupGame;
 
+    private boolean enabled;
+
+    private int minPlayers;
+    private int maxPlayers;
+
     public SaveGameMenu(PlayerMenuUtility playerMenuUtility) {
         super(playerMenuUtility);
         this.setupGame = DrawIt.getInstance().getSetupGame(playerMenuUtility.getPlayer());
+        this.minPlayers = setupGame.getMinPlayers();
+        this.maxPlayers = setupGame.getMaxPlayers();
+        this.enabled = setupGame.isEnabled();
     }
 
     @Override
@@ -36,21 +44,21 @@ public class SaveGameMenu extends Menu {
         if (e.getSlot() == 15) {
             if (e.getClick().equals(ClickType.LEFT)) {
                 if (setupGame.getMinPlayers() < setupGame.getMaxPlayers()) {
-                    setupGame.setMinPlayers(setupGame.getMinPlayers() + 1);
+                    minPlayers = minPlayers+1;
                 }
             }else if (e.getClick().equals(ClickType.RIGHT)){
                 if (setupGame.getMinPlayers() > 1) {
-                    setupGame.setMinPlayers(setupGame.getMinPlayers() - 1);
+                    minPlayers = minPlayers-1;
                 }
             }
             DrawIt.getInstance().playSound(player, Sound.CLICK, 1.0F, 1.0F);
             setMenuItems();
         }else if (e.getSlot() == 16) {
             if (e.getClick().equals(ClickType.LEFT)) {
-                setupGame.setMaxPlayers(setupGame.getMaxPlayers() + 1);
+                maxPlayers = maxPlayers+1;
             }else if (e.getClick().equals(ClickType.RIGHT)){
                 if (setupGame.getMaxPlayers() > setupGame.getMinPlayers()) {
-                    setupGame.setMaxPlayers(setupGame.getMaxPlayers() - 1);
+                    maxPlayers = maxPlayers-1;
                 }
             }
             DrawIt.getInstance().playSound(player, Sound.CLICK, 1.0F, 1.0F);
@@ -60,13 +68,16 @@ public class SaveGameMenu extends Menu {
             DrawIt.getInstance().playSound(player, Sound.CLICK, 1.0F, 1.0F);
         }
         else if (e.getSlot() == 31) {
-            setupGame.setEnabled(!setupGame.isEnabled());
+            enabled = !enabled;
             DrawIt.getInstance().playSound(player, Sound.CLICK, 1.0F, 1.0F);
             setMenuItems();
         }
         else if (e.getSlot() == 34) {
             DrawIt.getInstance().playSound(player, Sound.CLICK, 1.0F, 1.0F);
             player.closeInventory();
+            setupGame.setMaxPlayers(maxPlayers);
+            setupGame.setMinPlayers(minPlayers);
+            setupGame.setEnabled(enabled);
             setupGame.save(player);
         }
     }
@@ -89,11 +100,11 @@ public class SaveGameMenu extends Menu {
                 "&eBoard Pos1: &6" + OtherUtils.writeLocation(setupGame.getBoardPos1(), false),
                 "&eBoard Pos2: &6" + OtherUtils.writeLocation(setupGame.getBoardPos2(), false)));
 
-        inventory.setItem(15, makeItem(XMaterial.REDSTONE_TORCH.parseMaterial(), "&cMin Players: " + setupGame.getMinPlayers(), minMaxLore));
-        inventory.setItem(16, makeItem(XMaterial.LEVER.parseMaterial(), "&cMax Players: " + setupGame.getMaxPlayers(), minMaxLore));
+        inventory.setItem(15, makeItem(XMaterial.REDSTONE_TORCH.parseMaterial(), "&cMin Players: " + minPlayers, minMaxLore));
+        inventory.setItem(16, makeItem(XMaterial.LEVER.parseMaterial(), "&cMax Players: " + maxPlayers, minMaxLore));
 
         inventory.setItem(28, makeItem(XMaterial.BARRIER.parseMaterial(), "&cCancel"));
-        inventory.setItem(31, setupGame.isEnabled() ? makeItem(XMaterial.LIME_DYE.parseItem(), "&aEnabled", "","&7Click to disable.") : makeItem(XMaterial.RED_DYE.parseItem(), "&cDisabled", "","&7Click to enable."));
+        inventory.setItem(31, enabled ? makeItem(XMaterial.LIME_DYE.parseItem(), "&aEnabled", "","&7Click to disable.") : makeItem(XMaterial.RED_DYE.parseItem(), "&cDisabled", "","&7Click to enable."));
         inventory.setItem(34, makeItem(XMaterial.BEACON.parseMaterial(), "&3Save & Close"));
 
     }

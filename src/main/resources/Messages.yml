@@ -3,9 +3,8 @@ prefix: "&b&lDraw&a&lIt &8►&r"
 player-commands:
   - "&b&lDraw&a&lIt &c&lCommands"
   - "&7/DrawIt Join <Quick|Game> &8- Run to join game."
-  - "&7/DrawIt Stats <Player> &8- Run to see stats"
-  - "&7/DrawIt Leave &8- Run to leave from game."
   - "&7/DrawIt Skip &8- Run to skip your round."
+  - "&7/DrawIt Leave &8- Run to leave from game."
 
 player-join: "{prefix} &7{player} &ajoined the game."
 player-quit: "{prefix} &7{player} &cquit the game."

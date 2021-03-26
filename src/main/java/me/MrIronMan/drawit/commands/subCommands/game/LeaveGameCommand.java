@@ -4,6 +4,7 @@ import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.commands.SubCommand;
 import me.MrIronMan.drawit.data.MessagesUtils;
 import me.MrIronMan.drawit.game.Game;
+import me.MrIronMan.drawit.utility.OtherUtils;
 import me.MrIronMan.drawit.utility.TextUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -18,7 +19,7 @@ public class LeaveGameCommand extends SubCommand {
             game.getGameManager().leaveGame(player);
             DrawIt.getInstance().activateLobbySettings(player);
         }else {
-            player.sendMessage(TextUtil.colorize(MessagesUtils.NOT_IN_GAME));
+            OtherUtils.returnLobby(player);
         }
         return true;
     }

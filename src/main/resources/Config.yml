@@ -1,3 +1,4 @@
+lobby-server: lobby
 mysql:
   enable: false
   host: "localhost"

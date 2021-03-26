@@ -144,9 +144,13 @@ public class SetupGame {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                DrawIt.getInstance().registerGame(name);
-                DrawIt.getInstance().exitSetupMode(player);
+                if (DrawIt.getInstance().getGames().contains(DrawIt.getInstance().getGame(name))) {
+                    DrawIt.getInstance().restartGame(name);
+                }else {
+                    DrawIt.getInstance().registerGame(name);
+                }
                 player.sendMessage(customize("{game} &eSuccessfully saved."));
+                DrawIt.getInstance().exitSetupMode(player);
             }else {
                 player.sendMessage(customize("{game} &cSomething went wrong please check the console."));
             }
