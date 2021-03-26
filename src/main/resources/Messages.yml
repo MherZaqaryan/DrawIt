@@ -1,0 +1,114 @@
+prefix: "&b&lDraw&a&lIt &8►&r"
+
+player-commands:
+  - "&b&lDraw&a&lIt &c&lCommands"
+  - "&7/DrawIt Join <Quick|Game> &8- Run to join game."
+  - "&7/DrawIt Stats <Player> &8- Run to see stats"
+  - "&7/DrawIt Leave &8- Run to leave from game."
+  - "&7/DrawIt Skip &8- Run to skip your round."
+
+player-join: "{prefix} &7{player} &ajoined the game."
+player-quit: "{prefix} &7{player} &cquit the game."
+full-game: "{prefix} &c&lThis game is full."
+in-game: "{prefix} &c&lYou can't do this while in game."
+not-in-game: "{prefix} &c&lYou are not in game."
+game-not-found: "{prefix} &cThat game not found."
+game-not-enabled: "{prefix} &cThis game not enabled."
+next-drawer: "{prefix} &9{drawer} &7is now drawing! &8[Round {round}]."
+quit-mid-game: "{prefix} &b&lThe Drawer &c&lquit mid-drawing. Round ended."
+word-announce: "{prefix} &7&lThe word was: &3&l{word}."
+everyone-got-word: "{prefix} &c&lRound over! &a&lEveryone got the word."
+player-guessed: "{prefix} &e&l{guesser} &a&lguessed the word for &3&l{points} points."
+drawer-chat-message: "{prefix} &c&lYou cannot chat while you are drawer."
+no-permission: "{prefix} &cCommand dose not exists or you don't have permission."
+not-drawer-to-skip: "{prefix} &cYou need to be drawer to skip."
+no-permission-skip: "{prefix} &cYou cant skip the game, you need to be at least VIP."
+game-skipped: "{prefix} &c&l{drawer} decided to skip the word.&a&l Next round will start shortly."
+scoreboard-leader-format: "&f{point} &8- &7{player}"
+
+game-end-message:
+  - ""
+  - "       &c&lGame Over! &1{winner_1} &7won the game!"
+  - ""
+  - "            &2Place 1 &8- &9{winner_1}"
+  - "            &ePlace 2 &8- &9{winner_2}"
+  - "            &6Place 3 &8- &9{winner_3}"
+  - ""
+  - "           &7&lYou got &a&l{points} points!"
+  - ""
+  - "&cGame will restart after 10 seconds."
+
+action-bar-messages:
+  start-countdown: "&aStarting game in &a&l{time}."
+  start-countdown-under-5: "&aStarting game in &c&l{time}."
+  drawer: "&e&lYou must draw: &f&l{word}&e&l!"
+  pick-word: "&e&lWaiting for the drawer to pick a word."
+  start-draw: "&e&lWaiting for the drawer to start drawing."
+  guessers: "&e&l{word}"
+  hiding-character: "_"
+
+color-picker-title: "&5&lColor Picker"
+
+drawer-tools:
+  thin-brush:
+    name: "&6&lThin Brush"
+    lore:
+      - ""
+      - "&7Paints a one pixel line."
+  thick-brush:
+    name: "&e&lThick Brush"
+    lore:
+      - ""
+      - "&7Paints a three pixel dot."
+  spray-canvas:
+    name: "&b&lSpray Canvas"
+    lore:
+      - ""
+      - "&7Splatters the canvas."
+  fill-can:
+    name: "&d&lFill Can"
+    lore:
+      - ""
+      - "&7Fills are with selected color."
+  burn-canvas:
+    name: "&c&lBurn Canvas"
+    lore:
+      - ""
+      - "&7Clears the canvas."
+
+scoreboards:
+  lobby:
+    title: "&b&lDraw&a&lIt"
+    lines:
+      - ""
+      - "&a&lTokens"
+      - "&7{tokens}"
+      - ""
+      - "&e&lYour Stats"
+      - "&3Points: &b{points}"
+      - "&3Games Played: &b{games_played}"
+      - "&3Victories: &b{victories}"
+      - "&3Correct Guesses: &b{correct_guesses}"
+      - "&3Incorrect Guesses: &b{incorrect_guesses}"
+      - "&3Skips: &b{skips}"
+      - ""
+      - "&8&m--------"
+      - "&emc.server.net"
+  game:
+    title: "&b&lDraw&a&lIt"
+    lines:
+      - ""
+      - "&e&lRound Time"
+      - "{time}"
+      - ""
+      - "&b&lRound Info"
+      - "&7Rounds Left: {rounds_left}"
+      - "&7Drawer: {drawer}"
+      - ""
+      - "&c&lLeaders"
+      - "{leader_1}"
+      - "{leader_2}"
+      - "{leader_3}"
+      - ""
+      - "&8&m--------"
+      - "&emc.server.net"

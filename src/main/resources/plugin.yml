@@ -1,0 +1,6 @@
+main: me.MrIronMan.drawit.DrawIt
+name: DrawIt
+author: MrIronMan
+version: 1.0
+api-version: "1.13"
+description: DrawIt Mini-game by MrIronMan
