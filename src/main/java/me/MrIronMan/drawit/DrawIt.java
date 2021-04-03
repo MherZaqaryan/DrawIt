@@ -1,13 +1,11 @@
 package me.MrIronMan.drawit;
 
 import com.cryptomorin.xseries.XSound;
+import de.tr7zw.nbtapi.NBTItem;
 import me.MrIronMan.drawit.commands.DrawItCommand;
 import me.MrIronMan.drawit.commands.LeaveCommand;
 import me.MrIronMan.drawit.commands.SkipCommand;
-import me.MrIronMan.drawit.data.ConfigUtils;
-import me.MrIronMan.drawit.data.CustomConfig;
-import me.MrIronMan.drawit.data.MessagesUtils;
-import me.MrIronMan.drawit.data.WordsUtils;
+import me.MrIronMan.drawit.data.*;
 import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.game.SetupGame;
 import me.MrIronMan.drawit.listeners.*;
@@ -16,15 +14,17 @@ import me.MrIronMan.drawit.sql.MySQL;
 import me.MrIronMan.drawit.sql.PlayerData;
 import me.MrIronMan.drawit.sql.PlayerDataType;
 import me.MrIronMan.drawit.sql.SQLite;
-import me.MrIronMan.drawit.utility.OtherUtils;
 import me.MrIronMan.drawit.game.utility.SideBar;
+import me.MrIronMan.drawit.utility.OtherUtils;
 import me.MrIronMan.drawit.utility.PermissionsUtil;
 import me.MrIronMan.drawit.utility.ReflectionUtils;
 import me.MrIronMan.drawit.utility.TextUtil;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -38,9 +38,9 @@ public class DrawIt extends JavaPlugin {
 
     private List<Game> games = new ArrayList<>();
 
-    private CustomConfig config;
-    private CustomConfig messages;
-    private CustomConfig words;
+    private static ConfigData config;
+    private static MessagesData messages;
+    private static WordsData words;
 
     private SQLite sqLite;
     private MySQL mySQL;
@@ -52,11 +52,10 @@ public class DrawIt extends JavaPlugin {
     private HashMap<Player, SideBar> lobbySidebarMap = new HashMap<>();
     private HashMap<Player, SetupGame> setupGameMap = new HashMap<>();
 
-    private Location lobbyLocation;
-
     @Override
     public void onEnable() {
         instance = this;
+        loggerMessage();
         loadDataFiles();
         loadCommands();
         registerListeners();
@@ -83,13 +82,13 @@ public class DrawIt extends JavaPlugin {
     }
 
     public void connectDatabase() {
-        if (ConfigUtils.MYSQL_ENABLED) {
+        if (getConfigData().isMySql()) {
             this.mySQL = new MySQL(
-                ConfigUtils.MYSQL_HOST,
-                ConfigUtils.MYSQL_PORT,
-                ConfigUtils.MYSQL_DATABASE,
-                ConfigUtils.MYSQL_USERNAME,
-                ConfigUtils.MYSQL_PASSWORD
+                getConfigData().getMySqlInfo().get(0),
+                getConfigData().getMySqlInfo().get(1),
+                getConfigData().getMySqlInfo().get(2),
+                getConfigData().getMySqlInfo().get(3),
+                getConfigData().getMySqlInfo().get(4)
             );
         }else {
             this.sqLite = new SQLite();
@@ -98,7 +97,7 @@ public class DrawIt extends JavaPlugin {
     }
 
     public void disconnectDatabase() {
-        if (ConfigUtils.MYSQL_ENABLED) {
+        if (getConfigData().isMySql()) {
             this.mySQL.disconnect();
         }else {
             this.sqLite.disconnect();
@@ -116,11 +115,9 @@ public class DrawIt extends JavaPlugin {
     }
 
     public void loadDataFiles() {
-        config = new CustomConfig(this, "Config.yml");
-        messages = new CustomConfig(this, "Messages.yml");
-        words = new CustomConfig(this, "Words.yml");
-        this.lobbyLocation = OtherUtils.readLocation(ConfigUtils.LOBBY_LOCATION);
-        new WordsUtils().sort();
+        config = new ConfigData(this, getDataFolder().getPath(), "Config");
+        messages = new MessagesData(this, getDataFolder().getPath(), "Messages");
+        words = new WordsData(this, getDataFolder().getPath(), "Words");
     }
 
     public void loadCommands() {
@@ -167,47 +164,46 @@ public class DrawIt extends JavaPlugin {
         return null;
     }
 
-    public CustomConfig getConfigData() {
+    public static ConfigData getConfigData() {
         return config;
     }
 
-    public CustomConfig getMessagesFile() {
+    public static MessagesData getMessagesData() {
         return messages;
     }
 
-    public CustomConfig getWordsData() {
+    public static WordsData getWordsData() {
         return words;
     }
 
     public void activateLobbySettings(Player player) {
-        if (isLobbySet()) {
-            player.teleport(lobbyLocation);
-        }else {
-            player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
-            if (player.hasPermission(PermissionsUtil.COMMAND_SETMAINLOBBY)) {
-                player.sendMessage(TextUtil.colorize(MessagesUtils.LOBBY_NOT_SET));
+        teleportToLobby(player);
+        player.setGameMode(GameMode.ADVENTURE);
+        player.setLevel(0);
+        player.setExp(0.0F);
+        player.setHealth(20.0D);
+        PlayerInventory pi = player.getInventory();
+        pi.clear();
+        pi.setArmorContents(null);
+        for (ItemStack item : getConfigData().getLobbyItems()) {
+            NBTItem nbti = new NBTItem(item);
+            if (item.getType().toString().contains("SKULL_ITEM")) {
+                SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
+                skullMeta.setOwner(player.getDisplayName());
+                item.setItemMeta(skullMeta);
             }
+            pi.setItem(nbti.getInteger("slot"), item);
         }
         setLobbySidebar(player);
-        Inventory pi = player.getInventory();
-        for (Map.Entry<Integer, ItemStack> item : ConfigUtils.getLobbyItems()) {
-            if (item.getValue().getType().toString().contains("SKULL_ITEM")) {
-                SkullMeta skullMeta = (SkullMeta) item.getValue().getItemMeta();
-                skullMeta.setOwner(player.getDisplayName());
-                item.getValue().setItemMeta(skullMeta);
-            }
-            pi.setItem(item.getKey(), item.getValue());
-        }
     }
 
     public void setLobbyLocation(Location loc) {
-        ConfigUtils.getData().set("lobby-location", OtherUtils.writeLocation(loc, true));
-        getConfigData().saveConfig();
+        getConfigData().saveLocation("lobby-location", loc);
     }
 
     public void setLobbySidebar(Player player) {
         SideBar sideBar = new SideBar(player);
-        sideBar.updateTitle(MessagesUtils.SCOREBOARD_LOBBY_TITLE);
+        sideBar.updateTitle("");
         lobbySidebarMap.put(player, sideBar);
         updateSidebar(player);
     }
@@ -215,7 +211,7 @@ public class DrawIt extends JavaPlugin {
     public void updateSidebar(Player player) {
         List<String> newLines = new ArrayList<>();
         PlayerData pd = DrawIt.getPlayerData(player);
-        for (String s : MessagesUtils.SCOREBOARD_LOBBY_LINES) {
+        for (String s : getMessagesData().getStringList(MessagesData.BOARD_LOBBY_LINES)) {
             newLines.add(s
                 .replace("{tokens}", String.valueOf(pd.getData(PlayerDataType.TOKENS)))
                 .replace("{points}", String.valueOf(pd.getData(PlayerDataType.POINTS)))
@@ -292,7 +288,7 @@ public class DrawIt extends JavaPlugin {
     public void exitSetupMode(Player player) {
         setupGameMap.remove(player);
         DrawIt.getInstance().activateLobbySettings(player);
-        player.sendMessage(TextUtil.colorize(MessagesUtils.EXIT_SETUP));
+        player.sendMessage(TextUtil.colorize(PluginMessages.EXIT_SETUP));
     }
 
     public boolean isInSetup(Player player) {
@@ -308,8 +304,19 @@ public class DrawIt extends JavaPlugin {
         XSound.play(player, sound.toString() + "," + volume + "," + pitch);
     }
 
+    public void teleportToLobby(Player player) {
+        if (isLobbySet()) {
+            player.teleport(OtherUtils.readLocation(getConfigData().getString(ConfigData.LOBBY_LOCATION)));
+        }else {
+            player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
+            if (player.hasPermission(PermissionsUtil.COMMAND_SETMAINLOBBY)) {
+                player.sendMessage(TextUtil.colorize(PluginMessages.LOBBY_NOT_SET));
+            }
+        }
+    }
+
     public boolean isLobbySet() {
-        return lobbyLocation != null;
+        return getConfigData().getString(ConfigData.LOBBY_LOCATION) != null;
     }
 
     public static PlayerData getPlayerData(String name) {
@@ -319,6 +326,15 @@ public class DrawIt extends JavaPlugin {
             }
         }
         return null;
+    }
+
+    private void loggerMessage() {
+        Bukkit.getConsoleSender().sendMessage("§b __                  ");
+        Bukkit.getConsoleSender().sendMessage("§b|  \\  _  _      §a| |_ ");
+        Bukkit.getConsoleSender().sendMessage("§b|__/ |  (_| \\)/ §a| |_ ");
+        Bukkit.getConsoleSender().sendMessage("");
+        Bukkit.getConsoleSender().sendMessage("§cAuthor: §aMrIronMan (Mher)");
+        Bukkit.getConsoleSender().sendMessage("§cVersion: §a" + getDescription().getVersion());
     }
 
 }

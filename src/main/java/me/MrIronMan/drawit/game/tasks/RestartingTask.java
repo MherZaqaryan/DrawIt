@@ -1,7 +1,7 @@
 package me.MrIronMan.drawit.game.tasks;
 
 import me.MrIronMan.drawit.DrawIt;
-import me.MrIronMan.drawit.data.MessagesUtils;
+import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.sql.PlayerData;
 import me.MrIronMan.drawit.sql.PlayerDataType;
@@ -15,11 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class EndingTask extends BukkitRunnable {
+public class RestartingTask extends BukkitRunnable {
 
     private Game game;
 
-    public EndingTask(Game game) {
+    public RestartingTask(Game game) {
         this.game = game;
         game.getBoard().burn();
         game.getGameManager().playSound(Sound.WITHER_DEATH, 1, 1);
@@ -57,7 +57,7 @@ public class EndingTask extends BukkitRunnable {
 
     public List<String> getMessage(UUID uuid) {
         List<String> msg = new ArrayList<>();
-        for (String s : MessagesUtils.GAME_END) {
+        for (String s : DrawIt.getMessagesData().getStringList(MessagesData.GAME_END_MESSAGE)) {
             msg.add(s.replace("{winner_1}", game.getGameManager().getLeaderName(0))
                     .replace("{winner_2}",game.getGameManager().getLeaderName(1))
                     .replace("{winner_3}", game.getGameManager().getLeaderName(2))

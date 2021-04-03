@@ -2,7 +2,8 @@ package me.MrIronMan.drawit.commands.subCommands.setup;
 
 import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.commands.SubCommand;
-import me.MrIronMan.drawit.data.MessagesUtils;
+import me.MrIronMan.drawit.data.MessagesData;
+import me.MrIronMan.drawit.data.PluginMessages;
 import me.MrIronMan.drawit.menuSystem.menus.SaveGameMenu;
 import me.MrIronMan.drawit.utility.TextUtil;
 import org.bukkit.command.CommandSender;
@@ -19,7 +20,7 @@ public class SaveCommand extends SubCommand {
             if (DrawIt.getInstance().isInSetup(player)) {
                 new SaveGameMenu(DrawIt.getPlayerMenuUtility(player)).open();
             }else {
-                player.sendMessage(TextUtil.colorize(MessagesUtils.NOT_IN_SETUP));
+                player.sendMessage(TextUtil.colorize(PluginMessages.NOT_IN_SETUP));
             }
         }
 

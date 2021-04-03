@@ -1,11 +1,13 @@
 package me.MrIronMan.drawit.commands;
 
+import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.commands.subCommands.game.*;
 import me.MrIronMan.drawit.commands.subCommands.setup.*;
 import me.MrIronMan.drawit.commands.subCommands.util.AddPointsCommand;
 import me.MrIronMan.drawit.commands.subCommands.util.AddTokensCommand;
 import me.MrIronMan.drawit.commands.subCommands.util.SetMainLobbyCommand;
-import me.MrIronMan.drawit.data.MessagesUtils;
+import me.MrIronMan.drawit.data.MessagesData;
+import me.MrIronMan.drawit.data.PluginMessages;
 import me.MrIronMan.drawit.utility.PermissionsUtil;
 import me.MrIronMan.drawit.utility.TextUtil;
 import org.bukkit.command.CommandSender;
@@ -37,9 +39,9 @@ public class DrawItCommand extends BukkitCommand {
 
         if (args.length == 0) {
             if (player.hasPermission(PermissionsUtil.COMMAND_MAIN)) {
-                MessagesUtils.sendMessage(player, MessagesUtils.DRAWIT_COMMANDS);
+                PluginMessages.sendMessage(player, PluginMessages.DRAWIT_COMMANDS);
             }else {
-                for (String msg : MessagesUtils.DRAWIT_COMMANDS_PLAYER) {
+                for (String msg : DrawIt.getMessagesData().getStringList(MessagesData.DRAWIT_COMMANDS_PLAYER)) {
                     player.sendMessage(TextUtil.colorize(msg));
                 }
             }
@@ -100,7 +102,7 @@ public class DrawItCommand extends BukkitCommand {
             new SkipGameCommand().execute(sender, newArgs);
         }
         else {
-            player.sendMessage(TextUtil.colorize(MessagesUtils.SUBCOMMAND_NOT_FOUND));
+            player.sendMessage(TextUtil.colorize(PluginMessages.SUBCOMMAND_NOT_FOUND));
         }
         return true;
     }

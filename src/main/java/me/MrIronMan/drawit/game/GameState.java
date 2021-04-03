@@ -4,19 +4,19 @@ public enum GameState {
 
     WAITING,
     STARTING,
-    ACTIVE,
-    ENDING;
+    PLAYING,
+    RESTARTING;
 
     public static String getName(GameState gs) {
         switch (gs) {
             case WAITING:
                 return "Waiting...";
             case STARTING:
-                return "Starting...";
-            case ACTIVE:
-                return "Active";
-            case ENDING:
-                return "Ending...";
+                return "Starting";
+            case PLAYING:
+                return "Playing";
+            case RESTARTING:
+                return "Restarting";
         }
         return null;
     }

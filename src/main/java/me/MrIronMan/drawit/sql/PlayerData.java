@@ -1,7 +1,7 @@
 package me.MrIronMan.drawit.sql;
 
 import me.MrIronMan.drawit.DrawIt;
-import me.MrIronMan.drawit.data.ConfigUtils;
+import me.MrIronMan.drawit.data.ConfigData;
 import org.bukkit.entity.Player;
 
 import java.sql.Connection;
@@ -71,7 +71,7 @@ public class PlayerData {
     }
 
     public Connection getConn() {
-        if (ConfigUtils.MYSQL_ENABLED) {
+        if (DrawIt.getConfigData().isMySql()) {
             return DrawIt.getInstance().getMySQL().getConnection();
         }else {
             return DrawIt.getInstance().getSqLite().getConnection();

@@ -1,7 +1,7 @@
 package me.MrIronMan.drawit.menuSystem.menus;
 
 import me.MrIronMan.drawit.DrawIt;
-import me.MrIronMan.drawit.data.MessagesUtils;
+import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.menuSystem.Menu;
 import me.MrIronMan.drawit.menuSystem.PlayerMenuUtility;
@@ -22,7 +22,7 @@ public class ColorPickerMenu extends Menu {
 
     @Override
     public String getMenuName() {
-        return MessagesUtils.COLOR_PICKER_NAME;
+        return DrawIt.getMessagesData().getString(MessagesData.COLOR_PICKER_TITLE);
     }
 
     @Override

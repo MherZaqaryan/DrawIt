@@ -7,17 +7,14 @@ mysql:
   username: "root"
   password: ""
 
+
+#For 1.8 you can use Material:Data
 lobby-items:
   game-selector:
     material: CHEST
     slot: 0
     enchanted: false
     command: di gui
-  player-stats:
-    material: SKULL_ITEM
-    slot: 4
-    enchanted: false
-    command: di stats
   back-to-hub:
     material: ARROW
     slot: 8
@@ -27,18 +24,23 @@ lobby-items:
 drawer-tools:
   thin-brush:
     material: WOOD_SWORD
+    enchanted: false
     slot: 0
   thick-brush:
     material: DIAMOND_SWORD
+    enchanted: false
     slot: 1
   spray-canvas:
     material: SHEARS
+    enchanted: false
     slot: 2
   fill-can:
     material: BUCKET
+    enchanted: false
     slot: 3
   burn-canvas:
     material: BLAZE_POWDER
+    enchanted: false
     slot: 8
 
 color-picker:
@@ -84,7 +86,7 @@ color-picker:
 
 stats:
   tokens:
-    per-right-guess: 5
+    per-right-guess: 2
     victory: 40
   drawer-points:
     per-right-word: 2

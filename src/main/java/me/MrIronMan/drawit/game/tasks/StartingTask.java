@@ -1,6 +1,7 @@
 package me.MrIronMan.drawit.game.tasks;
 
-import me.MrIronMan.drawit.data.MessagesUtils;
+import me.MrIronMan.drawit.DrawIt;
+import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.game.GameState;
 import org.bukkit.Sound;
@@ -21,16 +22,14 @@ public class StartingTask extends BukkitRunnable {
             cancel();
             game.getGameManager().startGame();
         }
-        else if (game.getPlayers().size() < game.getMinPlayers() || game.getPlayers().size() == 0) {
-            if (!game.getGameManager().isForce()) {
-                cancel();
-                game.setGameState(GameState.WAITING);
-            }
+        else if ((game.getPlayers().size() < game.getMinPlayers() || game.getPlayers().size() == 0) && !game.getGameManager().isForce()) {
+            cancel();
+            game.setGameState(GameState.WAITING);
         }else {
             if (timer > 5) {
-                game.getGameManager().sendActionBar(MessagesUtils.START_COUNTDOWN.replace("{time}", String.valueOf(timer)));
+                game.getGameManager().sendActionBar(DrawIt.getMessagesData().getString(MessagesData.START_COUNTDOWN).replace("{time}", String.valueOf(timer)));
             }else {
-                game.getGameManager().sendActionBar(MessagesUtils.START_COUNTDOWN_UNDER_5.replace("{time}", String.valueOf(timer)));
+                game.getGameManager().sendActionBar(DrawIt.getMessagesData().getString(MessagesData.START_COUNTDOWN_UNDER_5).replace("{time}", String.valueOf(timer)));
                 game.getGameManager().playSound(Sound.CLICK, 1.0F, 1.0F);
             }
         }

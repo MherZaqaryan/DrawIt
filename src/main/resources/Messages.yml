@@ -48,6 +48,23 @@ action-bar-messages:
 
 color-picker-title: "&5&lColor Picker"
 
+lobby-items:
+  game-selector:
+    name: "&aGame Selector &7[Right-click]"
+    lore:
+      - ""
+      - "&7Click to open game selector."
+  player-stats:
+    name: "&eYour Stats &7[Right-click]"
+    lore:
+      - ""
+      - "&7Click to open your stats."
+  back-to-hub:
+    name: "&cReturn To Lobby &7[Right-click]"
+    lore:
+      - ""
+      - "&7Click to return to hub."
+
 drawer-tools:
   thin-brush:
     name: "&6&lThin Brush"

@@ -1,7 +1,7 @@
 package me.MrIronMan.drawit.listeners;
 
 import me.MrIronMan.drawit.DrawIt;
-import me.MrIronMan.drawit.data.MessagesUtils;
+import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.utility.TextUtil;
 import org.bukkit.Sound;
@@ -24,7 +24,7 @@ public class GuessWordListener implements Listener {
             String word = game.getGameManager().getWord();
             if (game.getGameManager().isDrawer(player)) {
                 e.setCancelled(true);
-                player.sendMessage(TextUtil.colorize(MessagesUtils.CHAT_WHILE_DRAWER));
+                player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.DRAWER_CHAT_LOCK)));
             }
             else if (msg.equalsIgnoreCase(word)) {
                 if (!game.getGameManager().getWordGuessers().contains(uuid)) {

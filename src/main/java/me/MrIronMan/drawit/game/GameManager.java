@@ -2,20 +2,21 @@ package me.MrIronMan.drawit.game;
 
 import com.cryptomorin.xseries.messages.ActionBar;
 import com.cryptomorin.xseries.messages.Titles;
+import de.tr7zw.nbtapi.NBTItem;
 import me.MrIronMan.drawit.DrawIt;
-import me.MrIronMan.drawit.data.ConfigUtils;
-import me.MrIronMan.drawit.data.MessagesUtils;
-import me.MrIronMan.drawit.game.tasks.ActiveTask;
-import me.MrIronMan.drawit.game.tasks.EndingTask;
+import me.MrIronMan.drawit.data.MessagesData;
+import me.MrIronMan.drawit.game.tasks.PlayingTask;
+import me.MrIronMan.drawit.game.tasks.RestartingTask;
 import me.MrIronMan.drawit.game.tasks.StartingTask;
 import me.MrIronMan.drawit.game.tasks.WordChooseTask;
-import me.MrIronMan.drawit.game.utility.DrawTools;
+import me.MrIronMan.drawit.game.utility.DrawerTool;
 import me.MrIronMan.drawit.utility.OtherUtils;
 import me.MrIronMan.drawit.game.utility.SideBar;
 import me.MrIronMan.drawit.utility.TextUtil;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -41,7 +42,7 @@ public class GameManager {
 
     private List<UUID> guessersList;
 
-    private ActiveTask activeTask;
+    private PlayingTask activeTask;
 
     public GameManager(Game game) {
         this.game = game;
@@ -59,22 +60,22 @@ public class GameManager {
         if (game.isEnabled()) {
             if (game.isGameState(GameState.WAITING) || game.isGameState(GameState.STARTING)) {
                 if (DrawIt.getInstance().isInGame(player)) {
-                    player.sendMessage(TextUtil.colorize(MessagesUtils.IN_GAME));
+                    player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.IN_GAME)));
                 } else if (game.getPlayers().size() >= game.getMaxPlayers()) {
-                    player.sendMessage(TextUtil.colorize(MessagesUtils.FULL_GAME));
+                    player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.FULL_GAME)));
                 } else {
                     game.getPlayers().add(uuid);
                     DrawIt.getInstance().setPlayerGame(player, game);
                     activateGameSettings(player);
                     player.teleport(game.getLobbyLocation());
-                    sendMessage(MessagesUtils.PLAYER_JOIN.replace("{player}", player.getDisplayName()));
+                    sendMessage(DrawIt.getMessagesData().getString(MessagesData.PLAYER_JOIN).replace("{player}", player.getDisplayName()));
                     if (game.getPlayers().size() >= game.getMinPlayers() && !game.isGameState(GameState.STARTING)) {
                         startCountdown();
                     }
                 }
             }
         }else {
-            player.sendMessage(TextUtil.colorize(MessagesUtils.GAME_NOT_ENABLED));
+            player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.GAME_NOT_ENABLED)));
         }
 
     }
@@ -82,10 +83,10 @@ public class GameManager {
     public void skip(Player player) {
         if (game.getGameManager().isDrawer(player)) {
             this.skippedPlayers.add(player.getUniqueId());
-            game.getGameManager().sendMessage(MessagesUtils.GAME_SKIPPED.replace("{drawer}", game.getGameManager().getCurrentDrawer().getDisplayName()));
+            game.getGameManager().sendMessage(DrawIt.getMessagesData().getString(MessagesData.GAME_SKIPPED).replace("{drawer}", game.getGameManager().getCurrentDrawer().getDisplayName()));
             game.getGameManager().getActiveTask().startNext();
         } else {
-            player.sendMessage(TextUtil.colorize(MessagesUtils.NOT_DRAWER_TO_SKIP));
+            player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.NOT_DRAWER_TO_SKIP)));
         }
     }
 
@@ -94,16 +95,16 @@ public class GameManager {
         if (!game.getPlayers().contains(uuid)) return;
         game.getPlayers().remove(uuid);
         DrawIt.getInstance().setPlayerGame(player, null);
-        if (game.isGameState(GameState.ACTIVE)) {
+        if (game.isGameState(GameState.PLAYING)) {
             waitingPlayers.remove(uuid);
             if (isDrawer(player)) {
                 setDrawer(null);
             }
         }
-        sendMessage(MessagesUtils.PLAYER_QUIT.replace("{player}", player.getDisplayName()));
+        sendMessage(DrawIt.getMessagesData().getString(MessagesData.PLAYER_QUIT).replace("{player}", player.getDisplayName()));
     }
 
-    public ActiveTask getActiveTask() {
+    public PlayingTask getActiveTask() {
         return activeTask;
     }
 
@@ -114,11 +115,11 @@ public class GameManager {
     }
 
     public void startGame() {
-        game.setGameState(GameState.ACTIVE);
+        game.setGameState(GameState.PLAYING);
         this.waitingPlayers = new ArrayList<>(game.getPlayers());
         for (UUID uuid : game.getPlayers()) {
             SideBar sideBar = new SideBar(Bukkit.getPlayer(uuid));
-            sideBar.updateTitle(MessagesUtils.SCOREBOARD_GAME_TITLE);
+            sideBar.updateTitle(DrawIt.getMessagesData().getString(MessagesData.BOARD_GAME_TITLE));
             reloadSidebar(sideBar, -1);
             this.playerSidebarMap.put(uuid, sideBar);
         }
@@ -130,8 +131,8 @@ public class GameManager {
         this.game.getBoard().burn();
         if (isNoWaiting()) {
             this.game.getBoard().burn();
-            game.setGameState(GameState.ENDING);
-            new EndingTask(game).runTaskLater(DrawIt.getInstance(), 200L);
+            game.setGameState(GameState.RESTARTING);
+            new RestartingTask(game).runTaskLater(DrawIt.getInstance(), 200L);
             return;
         }
         this.guessersList = new ArrayList<>();
@@ -149,11 +150,13 @@ public class GameManager {
 
     private void addDrawingTools(Player player) {
         Inventory inv = player.getInventory();
-        inv.setItem(ConfigUtils.THIN_BRUSH_SLOT, DrawTools.THIN_BRUSH);
-        inv.setItem(ConfigUtils.THICK_BRUSH_SLOT, DrawTools.THICK_BRUSH);
-        inv.setItem(ConfigUtils.SPRAY_CAN_SLOT, DrawTools.SPRAY_CAN);
-        inv.setItem(ConfigUtils.FILL_CAN_SLOT, DrawTools.FILL_CAN);
-        inv.setItem(ConfigUtils.BURN_CANVAS_SLOT, DrawTools.BURN_CANVAS);
+        for (DrawerTool tool : DrawerTool.values()) {
+            ItemStack itemStack = DrawIt.getConfigData().getDrawerTool(tool);
+            NBTItem nbti = new NBTItem(itemStack);
+            if (nbti.hasKey("slot")) {
+                inv.setItem(nbti.getInteger("slot"), itemStack);
+            }
+        }
     }
 
     public void activateGameSettings(Player player) {
@@ -290,9 +293,9 @@ public class GameManager {
 
     public void reloadSidebar(SideBar sideBar, int time) {
         List<String> newLines = new ArrayList<>();
-        for (String s : MessagesUtils.SCOREBOARD_GAME_LINES) {
+        for (String s : DrawIt.getMessagesData().getStringList(MessagesData.BOARD_GAME_LINES)) {
             newLines.add(s
-                    .replace("{time}", time >= 0 ? OtherUtils.formatTime(time) : "&8Waiting...")
+                    .replace("{time}", time != -1 ? OtherUtils.formatTime(time) : "&8Waiting...")
                     .replace("{drawer}", drawer != null ? "&f"+drawer.getDisplayName() : "&8None")
                     .replace("{rounds_left}", "&f"+getWaitingPlayers().size())
                     .replace("{leader_1}", getLeader(0))
@@ -316,7 +319,7 @@ public class GameManager {
         UUID uuid = player.getUniqueId();
         playerPointMap.put(uuid, getPoint(player)+point);
         if (!isDrawer(player)) {
-            game.getGameManager().sendMessage(MessagesUtils.PLAYER_GUESSED.replace("{guesser}", player.getDisplayName()).replace("{points}", String.valueOf(point)));
+            game.getGameManager().sendMessage(MessagesData.PLAYER_GUESSED.replace("{guesser}", player.getDisplayName()).replace("{points}", String.valueOf(point)));
         }
     }
 
@@ -356,14 +359,14 @@ public class GameManager {
         if (getLeaders().size() <= i) return "&8Waiting...";
         Map.Entry<UUID, Integer> e = getLeaders().get(i);
         String playerName = Bukkit.getPlayer(e.getKey()).getDisplayName();
-        return MessagesUtils.LEADER_FORMAT.replace("{point}", String.valueOf(e.getValue())).replace("{player}", playerName);
+        return MessagesData.LEADER_FORMAT.replace("{point}", String.valueOf(e.getValue())).replace("{player}", playerName);
     }
 
     public List<UUID> getWordGuessers() {
         return guessersList;
     }
 
-    public void setActiveTask(ActiveTask activeTask) {
+    public void setActiveTask(PlayingTask activeTask) {
         this.activeTask = activeTask;
     }
 

@@ -1,9 +1,9 @@
 package me.MrIronMan.drawit.commands.subCommands.setup;
 
 import me.MrIronMan.drawit.DrawIt;
-import me.MrIronMan.drawit.commands.DrawItCommand;
 import me.MrIronMan.drawit.commands.SubCommand;
-import me.MrIronMan.drawit.data.MessagesUtils;
+import me.MrIronMan.drawit.data.MessagesData;
+import me.MrIronMan.drawit.data.PluginMessages;
 import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.game.SetupGame;
 import me.MrIronMan.drawit.utility.PermissionsUtil;
@@ -24,19 +24,19 @@ public class DeleteCommand extends SubCommand {
                     if (!game.isEnabled()) {
                         SetupGame setupGame = new SetupGame(game);
                         setupGame.remove();
-                        player.sendMessage(TextUtil.colorize(MessagesUtils.GAME_REMOVED));
+                        player.sendMessage(TextUtil.colorize(PluginMessages.GAME_REMOVED));
                         return true;
                     }else {
-                        player.sendMessage(TextUtil.colorize(MessagesUtils.DISABLE_GAME));
+                        player.sendMessage(TextUtil.colorize(PluginMessages.DISABLE_GAME));
                     }
                 }else {
-                    player.sendMessage(TextUtil.colorize(MessagesUtils.GAME_NOT_FOUND));
+                    player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.GAME_NOT_FOUND)));
                 }
             } else {
-                player.sendMessage(TextUtil.colorize(MessagesUtils.USAGE_COMMAND_DELETE));
+                player.sendMessage(TextUtil.colorize(PluginMessages.USAGE_COMMAND_DELETE));
             }
         }else {
-            player.sendMessage(TextUtil.colorize(MessagesUtils.NO_PERMS));
+            player.sendMessage(TextUtil.colorize(MessagesData.NO_PERMS));
         }
 
         return true;

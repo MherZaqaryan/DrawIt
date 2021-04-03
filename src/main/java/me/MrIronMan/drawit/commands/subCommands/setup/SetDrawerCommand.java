@@ -2,7 +2,8 @@ package me.MrIronMan.drawit.commands.subCommands.setup;
 
 import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.commands.SubCommand;
-import me.MrIronMan.drawit.data.MessagesUtils;
+import me.MrIronMan.drawit.data.MessagesData;
+import me.MrIronMan.drawit.data.PluginMessages;
 import me.MrIronMan.drawit.game.SetupGame;
 import me.MrIronMan.drawit.utility.TextUtil;
 import org.bukkit.command.CommandSender;
@@ -18,9 +19,9 @@ public class SetDrawerCommand extends SubCommand {
             SetupGame setupGame = DrawIt.getInstance().getSetupGame(player);
             setupGame.setDrawerLocation(player.getLocation());
             player.sendMessage(setupGame.customize("{game} &aYou have successfully set drawer location."));
-            MessagesUtils.sendMessage(player, setupGame.getCurrentMessage());
+            PluginMessages.sendMessage(player, setupGame.getCurrentMessage());
         }else {
-            player.sendMessage(TextUtil.colorize(MessagesUtils.NOT_IN_SETUP));
+            player.sendMessage(TextUtil.colorize(PluginMessages.NOT_IN_SETUP));
         }
 
         return true;

@@ -2,8 +2,7 @@ package me.MrIronMan.drawit.utility;
 
 import com.cryptomorin.xseries.XMaterial;
 import me.MrIronMan.drawit.DrawIt;
-import me.MrIronMan.drawit.data.ConfigUtils;
-import me.MrIronMan.drawit.data.WordsUtils;
+import me.MrIronMan.drawit.data.ConfigData;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -48,7 +47,7 @@ public class OtherUtils {
         Block lastBlock = iter.next();
         while (iter.hasNext()) {
             lastBlock = iter.next();
-            if (lastBlock.getType() == Material.AIR || lastBlock.getType() == Material.BARRIER) {
+            if (lastBlock.getType() == Material.AIR) {
                 continue;
             }
             break;
@@ -58,7 +57,7 @@ public class OtherUtils {
 
     public static HashMap<Integer, ItemStack> getColorPicker() {
         HashMap<Integer, ItemStack> items = new HashMap<>();
-        for (String s : ConfigUtils.COLOR_PICKER) {
+        for (String s : DrawIt.getConfigData().getStringList(ConfigData.COLOR_PICKER)) {
             String[] args = s.split("; ");
             if (args.length == 4) {
                 ItemStack itemStack = new ItemStack(Objects.requireNonNull(XMaterial.matchXMaterial(args[2].toUpperCase()).get().parseMaterial()), 1, (byte) Integer.parseInt(args[3]));
@@ -72,7 +71,7 @@ public class OtherUtils {
     }
 
     public static List<String> getWords(int n) {
-        List<String> wordsList = new ArrayList<>(WordsUtils.WORDS_LIST);
+        List<String> wordsList = new ArrayList<>(DrawIt.getWordsData().getWords());
         List<String> newWordsList = new ArrayList<>();
         Random random = new Random();
         for (int i = 0; i < n; i++) {
@@ -129,7 +128,8 @@ public class OtherUtils {
         String yaw = df.format(loc.getYaw());
         String pitch = df.format(loc.getPitch());
         String world = loc.getWorld().getName();
-        return advanced ? x + regex + y + regex + z + regex + yaw + regex + pitch + regex + world : x + regex + y + regex + z + regex + world;
+        return advanced ? x + regex + y + regex + z + regex + yaw + regex + pitch + regex + world
+                : x + regex + y + regex + z + regex + world;
     }
 
     public static void returnLobby(Player player) {
@@ -138,7 +138,7 @@ public class OtherUtils {
         DataOutputStream out = new DataOutputStream(b);
         try {
             out.writeUTF("Connect");
-            out.writeUTF(ConfigUtils.LOBBY_SERVER);
+            out.writeUTF(ConfigData.LOBBY_SERVER);
         } catch (IOException ex) {
             DrawIt.getInstance().getLogger().warning("Cant connect to lobby server!");
         }

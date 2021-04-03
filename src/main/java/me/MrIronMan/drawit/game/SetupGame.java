@@ -1,7 +1,8 @@
 package me.MrIronMan.drawit.game;
 
 import me.MrIronMan.drawit.DrawIt;
-import me.MrIronMan.drawit.data.MessagesUtils;
+import me.MrIronMan.drawit.data.MessagesData;
+import me.MrIronMan.drawit.data.PluginMessages;
 import me.MrIronMan.drawit.utility.TextUtil;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
@@ -193,17 +194,17 @@ public class SetupGame {
 
     public TextComponent[] getCurrentMessage() {
         return new TextComponent[] {
-                MessagesUtils.simpleText("&3&l&m----------------------------"),
-                MessagesUtils.simpleText(""),
-                MessagesUtils.simpleHover("  &b&lDraw&a&lIt &e&lSetup", "&aAuthor: &7MrIronMan (Spigot: Mher)"),
-                MessagesUtils.simpleText(""),
-                MessagesUtils.commandRun("  &c• &7/DrawIt SetLobby " + (lobbyLocation == null ? "" : "&8(Set)"), "&7Click to set lobby location for game.", "/DrawIt SetLobby"),
-                MessagesUtils.commandRun("  &c• &7/DrawIt SetDrawer " + (drawerLocation == null ? "" : "&8(Set)"), "&7Click to set drawer location for game.", "/DrawIt SetDrawer"),
-                MessagesUtils.commandSuggest("  &c• &7/DrawIt SetBoard <Pos1|Pos2> " + (boardPos1 != null && boardPos2 != null ? "&8(Set)" : ""), "Click to set board position 1 and 2 for game.", "/DrawIt SetBoard Pos"),
-                MessagesUtils.commandSuggest("  &c• &7/DrawIt Setup Exit", "&7Click to exit from setup.", "/DrawIt Setup Exit"),
-                MessagesUtils.commandRun("  &c• &7/DrawIt Save", "&7Click to save this game.", "/DrawIt Save"),
-                MessagesUtils.simpleText(""),
-                MessagesUtils.simpleText("&3&l&m----------------------------"),
+                PluginMessages.simpleText("&3&l&m----------------------------"),
+                PluginMessages.simpleText(""),
+                PluginMessages.simpleHover("  &b&lDraw&a&lIt &e&lSetup", "&aAuthor: &7MrIronMan (Spigot: Mher)"),
+                PluginMessages.simpleText(""),
+                PluginMessages.commandRun("  &c• &7/DrawIt SetLobby " + (lobbyLocation == null ? "" : "&8(Set)"), "&7Click to set lobby location for game.", "/DrawIt SetLobby"),
+                PluginMessages.commandRun("  &c• &7/DrawIt SetDrawer " + (drawerLocation == null ? "" : "&8(Set)"), "&7Click to set drawer location for game.", "/DrawIt SetDrawer"),
+                PluginMessages.commandSuggest("  &c• &7/DrawIt SetBoard <Pos1|Pos2> " + (boardPos1 != null && boardPos2 != null ? "&8(Set)" : ""), "Click to set board position 1 and 2 for game.", "/DrawIt SetBoard Pos"),
+                PluginMessages.commandSuggest("  &c• &7/DrawIt Setup Exit", "&7Click to exit from setup.", "/DrawIt Setup Exit"),
+                PluginMessages.commandRun("  &c• &7/DrawIt Save", "&7Click to save this game.", "/DrawIt Save"),
+                PluginMessages.simpleText(""),
+                PluginMessages.simpleText("&3&l&m----------------------------"),
         };
     }
 

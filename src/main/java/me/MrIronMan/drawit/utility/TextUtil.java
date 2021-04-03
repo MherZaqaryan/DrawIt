@@ -1,6 +1,7 @@
 package me.MrIronMan.drawit.utility;
 
-import me.MrIronMan.drawit.data.MessagesUtils;
+import me.MrIronMan.drawit.DrawIt;
+import me.MrIronMan.drawit.data.MessagesData;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class TextUtil {
     }
 
     public static String prefix() {
-        return MessagesUtils.PREFIX;
+        return DrawIt.getMessagesData().getString(MessagesData.PREFIX);
     }
 
 }
