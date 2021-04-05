@@ -1,5 +1,8 @@
 package me.MrIronMan.drawit.utility;
 
+import com.cryptomorin.xseries.XSound;
+import me.MrIronMan.drawit.DrawIt;
+import me.MrIronMan.drawit.data.ConfigData;
 import me.MrIronMan.drawit.game.utility.Cuboid;
 import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.game.GameManager;
@@ -60,7 +63,7 @@ public class DrawingUtils {
             if (board.isIn(b)) {
                 if (random.nextInt(3) == 1) {
                     b.setTypeIdAndData(game.getPlayerColor(uuid).getTypeId(), (byte) game.getPlayerColor(uuid).getDurability(), true);
-                    player.playSound(player.getLocation(), Sound.DIG_GRASS, 0.5F, 0.5F);
+                    XSound.play(player, DrawIt.getConfigData().getString(ConfigData.SOUND_SPRAY_CANVAS));
                 }
             }
         }

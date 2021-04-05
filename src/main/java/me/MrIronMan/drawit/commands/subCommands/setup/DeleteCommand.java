@@ -24,7 +24,7 @@ public class DeleteCommand extends SubCommand {
                     if (!game.isEnabled()) {
                         SetupGame setupGame = new SetupGame(game);
                         setupGame.remove();
-                        player.sendMessage(TextUtil.colorize(PluginMessages.GAME_REMOVED));
+                        player.sendMessage(TextUtil.colorize(PluginMessages.GAME_REMOVED).replace("%game%", gameName));
                         return true;
                     }else {
                         player.sendMessage(TextUtil.colorize(PluginMessages.DISABLE_GAME));

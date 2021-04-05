@@ -29,19 +29,45 @@ public class ConfigData extends DataManager{
         config.addDefault("mysql.username", "root");
         config.addDefault("mysql.password", "pass");
 
+        config.addDefault(COUNTDOWN_STARTING, 20);
+        config.addDefault(COUNTDOWN_WORD_CHOOSE, 10);
+        config.addDefault(COUNTDOWN_PER_ROUND, 70);
+        config.addDefault(COUNTDOWN_RESTART, 10);
+
+        config.addDefault(SOUND_UNDER_5, "CLICK,1,1");
+        config.addDefault(SOUND_DRAWER_WORD_CHOOSE, "SUCCESSFUL_HIT,1,0");
+        config.addDefault(SOUND_SPRAY_CANVAS, "DIG_GRASS,0.5,0.5");
+        config.addDefault(SOUND_LETTER_EXPLAIN, "CHICKEN_EGG_POP,1,2");
+        config.addDefault(SOUND_WORD_GUESS, "ANVIL_LAND,1,1");
+        config.addDefault(SOUND_GAME_OVER, "WITHER_DEATH,1,1");
+
+        config.addDefault("lobby-items", new String[]{});
+
+        saveLobbyItem("game-selector", "CHEST", 0, false, "drawit menu games");
+        saveLobbyItem("return-to-lobby", "ARROW", 8, false, "drawit leave");
+
+        config.addDefault(GAMES_MENU_SETTINGS_SIZE, 45);
+        config.addDefault(GAMES_MENU_SETTINGS_SLOTS, new Integer[]{28, 29, 30, 31, 32, 33, 34});
+        config.addDefault(GAMES_MENU_SETTINGS_SHOW_PLAYINGS, false);
+        config.addDefault(GAMES_MENU_SETTINGS_WAITING+".material", "LIME_STAINED_CLAY");
+        config.addDefault(GAMES_MENU_SETTINGS_WAITING+".enchanted", false);
+        config.addDefault(GAMES_MENU_SETTINGS_STARTING+".material", "YELLOW_STAINED_CLAY");
+        config.addDefault(GAMES_MENU_SETTINGS_STARTING+".enchanted", false);
+        config.addDefault(GAMES_MENU_SETTINGS_EMPTY_SLOTS+".material", "GRAY_STAINED_GLASS_PANE");
+        config.addDefault(GAMES_MENU_SETTINGS_EMPTY_SLOTS+".enchanted", false);
+
+        config.addDefault(GAMES_MENU_SETTINGS_ITEMS, new String[]{});
+
         if (isFirstTime()) {
-            config.addDefault("lobby-items.game-selector.material", "CHEST");
-            config.addDefault("lobby-items.game-selector.slot", 0);
-            config.addDefault("lobby-items.game-selector.enchanted", false);
-            config.addDefault("lobby-items.game-selector.command", "drawit gui");
+            config.addDefault(GAMES_MENU_SETTINGS_ITEMS+".spectate-game.material", "MAGMA_CREAM");
+            config.addDefault(GAMES_MENU_SETTINGS_ITEMS+".spectate-game.enchanted", false);
+            config.addDefault(GAMES_MENU_SETTINGS_ITEMS+".spectate-game.slot", 12);
+            config.addDefault(GAMES_MENU_SETTINGS_ITEMS+".spectate-game.command", "drawit menu spectate");
 
-            config.addDefault("lobby-items.return-to-lobby.material", "ARROW");
-            config.addDefault("lobby-items.return-to-lobby.slot", 8);
-            config.addDefault("lobby-items.return-to-lobby.enchanted", false);
-            config.addDefault("lobby-items.return-to-lobby.command", "drawit leave");
-
-            config.options().copyDefaults(true);
-            save();
+            config.addDefault(GAMES_MENU_SETTINGS_ITEMS+".quick-join.material", "MINECART");
+            config.addDefault(GAMES_MENU_SETTINGS_ITEMS+".quick-join.enchanted", false);
+            config.addDefault(GAMES_MENU_SETTINGS_ITEMS+".quick-join.slot", 14);
+            config.addDefault(GAMES_MENU_SETTINGS_ITEMS+".quick-join.command", "drawit join quick");
         }
 
         config.addDefault("drawer-tools.thin-brush.material", "WOOD_SWORD");
@@ -105,21 +131,38 @@ public class ConfigData extends DataManager{
                 "44; &7Pastel White; STAINED_CLAY; 0"
         });
 
-        config.addDefault("stats.tokens.per-right-guess", 2);
-        config.addDefault("stats.tokens.victory", 40);
-        config.addDefault("stats.drawer-points.per-right-word", 2);
-        config.addDefault("stats.guesser-points.1", 10);
-        config.addDefault("stats.guesser-points.2", 8);
-        config.addDefault("stats.guesser-points.3", 6);
-        config.addDefault("stats.guesser-points.4", 4);
-        config.addDefault("stats.guesser-points.other", 10);
+        config.addDefault(STATS_TOKENS_VICTORY, 40);
+        config.addDefault(STATS_TOKENS_DRAWER_PER_RIGHT_WORD, 4);
+        config.addDefault(STATS_TOKENS_GUESSER_PER_RIGHT_GUESS, 4);
+
+        config.addDefault(STATS_POINTS_DRAWER_PER_RIGHT_WORD, 2);
+
+        if (isFirstTime()) {
+            config.addDefault(STATS_POINTS_GUESSER+".1", 10);
+            config.addDefault(STATS_POINTS_GUESSER+".2", 8);
+            config.addDefault(STATS_POINTS_GUESSER+".3", 6);
+            config.addDefault(STATS_POINTS_GUESSER+".4", 4);
+        }
+
+        config.addDefault(STATS_POINTS_GUESSER_OTHER, 2);
 
         config.options().copyDefaults(true);
         save();
     }
 
-    public ItemStack getLobbyItem(String subPath) {
-        String path = "lobby-items."+subPath+".";
+    public void saveLobbyItem(String name, String material, int slot, boolean enchanted, String cmd) {
+        if (isFirstTime()) {
+            getConfig().addDefault("lobby-items.%path%.material".replace("%path%", name), material);
+            getConfig().addDefault("lobby-items.%path%.slot".replace("%path%", name), slot);
+            getConfig().addDefault("lobby-items.%path%.enchanted".replace("%path%", name), enchanted);
+            getConfig().addDefault("lobby-items.%path%.command".replace("%path%", name), cmd);
+            getConfig().options().copyDefaults(true);
+            save();
+        }
+    }
+
+    public ItemStack getItem(String path) {
+        path = path+".";
         ItemStack itemStack = new ItemStack(Objects.requireNonNull(XMaterial.matchXMaterial(getString(path + "material")).get().parseItem()));
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -136,37 +179,41 @@ public class ConfigData extends DataManager{
         itemMeta.setDisplayName(TextUtil.colorize(DrawIt.getMessagesData().getString(path+"display-name")));
         itemMeta.setLore(TextUtil.colorize(DrawIt.getMessagesData().getStringList(path+"lore")));
         itemStack.setItemMeta(itemMeta);
+        return itemStack;
+    }
+
+    public ItemStack getLobbyItem(String subPath) {
+        String path = "lobby-items."+subPath;
+        ItemStack itemStack = getItem(path);
         NBTItem nbti = new NBTItem(itemStack);
         nbti.setString("name", "lobby-item");
-        nbti.setInteger("slot", getInt(path+"slot"));
-        nbti.setString("command", getString(path+"command"));
+        nbti.setInteger("slot", getInt(path+".slot"));
+        nbti.setString("command", getString(path+".command"));
         return nbti.getItem();
     }
 
     public ItemStack getDrawerTool(DrawerTool drawerTool) {
-        String path = "drawer-tools."+drawerTool.getPath()+".";
-        ItemStack itemStack = new ItemStack(Objects.requireNonNull(XMaterial.matchXMaterial(getString(path + "material")).get().parseItem()));
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        if (getBoolean(path)) {
-            itemMeta.addEnchant(Enchantment.LUCK, 0, false);
-            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        }
-        if (DrawIt.getMessagesData().getString(path+"display-name") == null) {
-            DrawIt.getMessagesData().set(path+"display-name", "&7Display name not set");
-        }
-        if (DrawIt.getMessagesData().getStringList(path+"lore").isEmpty()) {
-            DrawIt.getMessagesData().set(path+"lore", new String[]{"","&7Lore not set"});
-        }
-        itemMeta.setDisplayName(TextUtil.colorize(DrawIt.getMessagesData().getString(path+"display-name")));
-        itemMeta.setLore(TextUtil.colorize(DrawIt.getMessagesData().getStringList(path+"lore")));
-        itemStack.setItemMeta(itemMeta);
+        String path = "drawer-tools."+drawerTool.getPath();
+        ItemStack itemStack = getItem(path);
         NBTItem nbti = new NBTItem(itemStack);
         nbti.setString("name", "drawer-tool");
         nbti.setString("type", drawerTool.getPath());
         nbti.setBoolean("isPickable", !drawerTool.equals(DrawerTool.BURN_CANVAS));
-        nbti.setInteger("slot", getInt(path+"slot"));
+        nbti.setInteger("slot", getInt(path+".slot"));
         return nbti.getItem();
+    }
+
+    public List<ItemStack> getGameMenuItems() {
+        List<ItemStack> items = new ArrayList<>();
+        for (String s : getConfig().getConfigurationSection(GAMES_MENU_SETTINGS_ITEMS).getKeys(false)) {
+            ItemStack itemStack = getItem(GAMES_MENU_SETTINGS_ITEMS+"."+s);
+            NBTItem nbti = new NBTItem(itemStack);
+            nbti.setString("name", "game-menu");
+            nbti.setInteger("slot", getInt(GAMES_MENU_SETTINGS_ITEMS+"."+s+".slot"));
+            nbti.setString("command", getString(GAMES_MENU_SETTINGS_ITEMS+"."+s+".command"));
+            items.add(nbti.getItem());
+        }
+        return items;
     }
 
     public List<ItemStack> getLobbyItems() {
@@ -191,8 +238,35 @@ public class ConfigData extends DataManager{
         return getBoolean("mysql.enabled");
     }
 
+    public static String GAMES_MENU_SETTINGS_SIZE = "games-menu.settings.size";
+    public static String GAMES_MENU_SETTINGS_SLOTS = "games-menu.settings.slots";
+    public static String GAMES_MENU_SETTINGS_WAITING = "games-menu.settings.waiting";
+    public static String GAMES_MENU_SETTINGS_STARTING = "games-menu.settings.starting";
+    public static String GAMES_MENU_SETTINGS_EMPTY_SLOTS = "games-menu.settings.empty-slots";
+    public static String GAMES_MENU_SETTINGS_SHOW_PLAYINGS = "games-menu.settings.show-playings";
+    public static String GAMES_MENU_SETTINGS_ITEMS = "games-menu.items";
+
     public static String COLOR_PICKER = "color-picker";
     public static String LOBBY_LOCATION = "lobby-location";
     public static String LOBBY_SERVER = "lobby-server";
+
+    public static String COUNTDOWN_STARTING = "countdowns.starting";
+    public static String COUNTDOWN_WORD_CHOOSE = "countdowns.word-choose";
+    public static String COUNTDOWN_PER_ROUND = "countdowns.per-round";
+    public static String COUNTDOWN_RESTART = "countdowns.restart";
+
+    public static String SOUND_UNDER_5 = "sounds.starting-under-5";
+    public static String SOUND_DRAWER_WORD_CHOOSE = "sounds.word-choose";
+    public static String SOUND_SPRAY_CANVAS = "sounds.spray-canvas";
+    public static String SOUND_LETTER_EXPLAIN = "sounds.letter-explain";
+    public static String SOUND_WORD_GUESS = "sounds.word-guess";
+    public static String SOUND_GAME_OVER = "sounds.game-over";
+
+    public static String STATS_TOKENS_VICTORY = "stats.tokens.victory";
+    public static String STATS_TOKENS_DRAWER_PER_RIGHT_WORD = "stats.tokens.drawer.per-right-word";
+    public static String STATS_TOKENS_GUESSER_PER_RIGHT_GUESS = "stats.tokens.guesser.per-right-guess";
+    public static String STATS_POINTS_DRAWER_PER_RIGHT_WORD = "stats.points.drawer.per-right-word";
+    public static String STATS_POINTS_GUESSER = "stats.points.guesser";
+    public static String STATS_POINTS_GUESSER_OTHER = "stats.points.guesser.other";
 
 }

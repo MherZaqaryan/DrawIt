@@ -45,10 +45,10 @@ public class PluginMessages {
             simpleHover("  &b&lDraw&a&lIt &e&lCommands", "&aAuthor: &7MrIronMan (Spigot: Mher)"),
             simpleText(""),
             commandRun("  &c• &7/DrawIt SetMainLobby", "&7Click to set main lobby.", "/DrawIt SetMainLobby"),
-            commandSuggest("  &c• &7/DrawIt Setup <WorldName>", "&7Click to setup game.", "/DrawIt Setup"),
-            commandSuggest("  &c• &7/DrawIt Delete <Game>", "&7Click to delete game.", "/DrawIt Remove"),
-            commandSuggest("  &c• &7/DrawIt Join <Game|Random>", "&7Click to join game.", "/DrawIt Join"),
-            commandSuggest("  &c• &7/DrawIt Gui <Main|Spectate>", "&7Click to open gui.", "/DrawIt Gui"),
+            commandSuggest("  &c• &7/DrawIt Setup <WorldName>", "&7Click to setup game.", "/DrawIt Setup "),
+            commandSuggest("  &c• &7/DrawIt Delete <Game>", "&7Click to delete game.", "/DrawIt Delete "),
+            commandSuggest("  &c• &7/DrawIt Join <Game|Random>", "&7Click to join game.", "/DrawIt Join "),
+            commandSuggest("  &c• &7/DrawIt Menu <Games|Spectate>", "&7Click to open gui.", "/DrawIt Menu"),
             commandSuggest("  &c• &7/DrawIt Reload", "&7Click to reload configuration files.", "/DrawIt Reload"),
             commandSuggest("  &c• &7/DrawIt AddPoint <Player> <Amount>", "&7Click to add points for player.", "/DrawIt AddPoints <Player> <Amount>"),
             commandSuggest("  &c• &7/DrawIt AddTokens <Player> <Amount>", "&7Click to add tokens for player.", "/DrawIt AddTokens <Player> <Amount>"),
@@ -68,5 +68,8 @@ public class PluginMessages {
     public static String GAME_REMOVED = "{prefix} &e%game% &aSuccessfully removed.";
     public static String DISABLE_GAME = "{prefix} &cPlease disable this game first.";
     public static String SUBCOMMAND_NOT_FOUND = "{prefix} &cSub-command not found, type /drawit for all list of commands.";
+    public static String CONFIG_RELOADED = "{prefix} &aConfiguration files has been successfully reloaded.";
+
+
 
 }

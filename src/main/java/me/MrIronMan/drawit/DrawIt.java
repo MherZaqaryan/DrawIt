@@ -1,6 +1,5 @@
 package me.MrIronMan.drawit;
 
-import com.cryptomorin.xseries.XSound;
 import de.tr7zw.nbtapi.NBTItem;
 import me.MrIronMan.drawit.commands.DrawItCommand;
 import me.MrIronMan.drawit.commands.LeaveCommand;
@@ -21,8 +20,6 @@ import me.MrIronMan.drawit.utility.ReflectionUtils;
 import me.MrIronMan.drawit.utility.TextUtil;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -139,8 +136,14 @@ public class DrawIt extends JavaPlugin {
         }
     }
 
+
+
     public static DrawIt getInstance() {
         return instance;
+    }
+
+    public List<Game> getGames() {
+        return this.games;
     }
 
     public boolean isInGame(Player player) {
@@ -162,6 +165,33 @@ public class DrawIt extends JavaPlugin {
             }
         }
         return null;
+    }
+
+    public void registerGame(String s) {
+        Game game = new Game(s);
+        registerGame(game);
+    }
+
+    public void registerGame(Game game) {
+        games.add(game);
+    }
+
+    public void restartGame(String gameName) {
+        if (this.getGame(gameName) == null) return;
+        Game gameToRestart = this.getGame(gameName);
+        this.games.remove(gameToRestart);
+        gameToRestart = new Game(gameName);
+        this.games.add(gameToRestart);
+    }
+
+    public void quickJoinGame(Player player) {
+        HashMap<Game, Integer> gameMap = new HashMap<>();
+        for (Game game : games) {
+            gameMap.put(game, game.getPlayers().size());
+        }
+        List<Map.Entry<Game, Integer>> list = new ArrayList<>(gameMap.entrySet());
+        list.sort((e1, e2) -> -e1.getValue().compareTo(e2.getValue()));
+        list.get(0).getKey().getGameManager().joinGame(player);
     }
 
     public static ConfigData getConfigData() {
@@ -203,7 +233,7 @@ public class DrawIt extends JavaPlugin {
 
     public void setLobbySidebar(Player player) {
         SideBar sideBar = new SideBar(player);
-        sideBar.updateTitle("");
+        sideBar.updateTitle(getMessagesData().getString(MessagesData.BOARD_LOBBY_TITLE));
         lobbySidebarMap.put(player, sideBar);
         updateSidebar(player);
     }
@@ -243,36 +273,6 @@ public class DrawIt extends JavaPlugin {
         return playerDataMap;
     }
 
-    public List<Game> getGames() {
-        return this.games;
-    }
-
-    public void registerGame(String s) {
-        Game game = new Game(s);
-        registerGame(game);
-    }
-
-    public void registerGame(Game game) {
-        games.add(game);
-    }
-
-    public void restartGame(String gameName) {
-        if (this.getGame(gameName) == null) return;
-        Game gameToRestart = this.getGame(gameName);
-        this.games.remove(gameToRestart);
-        gameToRestart = new Game(gameName);
-        this.games.add(gameToRestart);
-    }
-
-    public void quickJoinGame(Player player) {
-        HashMap<Game, Integer> gameMap = new HashMap<>();
-        for (Game game : games) {
-            gameMap.put(game, game.getPlayers().size());
-        }
-        List<Map.Entry<Game, Integer>> list = new ArrayList<>(gameMap.entrySet());
-        list.sort((e1, e2) -> -e1.getValue().compareTo(e2.getValue()));
-        list.get(0).getKey().getGameManager().joinGame(player);
-    }
 
     public void enableSetupMode(Player player, SetupGame setupGame) {
         setupGameMap.put(player, setupGame);
@@ -300,10 +300,6 @@ public class DrawIt extends JavaPlugin {
         return setupGameMap.get(player);
     }
 
-    public void playSound(Player player, Sound sound, float volume, float pitch) {
-        XSound.play(player, sound.toString() + "," + volume + "," + pitch);
-    }
-
     public void teleportToLobby(Player player) {
         if (isLobbySet()) {
             player.teleport(OtherUtils.readLocation(getConfigData().getString(ConfigData.LOBBY_LOCATION)));
@@ -319,13 +315,12 @@ public class DrawIt extends JavaPlugin {
         return getConfigData().getString(ConfigData.LOBBY_LOCATION) != null;
     }
 
-    public static PlayerData getPlayerData(String name) {
-        for (Map.Entry<Player, PlayerData> data : playerDataMap.entrySet()) {
-            if (data.getKey().getName().equalsIgnoreCase(name)) {
-                return data.getValue();
+    public static void updateGameSelector() {
+        for (PlayerMenuUtility pmu : playerMenuUtilityMap.values()) {
+            if (pmu.getGameSelector() != null) {
+                pmu.getGameSelector().setMenuItems();
             }
         }
-        return null;
     }
 
     private void loggerMessage() {

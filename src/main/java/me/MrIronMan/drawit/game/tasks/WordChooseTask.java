@@ -1,11 +1,12 @@
 package me.MrIronMan.drawit.game.tasks;
 
+import com.cryptomorin.xseries.XSound;
 import me.MrIronMan.drawit.DrawIt;
+import me.MrIronMan.drawit.data.ConfigData;
 import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.game.GameState;
 import me.MrIronMan.drawit.menuSystem.menus.WordChooseMenu;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -16,7 +17,8 @@ public class WordChooseTask extends BukkitRunnable {
     private Game game;
     private Player drawer;
 
-    private int time = 10;
+    private int time = DrawIt.getConfigData().getInt(ConfigData.COUNTDOWN_WORD_CHOOSE);
+    private final int constTime = time;
 
     public WordChooseTask(Game game) {
         this.game = game;
@@ -44,8 +46,8 @@ public class WordChooseTask extends BukkitRunnable {
             menu.chooseRandomWord();
             startActiveTask();
         }
-        else if (time < 5) {
-            DrawIt.getInstance().playSound(drawer, Sound.SUCCESSFUL_HIT, 1F, 0F);
+        else if (time <= (constTime/2)) {
+            XSound.play(drawer, DrawIt.getConfigData().getString(ConfigData.SOUND_DRAWER_WORD_CHOOSE));
         }
         time--;
         game.getGameManager().sendActionBarToGuessers(MessagesData.PICK_WORD);

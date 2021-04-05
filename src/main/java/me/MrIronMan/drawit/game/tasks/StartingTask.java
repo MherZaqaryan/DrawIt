@@ -1,16 +1,16 @@
 package me.MrIronMan.drawit.game.tasks;
 
 import me.MrIronMan.drawit.DrawIt;
+import me.MrIronMan.drawit.data.ConfigData;
 import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.game.GameState;
-import org.bukkit.Sound;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class StartingTask extends BukkitRunnable {
 
     private Game game;
-    private int timer = 20;
+    private int timer = DrawIt.getConfigData().getInt(ConfigData.COUNTDOWN_STARTING);
 
     public StartingTask(Game game) {
         this.game = game;
@@ -30,7 +30,7 @@ public class StartingTask extends BukkitRunnable {
                 game.getGameManager().sendActionBar(DrawIt.getMessagesData().getString(MessagesData.START_COUNTDOWN).replace("{time}", String.valueOf(timer)));
             }else {
                 game.getGameManager().sendActionBar(DrawIt.getMessagesData().getString(MessagesData.START_COUNTDOWN_UNDER_5).replace("{time}", String.valueOf(timer)));
-                game.getGameManager().playSound(Sound.CLICK, 1.0F, 1.0F);
+                game.getGameManager().playSound(DrawIt.getConfigData().getString(ConfigData.SOUND_UNDER_5));
             }
         }
         timer--;

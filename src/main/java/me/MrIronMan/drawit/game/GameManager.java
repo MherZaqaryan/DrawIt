@@ -1,9 +1,12 @@
 package me.MrIronMan.drawit.game;
 
+import com.cryptomorin.xseries.XSound;
 import com.cryptomorin.xseries.messages.ActionBar;
 import com.cryptomorin.xseries.messages.Titles;
 import de.tr7zw.nbtapi.NBTItem;
 import me.MrIronMan.drawit.DrawIt;
+import me.MrIronMan.drawit.api.events.player.PlayerJoinGameEvent;
+import me.MrIronMan.drawit.data.ConfigData;
 import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.game.tasks.PlayingTask;
 import me.MrIronMan.drawit.game.tasks.RestartingTask;
@@ -19,6 +22,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
+import sun.tools.jconsole.inspector.XSheet;
 
 import java.util.*;
 
@@ -57,27 +61,30 @@ public class GameManager {
 
     public void joinGame(Player player) {
         UUID uuid = player.getUniqueId();
-        if (game.isEnabled()) {
-            if (game.isGameState(GameState.WAITING) || game.isGameState(GameState.STARTING)) {
-                if (DrawIt.getInstance().isInGame(player)) {
-                    player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.IN_GAME)));
-                } else if (game.getPlayers().size() >= game.getMaxPlayers()) {
-                    player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.FULL_GAME)));
-                } else {
-                    game.getPlayers().add(uuid);
-                    DrawIt.getInstance().setPlayerGame(player, game);
-                    activateGameSettings(player);
-                    player.teleport(game.getLobbyLocation());
-                    sendMessage(DrawIt.getMessagesData().getString(MessagesData.PLAYER_JOIN).replace("{player}", player.getDisplayName()));
-                    if (game.getPlayers().size() >= game.getMinPlayers() && !game.isGameState(GameState.STARTING)) {
-                        startCountdown();
+        PlayerJoinGameEvent event = new PlayerJoinGameEvent(player, this.game);
+        Bukkit.getPluginManager().callEvent(event);
+        if (!event.isCancelled()) {
+            if (game.isEnabled()) {
+                if (game.isGameState(GameState.WAITING) || game.isGameState(GameState.STARTING)) {
+                    if (DrawIt.getInstance().isInGame(player)) {
+                        player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.IN_GAME)));
+                    } else if (game.getPlayers().size() >= game.getMaxPlayers()) {
+                        player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.FULL_GAME)));
+                    } else {
+                        game.getPlayers().add(uuid);
+                        DrawIt.getInstance().setPlayerGame(player, game);
+                        activateGameSettings(player);
+                        player.teleport(game.getLobbyLocation());
+                        sendMessage(DrawIt.getMessagesData().getString(MessagesData.PLAYER_JOIN).replace("{player}", player.getDisplayName()));
+                        if (game.getPlayers().size() >= game.getMinPlayers() && !game.isGameState(GameState.STARTING)) {
+                            startCountdown();
+                        }
                     }
                 }
+            } else {
+                player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.GAME_NOT_ENABLED)));
             }
-        }else {
-            player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.GAME_NOT_ENABLED)));
         }
-
     }
 
     public void skip(Player player) {
@@ -132,7 +139,7 @@ public class GameManager {
         if (isNoWaiting()) {
             this.game.getBoard().burn();
             game.setGameState(GameState.RESTARTING);
-            new RestartingTask(game).runTaskLater(DrawIt.getInstance(), 200L);
+            new RestartingTask(game).runTaskLater(DrawIt.getInstance(), DrawIt.getConfigData().getInt(ConfigData.COUNTDOWN_RESTART) * 20L);
             return;
         }
         this.guessersList = new ArrayList<>();
@@ -249,13 +256,6 @@ public class GameManager {
         }
     }
 
-    public void playSound(Sound sound, float volume, float pitch) {
-        for (UUID uuid : game.getPlayers()) {
-            Player player = Bukkit.getPlayer(uuid);
-            DrawIt.getInstance().playSound(player, sound, volume, pitch);
-        }
-    }
-
     public void sendActionBar(Player p, String s) {
         ActionBar.sendActionBar(p, TextUtil.colorize(s));
     }
@@ -303,6 +303,14 @@ public class GameManager {
                     .replace("{leader_3}", getLeader(2)));
         }
         sideBar.updateLines(newLines);
+    }
+
+    public void playSound(String sound) {
+        for (UUID uuid : game.getPlayers()) {
+            if (Bukkit.getPlayer(uuid) != null) {
+                XSound.play(Bukkit.getPlayer(uuid), sound);
+            }
+        }
     }
 
     public void updateSidebars(int time) {

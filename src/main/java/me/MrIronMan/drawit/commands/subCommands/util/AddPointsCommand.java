@@ -4,6 +4,7 @@ import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.commands.SubCommand;
 import me.MrIronMan.drawit.sql.PlayerData;
 import me.MrIronMan.drawit.sql.PlayerDataType;
+import me.MrIronMan.drawit.utility.OtherUtils;
 import me.MrIronMan.drawit.utility.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -23,7 +24,7 @@ public class AddPointsCommand extends SubCommand {
                 if (amount < 0) {
                     player.sendMessage(TextUtil.colorize("{prefix} &cAmount must be positive."));
                 }
-                if (isOnline(playerName)) {
+                if (OtherUtils.isOnline(playerName)) {
                     Player playerToAdd = Bukkit.getPlayer(playerName);
                     PlayerData playerData = DrawIt.getPlayerData(playerToAdd);
                     playerData.addData(PlayerDataType.POINTS, amount);
@@ -38,17 +39,6 @@ public class AddPointsCommand extends SubCommand {
         }
 
         return true;
-    }
-
-    public boolean isOnline(String p) {
-        boolean online = false;
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player.getName().equalsIgnoreCase(p)) {
-                online = true;
-                break;
-            }
-        }
-        return online;
     }
 
 }

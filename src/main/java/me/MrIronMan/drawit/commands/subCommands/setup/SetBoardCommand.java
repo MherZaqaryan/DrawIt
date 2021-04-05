@@ -7,6 +7,7 @@ import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.data.PluginMessages;
 import me.MrIronMan.drawit.game.SetupGame;
 import me.MrIronMan.drawit.utility.OtherUtils;
+import me.MrIronMan.drawit.utility.PermissionsUtil;
 import me.MrIronMan.drawit.utility.TextUtil;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
@@ -17,7 +18,7 @@ public class SetBoardCommand extends SubCommand {
     @Override
     public boolean execute(CommandSender sender, String[] args) {
         Player player = (Player) sender;
-
+        if (player.hasPermission(PermissionsUtil.COMMAND_SETUP)) {
             if (args.length == 1 && (args[0].equalsIgnoreCase("Pos1") || args[0].equalsIgnoreCase("Pos2"))) {
                 if (DrawIt.getInstance().isInSetup(player)) {
                     SetupGame setupGame = DrawIt.getInstance().getSetupGame(player);
@@ -28,20 +29,21 @@ public class SetBoardCommand extends SubCommand {
                         if (args[0].equalsIgnoreCase("Pos1")) {
                             setupGame.setBoardPos1(b.getLocation());
                             player.sendMessage(setupGame.customize("{game} &aYou have successfully set board position 1"));
-                        }else {
+                        } else {
                             setupGame.setBoardPos2(b.getLocation());
                             player.sendMessage(setupGame.customize("{game} &aYou have successfully set board position 2"));
                         }
                         PluginMessages.sendMessage(player, setupGame.getCurrentMessage());
                     }
-                }
-                else {
+                } else {
                     player.sendMessage(TextUtil.colorize(PluginMessages.NOT_IN_SETUP));
                 }
-            }
-            else {
+            } else {
                 player.sendMessage(TextUtil.colorize(PluginMessages.USAGE_COMMAND_SETBOARD));
             }
+        }else {
+            player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.NO_PERMS)));
+        }
         return true;
     }
 

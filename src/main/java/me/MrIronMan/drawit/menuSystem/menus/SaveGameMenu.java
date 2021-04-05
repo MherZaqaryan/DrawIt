@@ -1,15 +1,17 @@
 package me.MrIronMan.drawit.menuSystem.menus;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.cryptomorin.xseries.XSound;
 import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.game.SetupGame;
 import me.MrIronMan.drawit.menuSystem.Menu;
 import me.MrIronMan.drawit.menuSystem.PlayerMenuUtility;
 import me.MrIronMan.drawit.utility.OtherUtils;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+
+import java.util.Objects;
 
 public class SaveGameMenu extends Menu {
 
@@ -51,7 +53,7 @@ public class SaveGameMenu extends Menu {
                     minPlayers = minPlayers-1;
                 }
             }
-            DrawIt.getInstance().playSound(player, Sound.CLICK, 1.0F, 1.0F);
+            XSound.play(player, "CLICK,1,1");
             setMenuItems();
         }else if (e.getSlot() == 16) {
             if (e.getClick().equals(ClickType.LEFT)) {
@@ -61,19 +63,19 @@ public class SaveGameMenu extends Menu {
                     maxPlayers = maxPlayers-1;
                 }
             }
-            DrawIt.getInstance().playSound(player, Sound.CLICK, 1.0F, 1.0F);
+            XSound.play(player, "CLICK,1,1");
             setMenuItems();
         }else if (e.getSlot() == 28) {
             player.closeInventory();
-            DrawIt.getInstance().playSound(player, Sound.CLICK, 1.0F, 1.0F);
+            XSound.play(player, "CLICK,1,1");
         }
         else if (e.getSlot() == 31) {
             enabled = !enabled;
-            DrawIt.getInstance().playSound(player, Sound.CLICK, 1.0F, 1.0F);
+            XSound.play(player, "CLICK,1,1");
             setMenuItems();
         }
         else if (e.getSlot() == 34) {
-            DrawIt.getInstance().playSound(player, Sound.CLICK, 1.0F, 1.0F);
+            XSound.play(player, "CLICK,1,1");
             player.closeInventory();
             setupGame.setMaxPlayers(maxPlayers);
             setupGame.setMinPlayers(minPlayers);
@@ -104,7 +106,7 @@ public class SaveGameMenu extends Menu {
         inventory.setItem(16, makeItem(XMaterial.LEVER.parseMaterial(), "&cMax Players: " + maxPlayers, minMaxLore));
 
         inventory.setItem(28, makeItem(XMaterial.BARRIER.parseMaterial(), "&cCancel"));
-        inventory.setItem(31, enabled ? makeItem(XMaterial.LIME_DYE.parseItem(), "&aEnabled", "","&7Click to disable.") : makeItem(XMaterial.RED_DYE.parseItem(), "&cDisabled", "","&7Click to enable."));
+        inventory.setItem(31, enabled ? makeItem(Objects.requireNonNull(XMaterial.LIME_DYE.parseItem()), "&aEnabled", "","&7Click to disable.") : makeItem(Objects.requireNonNull(XMaterial.RED_DYE.parseItem()), "&cDisabled", "","&7Click to enable."));
         inventory.setItem(34, makeItem(XMaterial.BEACON.parseMaterial(), "&3Save & Close"));
 
     }

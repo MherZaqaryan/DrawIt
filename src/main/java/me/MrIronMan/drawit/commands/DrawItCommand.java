@@ -5,6 +5,7 @@ import me.MrIronMan.drawit.commands.subCommands.game.*;
 import me.MrIronMan.drawit.commands.subCommands.setup.*;
 import me.MrIronMan.drawit.commands.subCommands.util.AddPointsCommand;
 import me.MrIronMan.drawit.commands.subCommands.util.AddTokensCommand;
+import me.MrIronMan.drawit.commands.subCommands.util.ReloadCommand;
 import me.MrIronMan.drawit.commands.subCommands.util.SetMainLobbyCommand;
 import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.data.PluginMessages;
@@ -31,7 +32,7 @@ public class DrawItCommand extends BukkitCommand {
     public boolean execute(CommandSender sender, String label, String[] args) {
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage("Sorry, but you cant use this command from console!");
+            sender.sendMessage("You cant run this command from console!");
             return true;
         }
 
@@ -68,11 +69,14 @@ public class DrawItCommand extends BukkitCommand {
         else if (arg.equalsIgnoreCase("Leave")) {
             new LeaveGameCommand().execute(sender, newArgs);
         }
-        else if (arg.equalsIgnoreCase("Start") || arg.equalsIgnoreCase("ForceStart")) {
+        else if (arg.equalsIgnoreCase("Start")
+                || arg.equalsIgnoreCase("ForceStart")) {
             new ForceStartCommand().execute(sender, newArgs);
         }
-        else if (arg.equalsIgnoreCase("Gui")) {
-            new GuiCommand().execute(sender, newArgs);
+        else if (arg.equalsIgnoreCase("Menu")) {
+            new MenuCommand().execute(sender, newArgs);
+        }else if (arg.equalsIgnoreCase("Reload")) {
+            new ReloadCommand().execute(sender, newArgs);
         }
         else if (arg.equalsIgnoreCase("Setup")) {
             new SetupCommand().execute(sender, newArgs);

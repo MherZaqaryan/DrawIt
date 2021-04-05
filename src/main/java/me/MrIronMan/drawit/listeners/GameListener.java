@@ -1,6 +1,7 @@
 package me.MrIronMan.drawit.listeners;
 
 import me.MrIronMan.drawit.DrawIt;
+import me.MrIronMan.drawit.api.events.player.PlayerJoinGameEvent;
 import me.MrIronMan.drawit.game.Game;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,6 +33,11 @@ public class GameListener implements Listener {
                 e.setCancelled(true);
             }
         }
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinGameEvent e) {
+        DrawIt.updateGameSelector();
     }
 
 }

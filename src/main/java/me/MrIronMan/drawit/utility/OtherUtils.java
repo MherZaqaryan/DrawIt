@@ -145,4 +145,16 @@ public class OtherUtils {
         player.sendPluginMessage(DrawIt.getInstance(), "BungeeCord", b.toByteArray());
     }
 
+
+    public static boolean isOnline(String p) {
+        boolean online = false;
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.getName().equalsIgnoreCase(p)) {
+                online = true;
+                break;
+            }
+        }
+        return online;
+    }
+
 }

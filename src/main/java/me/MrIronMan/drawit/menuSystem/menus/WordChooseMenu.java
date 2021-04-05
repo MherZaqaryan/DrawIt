@@ -20,7 +20,7 @@ public class WordChooseMenu extends UniqueMenu {
     private Game game;
     private List<String> words;
     private HashMap<Integer, String> wordMap;
-    private Integer[] slots = {10, 13, 16};
+    private Integer[] slots = {11, 13, 15};
 
     public WordChooseMenu(PlayerMenuUtility playerMenuUtility, Game game) {
         super(playerMenuUtility);
@@ -59,7 +59,7 @@ public class WordChooseMenu extends UniqueMenu {
     @Override
     public void setMenuItems() {
         for (int i = 0; i < slots.length; i++) {
-            inventory.setItem(slots[i], makeItem(Material.PAPER, "&e&l> "+words.get(i)));
+            inventory.setItem(slots[i], makeItem(Material.PAPER, "&a"+words.get(i)));
             wordMap.put(slots[i], words.get(i));
         }
     }

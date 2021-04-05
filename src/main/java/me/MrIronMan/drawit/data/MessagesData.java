@@ -58,6 +58,8 @@ public class MessagesData extends DataManager{
                 "&cGame will restart in 10 seconds."
         });
 
+        msg.addDefault("lobby-items", new String[]{});
+
         if (isFirstTime()) {
 
             msg.addDefault("lobby-items.game-selector.display-name", "&aGame Selector &7[Right-click]");

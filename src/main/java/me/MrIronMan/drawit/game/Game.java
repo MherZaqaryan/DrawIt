@@ -111,10 +111,6 @@ public class Game {
         return tasks;
     }
 
-    public void addTask(BukkitRunnable bukkitRunnable) {
-        tasks.add(bukkitRunnable);
-    }
-
     public ItemStack getPlayerColor(UUID uuid) {
         if (playerColorMap.containsKey(uuid)) {
             return playerColorMap.get(uuid);

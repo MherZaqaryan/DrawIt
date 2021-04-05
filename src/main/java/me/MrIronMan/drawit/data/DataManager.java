@@ -42,6 +42,7 @@ public class DataManager {
     }
 
     public void reload() {
+        plugin.getLogger().info("Reloading configuration file " + this.config.getPath());
         this.yml = YamlConfiguration.loadConfiguration(this.config);
     }
 
@@ -99,6 +100,10 @@ public class DataManager {
 
     public boolean isFirstTime() {
         return firstTime;
+    }
+
+    public List<Integer> getIntegerList(String path) {
+        return getConfig().getIntegerList(path);
     }
 }
 

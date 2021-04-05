@@ -1,6 +1,7 @@
 package me.MrIronMan.drawit.game.tasks;
 
 import me.MrIronMan.drawit.DrawIt;
+import me.MrIronMan.drawit.data.ConfigData;
 import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.game.GameState;
@@ -23,7 +24,7 @@ public class PlayingTask extends BukkitRunnable {
 
     private boolean isClean = true;
 
-    private int time = 80;
+    private int time = DrawIt.getConfigData().getInt(ConfigData.COUNTDOWN_PER_ROUND);
     private final int finalTime = time;
 
     public PlayingTask(Game game) {
@@ -71,7 +72,7 @@ public class PlayingTask extends BukkitRunnable {
         }else {
             wordToShow.setCharAt(rand, word.charAt(rand));
             charIndex.add(rand);
-            game.getGameManager().playSound(Sound.CHICKEN_EGG_POP, 1, 2);
+            game.getGameManager().playSound(DrawIt.getConfigData().getString(ConfigData.SOUND_LETTER_EXPLAIN));
         }
     }
 

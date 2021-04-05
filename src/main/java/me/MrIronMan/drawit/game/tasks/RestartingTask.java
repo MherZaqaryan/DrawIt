@@ -1,13 +1,13 @@
 package me.MrIronMan.drawit.game.tasks;
 
 import me.MrIronMan.drawit.DrawIt;
+import me.MrIronMan.drawit.data.ConfigData;
 import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.sql.PlayerData;
 import me.MrIronMan.drawit.sql.PlayerDataType;
 import me.MrIronMan.drawit.utility.TextUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -22,7 +22,7 @@ public class RestartingTask extends BukkitRunnable {
     public RestartingTask(Game game) {
         this.game = game;
         game.getBoard().burn();
-        game.getGameManager().playSound(Sound.WITHER_DEATH, 1, 1);
+        game.getGameManager().playSound(DrawIt.getConfigData().getString(ConfigData.SOUND_GAME_OVER));
         game.getGameManager().sendTitle("&c&lGame Over!", "&9" + game.getGameManager().getLeaderName(0) + " won the game.", 10, 10, 50);
         for (UUID uuid : game.getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
