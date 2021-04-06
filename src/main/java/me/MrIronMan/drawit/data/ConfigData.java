@@ -3,6 +3,9 @@ package me.MrIronMan.drawit.data;
 import com.cryptomorin.xseries.XMaterial;
 import de.tr7zw.nbtapi.NBTItem;
 import me.MrIronMan.drawit.DrawIt;
+import me.MrIronMan.drawit.api.data.DataManager;
+import me.MrIronMan.drawit.game.Game;
+import me.MrIronMan.drawit.game.GameState;
 import me.MrIronMan.drawit.game.utility.DrawerTool;
 import me.MrIronMan.drawit.utility.TextUtil;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -14,7 +17,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 
-public class ConfigData extends DataManager{
+public class ConfigData extends DataManager {
 
     public ConfigData(Plugin plugin, String dir, String name) {
         super(plugin, dir, name);
@@ -43,52 +46,49 @@ public class ConfigData extends DataManager{
 
         config.addDefault("lobby-items", new String[]{});
 
-        saveLobbyItem("game-selector", "CHEST", 0, false, "drawit menu games");
-        saveLobbyItem("return-to-lobby", "ARROW", 8, false, "drawit leave");
+        if (isFirstTime()) {
+            saveItem("lobby-items.game-selector", "CHEST", false, 0, "drawit menu games");
+            saveItem("lobby-items.return-to-lobby", "ARROW", false, 8, "drawit leave");
+        }
 
         config.addDefault(GAMES_MENU_SETTINGS_SIZE, 45);
         config.addDefault(GAMES_MENU_SETTINGS_SLOTS, new Integer[]{28, 29, 30, 31, 32, 33, 34});
         config.addDefault(GAMES_MENU_SETTINGS_SHOW_PLAYINGS, false);
-        config.addDefault(GAMES_MENU_SETTINGS_WAITING+".material", "LIME_STAINED_CLAY");
-        config.addDefault(GAMES_MENU_SETTINGS_WAITING+".enchanted", false);
-        config.addDefault(GAMES_MENU_SETTINGS_STARTING+".material", "YELLOW_STAINED_CLAY");
-        config.addDefault(GAMES_MENU_SETTINGS_STARTING+".enchanted", false);
-        config.addDefault(GAMES_MENU_SETTINGS_EMPTY_SLOTS+".material", "GRAY_STAINED_GLASS_PANE");
-        config.addDefault(GAMES_MENU_SETTINGS_EMPTY_SLOTS+".enchanted", false);
 
-        config.addDefault(GAMES_MENU_SETTINGS_ITEMS, new String[]{});
+        saveItem(GAMES_MENU_SETTINGS_WAITING, "STAINED_CLAY:5", false);
+        saveItem(GAMES_MENU_SETTINGS_STARTING, "STAINED_CLAY:4", false);
+        saveItem(GAMES_MENU_SETTINGS_PLAYING, "STAINED_CLAY:14", false);
+        saveItem(GAMES_MENU_SETTINGS_WAITING_SLOTS, "STAINED_GLASS_PANE:7", false);
+
+        config.addDefault(GAMES_MENU_ITEMS, new String[]{});
 
         if (isFirstTime()) {
-            config.addDefault(GAMES_MENU_SETTINGS_ITEMS+".spectate-game.material", "MAGMA_CREAM");
-            config.addDefault(GAMES_MENU_SETTINGS_ITEMS+".spectate-game.enchanted", false);
-            config.addDefault(GAMES_MENU_SETTINGS_ITEMS+".spectate-game.slot", 12);
-            config.addDefault(GAMES_MENU_SETTINGS_ITEMS+".spectate-game.command", "drawit menu spectate");
-
-            config.addDefault(GAMES_MENU_SETTINGS_ITEMS+".quick-join.material", "MINECART");
-            config.addDefault(GAMES_MENU_SETTINGS_ITEMS+".quick-join.enchanted", false);
-            config.addDefault(GAMES_MENU_SETTINGS_ITEMS+".quick-join.slot", 14);
-            config.addDefault(GAMES_MENU_SETTINGS_ITEMS+".quick-join.command", "drawit join quick");
+            saveItem(GAMES_MENU_ITEMS+".spectate-game", "MAGMA_CREAM", false, 12, "drawit menu spectate");
+            saveItem(GAMES_MENU_ITEMS+".quick-join", "MINECART", false, 14, "drawit quickjoin");
         }
 
-        config.addDefault("drawer-tools.thin-brush.material", "WOOD_SWORD");
-        config.addDefault("drawer-tools.thin-brush.enchanted", false);
-        config.addDefault("drawer-tools.thin-brush.slot", 0);
+        config.addDefault(SPECTATE_MENU_SIZE, 45);
+        config.addDefault(SPECTATE_MENU_SLOTS, new Integer[]{10,11,12,13,14,15,16,19,20,21,22,23,24,25,28,29,30,31,32,33,34});
+        saveItem(SPECTATE_MENU_GAME, "MAGMA_CREAM", false);
 
-        config.addDefault("drawer-tools.thick-brush.material", "DIAMOND_SWORD");
-        config.addDefault("drawer-tools.thick-brush.enchanted", false);
-        config.addDefault("drawer-tools.thick-brush.slot", 1);
+        config.addDefault(SPECTATE_MENU_ITEMS, new String[]{});
 
-        config.addDefault("drawer-tools.spray-canvas.material", "SHEARS");
-        config.addDefault("drawer-tools.spray-canvas.enchanted", false);
-        config.addDefault("drawer-tools.spray-canvas.slot", 2);
+        if (isFirstTime()) {
+            saveItem(SPECTATE_MENU_ITEMS+".back", "ARROW", false, 36, "drawit menu games");
+        }
 
-        config.addDefault("drawer-tools.fill-can.material", "BUCKET");
-        config.addDefault("drawer-tools.fill-can.enchanted", false);
-        config.addDefault("drawer-tools.fill-can.slot", 3);
+        config.addDefault(SPECTATE_ITEMS, new String[]{});
 
-        config.addDefault("drawer-tools.burn-canvas.material", "BLAZE_POWDER");
-        config.addDefault("drawer-tools.burn-canvas.enchanted", false);
-        config.addDefault("drawer-tools.burn-canvas.slot", 8);
+        if (isFirstTime()) {
+            saveItem(SPECTATE_ITEMS+".teleporter", "COMPASS", false, 0, "di spectate teleporter");
+            saveItem(SPECTATE_ITEMS+".leave", "ARROW", false, 8, "di spectate leave");
+        }
+
+        saveItem("drawer-tools.thin-brush", "WOOD_SWORD", false, 0);
+        saveItem("drawer-tools.thick-brush", "DIAMOND_SWORD", false, 1);
+        saveItem("drawer-tools.spray-canvas", "SHEARS", false, 2);
+        saveItem("drawer-tools.fill-can", "BUCKET", false, 3);
+        saveItem("drawer-tools.burn-canvas", "BLAZE_POWDER", false, 8);
 
         config.addDefault("color-picker", new String[]{"" +
                 "0; &7Orange; WOOL; 1",
@@ -150,15 +150,19 @@ public class ConfigData extends DataManager{
         save();
     }
 
-    public void saveLobbyItem(String name, String material, int slot, boolean enchanted, String cmd) {
-        if (isFirstTime()) {
-            getConfig().addDefault("lobby-items.%path%.material".replace("%path%", name), material);
-            getConfig().addDefault("lobby-items.%path%.slot".replace("%path%", name), slot);
-            getConfig().addDefault("lobby-items.%path%.enchanted".replace("%path%", name), enchanted);
-            getConfig().addDefault("lobby-items.%path%.command".replace("%path%", name), cmd);
-            getConfig().options().copyDefaults(true);
-            save();
-        }
+    public void saveItem(String path, String material, boolean enchanted, int slot, String cmd) {
+        saveItem(path, material, enchanted, slot);
+        getConfig().addDefault(path+".command", cmd);
+    }
+
+    public void saveItem(String path, String material, boolean enchanted, int slot) {
+        saveItem(path, material, enchanted);
+        getConfig().addDefault(path+".slot", slot);
+    }
+
+    public void saveItem(String path, String material, boolean enchanted) {
+        getConfig().addDefault(path+".material", material);
+        getConfig().addDefault(path+".enchanted", enchanted);
     }
 
     public ItemStack getItem(String path) {
@@ -205,12 +209,58 @@ public class ConfigData extends DataManager{
 
     public List<ItemStack> getGameMenuItems() {
         List<ItemStack> items = new ArrayList<>();
-        for (String s : getConfig().getConfigurationSection(GAMES_MENU_SETTINGS_ITEMS).getKeys(false)) {
-            ItemStack itemStack = getItem(GAMES_MENU_SETTINGS_ITEMS+"."+s);
+        if (getConfig().getConfigurationSection(GAMES_MENU_ITEMS).getKeys(false).isEmpty()) return Collections.emptyList();
+        for (String s : getConfig().getConfigurationSection(GAMES_MENU_ITEMS).getKeys(false)) {
+            ItemStack itemStack = getItem(GAMES_MENU_ITEMS+"."+s);
             NBTItem nbti = new NBTItem(itemStack);
             nbti.setString("name", "game-menu");
-            nbti.setInteger("slot", getInt(GAMES_MENU_SETTINGS_ITEMS+"."+s+".slot"));
-            nbti.setString("command", getString(GAMES_MENU_SETTINGS_ITEMS+"."+s+".command"));
+            nbti.setInteger("slot", getInt(GAMES_MENU_ITEMS+"."+s+".slot"));
+            nbti.setString("command", getString(GAMES_MENU_ITEMS+"."+s+".command"));
+            items.add(nbti.getItem());
+        }
+        return items;
+    }
+
+    public List<ItemStack> getSpectatorItems() {
+        List<ItemStack> items = new ArrayList<>();
+        if (getConfig().getConfigurationSection(SPECTATE_ITEMS).getKeys(false).isEmpty()) return Collections.emptyList();
+        for (String s : getConfig().getConfigurationSection(SPECTATE_ITEMS).getKeys(false)) {
+            ItemStack itemStack = getItem(SPECTATE_ITEMS+"."+s);
+            NBTItem nbti = new NBTItem(itemStack);
+            nbti.setString("name", "spectate-item");
+            nbti.setInteger("slot", getInt(SPECTATE_ITEMS+"."+s+".slot"));
+            nbti.setString("command", getString(SPECTATE_ITEMS+"."+s+".command"));
+            items.add(nbti.getItem());
+        }
+        return items;
+    }
+
+    public ItemStack getItem(String path, Game game) {
+        ItemStack item = DrawIt.getConfigData().getItem(path);
+        ItemMeta itemMeta = item.getItemMeta();
+        if (game != null) {
+            List<String> newLore = new ArrayList<>();
+            for (String s : itemMeta.getLore()) {
+                newLore.add(s
+                        .replace("{in}", String.valueOf(game.getPlayers().size()))
+                        .replace("{max}", String.valueOf(game.getMaxPlayers()))
+                        .replace("{state}", GameState.getName(game.getGameState())));
+            }
+            itemMeta.setDisplayName(itemMeta.getDisplayName().replace("{game}", game.getDisplayName()));
+            itemMeta.setLore(TextUtil.colorize(newLore));
+        }
+        item.setItemMeta(itemMeta);
+        return item;
+    }
+
+    public List<ItemStack> getSpectateMenuItems() {
+        List<ItemStack> items = new ArrayList<>();
+        for (String s : getConfig().getConfigurationSection(SPECTATE_MENU_ITEMS).getKeys(false)) {
+            ItemStack itemStack = getItem(SPECTATE_MENU_ITEMS+"."+s);
+            NBTItem nbti = new NBTItem(itemStack);
+            nbti.setString("name", "spectate-menu");
+            nbti.setInteger("slot", getInt(SPECTATE_MENU_ITEMS+"."+s+".slot"));
+            nbti.setString("command", getString(SPECTATE_MENU_ITEMS+"."+s+".command"));
             items.add(nbti.getItem());
         }
         return items;
@@ -242,9 +292,17 @@ public class ConfigData extends DataManager{
     public static String GAMES_MENU_SETTINGS_SLOTS = "games-menu.settings.slots";
     public static String GAMES_MENU_SETTINGS_WAITING = "games-menu.settings.waiting";
     public static String GAMES_MENU_SETTINGS_STARTING = "games-menu.settings.starting";
-    public static String GAMES_MENU_SETTINGS_EMPTY_SLOTS = "games-menu.settings.empty-slots";
+    public static String GAMES_MENU_SETTINGS_PLAYING = "games-menu.settings.playing";
+    public static String GAMES_MENU_SETTINGS_WAITING_SLOTS = "games-menu.settings.waiting-slots";
     public static String GAMES_MENU_SETTINGS_SHOW_PLAYINGS = "games-menu.settings.show-playings";
-    public static String GAMES_MENU_SETTINGS_ITEMS = "games-menu.items";
+    public static String GAMES_MENU_ITEMS = "games-menu.items";
+
+    public static String SPECTATE_MENU_SIZE = "spectate-menu.settings.size";
+    public static String SPECTATE_MENU_SLOTS = "spectate-menu.settings.slots";
+    public static String SPECTATE_MENU_GAME = "spectate-menu.settings.game";
+    public static String SPECTATE_MENU_ITEMS = "spectate-menu.items";
+
+    public static String SPECTATE_ITEMS = "spectate-items";
 
     public static String COLOR_PICKER = "color-picker";
     public static String LOBBY_LOCATION = "lobby-location";

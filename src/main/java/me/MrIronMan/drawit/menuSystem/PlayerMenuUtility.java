@@ -1,10 +1,11 @@
 package me.MrIronMan.drawit.menuSystem;
 
+import me.MrIronMan.drawit.menuSystem.menus.GameSelector;
 import org.bukkit.entity.Player;
 
 public class PlayerMenuUtility {
 
-    private Menu gameSelector;
+    private GameSelector gameSelector;
     private Player player;
 
     public PlayerMenuUtility(Player player) {
@@ -16,11 +17,11 @@ public class PlayerMenuUtility {
         return player;
     }
 
-    public Menu getGameSelector() {
+    public GameSelector getGameSelector() {
         return gameSelector;
     }
 
-    public void setGameSelector(Menu gameSelector) {
+    public void setGameSelector(GameSelector gameSelector) {
         this.gameSelector = gameSelector;
     }
 

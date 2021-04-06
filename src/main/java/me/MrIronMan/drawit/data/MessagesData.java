@@ -1,9 +1,10 @@
 package me.MrIronMan.drawit.data;
 
+import me.MrIronMan.drawit.api.data.DataManager;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
-public class MessagesData extends DataManager{
+public class MessagesData extends DataManager {
 
     public MessagesData(Plugin plugin, String dir, String name) {
         super(plugin, dir, name);
@@ -47,13 +48,12 @@ public class MessagesData extends DataManager{
 
         msg.addDefault(GAME_END_MESSAGE, new String[]{
                 "",
-                "       &c&lGame Over! &3{winner_1} &7won the game!",
+                "       &c&lGame Over! &9{winner_1} &7won the game!",
                 "",
                 "            &2Place 1 &8- &9{winner_1}",
                 "            &ePlace 2 &8- &9{winner_2}",
                 "            &6Place 3 &8- &9{winner_3}",
                 "",
-                "           &7&lYou got &a&l{points} points!",
                 "",
                 "&cGame will restart in 10 seconds."
         });
@@ -76,35 +76,41 @@ public class MessagesData extends DataManager{
 
         }
 
-        msg.addDefault("drawer-tools.thin-brush.display-name", "&6&lThin Brush");
-        msg.addDefault("drawer-tools.thin-brush.lore", new String[]{
-                "",
-                "&7Paints a one pixel line."
-        });
+        msg.addDefault(GAME_MENU_SETTINGS_TITLE, "&7Game Selector");
 
-        msg.addDefault("drawer-tools.thick-brush.display-name", "&e&lThick Brush");
-        msg.addDefault("drawer-tools.thick-brush.lore", new String[]{
-                "",
-                "&7Paints a three pixel dot."
-        });
+        saveItem(ConfigData.GAMES_MENU_SETTINGS_WAITING, "&a{game}", "","&7Players: &f{in}/{max}","&7State: &f{state}","","&bClick to join");
+        saveItem(ConfigData.GAMES_MENU_SETTINGS_STARTING, "&a{game}", "","&7Players: &f{in}/{max}","&7State: &f{state}","","&bClick to join");
+        saveItem(ConfigData.GAMES_MENU_SETTINGS_PLAYING, "&a{game}", "","&7Players: &f{in}/{max}","&7State: &f{state}","","&bClick to join");
+        saveItem(ConfigData.GAMES_MENU_SETTINGS_WAITING_SLOTS, "&7Waiting...", "","&bWaiting for instance...");
 
-        msg.addDefault("drawer-tools.spray-canvas.display-name", "&b&lSpray Canvas");
-        msg.addDefault("drawer-tools.spray-canvas.lore", new String[]{
-                "",
-                "&7Splatters the canvas."
-        });
+        if (isFirstTime()) {
+            saveItem(ConfigData.GAMES_MENU_ITEMS+".spectate-game", "&c&lSpectate Game", "","&7Allows you to browse","&7playing games to spectate","","&bClick to view games");
+            saveItem(ConfigData.GAMES_MENU_ITEMS+".quick-join", "&a&lQuick Join", "","&7Adds you to join the","&7quick join queue to find","&7you a game!","","&bClick to join queue");
+        }
 
-        msg.addDefault("drawer-tools.fill-can.display-name", "&d&lFill Can");
-        msg.addDefault("drawer-tools.fill-can.lore", new String[]{
-                "",
-                "&7Fills are with selected color."
-        });
+        msg.addDefault(SECTATE_MENU_SETTINGS_TITLE, "&7Spectate Game");
+        saveItem(ConfigData.SPECTATE_MENU_GAME, "&e{game}", "","&7Players: &f{in}/{max}","&7State: &f{state}","","&bClick to join");
 
-        msg.addDefault("drawer-tools.burn-canvas.display-name", "&c&lBurn Canvas");
-        msg.addDefault("drawer-tools.burn-canvas.lore", new String[]{
-                "",
-                "&7Clears the canvas."
-        });
+
+        if (isFirstTime()) {
+            saveItem(ConfigData.SPECTATE_MENU_ITEMS,"back", "&c&lBack", "","&bClick here to go back");
+        }
+
+        msg.addDefault(ConfigData.SPECTATE_ITEMS, new String[]{});
+
+        if (isFirstTime()) {
+            saveItem(ConfigData.SPECTATE_ITEMS+".teleporter", "&aTeleporter &7[Right-click]", "","&bClick to open teleporter menu.");
+            saveItem(ConfigData.SPECTATE_ITEMS+".leave", "&cLeave &7[Right-click]", "","&bClick to leave.");
+        }
+
+        msg.addDefault(TELEPORTER_MENU_SETTINGS_TITLE, "&7Teleporter");
+        saveItem(TELEPORTER_MENU_PLAYER_HEAD, "&9{player}", "","&bClick to teleport.");
+
+        saveItem("drawer-tools.thin-brush", "&6&lThin Brush", "","&7Paints a one pixel line.");
+        saveItem("drawer-tools.thick-brush", "&e&lThick Brush", "","&7Paints a three pixel dot.");
+        saveItem("drawer-tools.spray-canvas", "&b&lSpray Canvas", "","&7Splatters the canvas.");
+        saveItem("drawer-tools.fill-can", "&d&lFill Can", "","&7Fills are with selected color.");
+        saveItem("drawer-tools.burn-canvas", "&c&lBurn Canvas", "","&7Clears the canvas.");
 
         msg.addDefault(BOARD_LOBBY_TITLE, "&b&lDraw&a&lIt");
         msg.addDefault(BOARD_LOBBY_LINES, new String[]{
@@ -145,8 +151,10 @@ public class MessagesData extends DataManager{
         save();
     }
 
-
-    // Messages Path
+    public void saveItem(String path, String displayName, String... lore) {
+        getConfig().addDefault(path+".display-name", displayName);
+        getConfig().addDefault(path+".lore", lore);
+    }
 
     public static String PREFIX = "prefix";
 
@@ -181,6 +189,11 @@ public class MessagesData extends DataManager{
     public static String COLOR_PICKER_TITLE = "color-picker-title";
     public static String LEADER_FORMAT = "scoreboard-leader-format";
     public static String GAME_END_MESSAGE = "game-end-message";
+
+    public static String GAME_MENU_SETTINGS_TITLE = "games-menu.settings.title";
+    public static String SECTATE_MENU_SETTINGS_TITLE = "spectate-menu.settings.title";
+    public static String TELEPORTER_MENU_SETTINGS_TITLE = "spectate-menu.settings.title";
+    public static String TELEPORTER_MENU_PLAYER_HEAD = "spectate-menu.player-head";
 
     public static String BOARD_LOBBY_TITLE = "scoreboards.lobby.title";
     public static String BOARD_LOBBY_LINES = "scoreboards.lobby.lines";

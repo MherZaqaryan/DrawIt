@@ -33,14 +33,11 @@ public class GuessWordListener implements Listener {
                     game.getGameManager().playSound(DrawIt.getConfigData().getString(ConfigData.SOUND_WORD_GUESS));
                     int i = game.getGameManager().getWordGuessers().size();
                     Set<String> list = DrawIt.getConfigData().getConfig().getConfigurationSection(ConfigData.STATS_POINTS_GUESSER).getKeys(false);
-                    for (String s : list) {
-                        if (list.contains(String.valueOf(i+1))) {
-                            if ((i+1) == Integer.parseInt(s)) {
-                                game.getGameManager().addPoint(player, DrawIt.getConfigData().getInt(ConfigData.STATS_POINTS_GUESSER+"."+s));
-                            }
-                        }else {
-                            game.getGameManager().addPoint(player, DrawIt.getConfigData().getInt(ConfigData.STATS_POINTS_GUESSER_OTHER));
-                        }
+                    list.remove("other");
+                    if (list.contains(String.valueOf(i+1))) {
+                        game.getGameManager().addPoint(player, DrawIt.getConfigData().getInt(ConfigData.STATS_POINTS_GUESSER+"."+(i+1)));
+                    }else {
+                        game.getGameManager().addPoint(player, DrawIt.getConfigData().getInt(ConfigData.STATS_POINTS_GUESSER_OTHER));
                     }
                     game.getGameManager().addCorrectGuess(player);
                     game.getGameManager().addPoint(game.getGameManager().getCurrentDrawer(), DrawIt.getConfigData().getInt(ConfigData.STATS_POINTS_DRAWER_PER_RIGHT_WORD));

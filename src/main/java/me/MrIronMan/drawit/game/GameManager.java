@@ -6,6 +6,7 @@ import com.cryptomorin.xseries.messages.Titles;
 import de.tr7zw.nbtapi.NBTItem;
 import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.api.events.player.PlayerJoinGameEvent;
+import me.MrIronMan.drawit.api.events.player.PlayerQuitGameEvent;
 import me.MrIronMan.drawit.data.ConfigData;
 import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.game.tasks.PlayingTask;
@@ -20,7 +21,9 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import sun.tools.jconsole.inspector.XSheet;
 
@@ -99,6 +102,8 @@ public class GameManager {
 
     public void leaveGame(Player player) {
         UUID uuid = player.getUniqueId();
+        PlayerQuitGameEvent event = new PlayerQuitGameEvent(player, game);
+        Bukkit.getPluginManager().callEvent(event);
         if (!game.getPlayers().contains(uuid)) return;
         game.getPlayers().remove(uuid);
         DrawIt.getInstance().setPlayerGame(player, null);
@@ -108,6 +113,7 @@ public class GameManager {
                 setDrawer(null);
             }
         }
+        game.removeSpectator(uuid);
         sendMessage(DrawIt.getMessagesData().getString(MessagesData.PLAYER_QUIT).replace("{player}", player.getDisplayName()));
     }
 
@@ -173,9 +179,47 @@ public class GameManager {
         player.setFoodLevel(20);
         player.setLevel(0);
         player.setExp(0.0F);
+        player.setAllowFlight(false);
+        player.setFlying(false);
         player.getInventory().setArmorContents(null);
+        for (Player p : DrawIt.getInstance().getLobbyPlayers()) {
+            player.hidePlayer(p);
+            p.hidePlayer(player);
+        }
+        for (UUID uuid : game.getPlayers()) {
+            Player p = Bukkit.getPlayer(uuid);
+            player.showPlayer(p);
+            p.showPlayer(player);
+        }
         for (PotionEffect potionEffect : player.getActivePotionEffects()) {
             player.removePotionEffect(potionEffect.getType());
+        }
+    }
+
+    public void activateSpectatorSettings(Player player) {
+        activateGameSettings(player);
+        DrawIt.getInstance().setPlayerGame(player, game);
+        game.setSpectator(player.getUniqueId());
+        player.setAllowFlight(true);
+        player.setFlying(true);
+        player.teleport(game.getLobbyLocation());
+        player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 0));
+        for (Player p : DrawIt.getInstance().getLobbyPlayers()) {
+            p.hidePlayer(player);
+            player.hidePlayer(p);
+        }
+        for (UUID uuid : game.getPlayers()) {
+            Player p = Bukkit.getPlayer(uuid);
+            player.showPlayer(p);
+        }
+        if (!DrawIt.getConfigData().getSpectatorItems().isEmpty()) {
+            PlayerInventory inv = player.getInventory();
+            for (ItemStack itemStack : DrawIt.getConfigData().getSpectatorItems()) {
+                if (!itemStack.getType().equals(Material.AIR)) {
+                    NBTItem nbti = new NBTItem(itemStack);
+                    inv.setItem(nbti.getInteger("slot"), itemStack);
+                }
+            }
         }
     }
 
@@ -327,7 +371,7 @@ public class GameManager {
         UUID uuid = player.getUniqueId();
         playerPointMap.put(uuid, getPoint(player)+point);
         if (!isDrawer(player)) {
-            game.getGameManager().sendMessage(MessagesData.PLAYER_GUESSED.replace("{guesser}", player.getDisplayName()).replace("{points}", String.valueOf(point)));
+            game.getGameManager().sendMessage(DrawIt.getMessagesData().getString(MessagesData.PLAYER_GUESSED).replace("{guesser}", player.getDisplayName()).replace("{points}", String.valueOf(point)));
         }
     }
 

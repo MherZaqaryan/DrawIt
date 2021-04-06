@@ -17,9 +17,7 @@ public interface ItemUtil {
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName(TextUtil.colorize(displayName));
         itemMeta.setLore(TextUtil.colorize(Arrays.asList(lore)));
-
         itemStack.setItemMeta(itemMeta);
-
         return itemStack;
     }
 

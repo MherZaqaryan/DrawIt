@@ -50,7 +50,7 @@ public class WordChooseTask extends BukkitRunnable {
             XSound.play(drawer, DrawIt.getConfigData().getString(ConfigData.SOUND_DRAWER_WORD_CHOOSE));
         }
         time--;
-        game.getGameManager().sendActionBarToGuessers(MessagesData.PICK_WORD);
+        game.getGameManager().sendActionBarToGuessers(DrawIt.getMessagesData().getString(MessagesData.PICK_WORD));
         game.getGameManager().updateSidebars(-1);
     }
 

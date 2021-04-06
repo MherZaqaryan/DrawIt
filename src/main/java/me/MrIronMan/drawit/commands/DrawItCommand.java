@@ -69,13 +69,16 @@ public class DrawItCommand extends BukkitCommand {
         else if (arg.equalsIgnoreCase("Leave")) {
             new LeaveGameCommand().execute(sender, newArgs);
         }
-        else if (arg.equalsIgnoreCase("Start")
-                || arg.equalsIgnoreCase("ForceStart")) {
+        else if (arg.equalsIgnoreCase("Start")) {
             new ForceStartCommand().execute(sender, newArgs);
+        }
+        else if (arg.equalsIgnoreCase("QuickJoin")) {
+            new QuickJoinCommand().execute(sender, newArgs);
         }
         else if (arg.equalsIgnoreCase("Menu")) {
             new MenuCommand().execute(sender, newArgs);
-        }else if (arg.equalsIgnoreCase("Reload")) {
+        }
+        else if (arg.equalsIgnoreCase("Reload")) {
             new ReloadCommand().execute(sender, newArgs);
         }
         else if (arg.equalsIgnoreCase("Setup")) {
@@ -104,6 +107,9 @@ public class DrawItCommand extends BukkitCommand {
         }
         else if (arg.equalsIgnoreCase("Skip")) {
             new SkipGameCommand().execute(sender, newArgs);
+        }
+        else if (arg.equalsIgnoreCase("Spectate")) {
+            new SpectateCommand().execute(sender, newArgs);
         }
         else {
             player.sendMessage(TextUtil.colorize(PluginMessages.SUBCOMMAND_NOT_FOUND));

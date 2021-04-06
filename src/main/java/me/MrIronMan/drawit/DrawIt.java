@@ -6,6 +6,7 @@ import me.MrIronMan.drawit.commands.LeaveCommand;
 import me.MrIronMan.drawit.commands.SkipCommand;
 import me.MrIronMan.drawit.data.*;
 import me.MrIronMan.drawit.game.Game;
+import me.MrIronMan.drawit.game.GameState;
 import me.MrIronMan.drawit.game.SetupGame;
 import me.MrIronMan.drawit.listeners.*;
 import me.MrIronMan.drawit.menuSystem.PlayerMenuUtility;
@@ -14,16 +15,14 @@ import me.MrIronMan.drawit.sql.PlayerData;
 import me.MrIronMan.drawit.sql.PlayerDataType;
 import me.MrIronMan.drawit.sql.SQLite;
 import me.MrIronMan.drawit.game.utility.SideBar;
-import me.MrIronMan.drawit.utility.OtherUtils;
-import me.MrIronMan.drawit.utility.PermissionsUtil;
-import me.MrIronMan.drawit.utility.ReflectionUtils;
-import me.MrIronMan.drawit.utility.TextUtil;
+import me.MrIronMan.drawit.utility.*;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
 
 import java.io.File;
 import java.util.*;
@@ -49,6 +48,8 @@ public class DrawIt extends JavaPlugin {
     private HashMap<Player, SideBar> lobbySidebarMap = new HashMap<>();
     private HashMap<Player, SetupGame> setupGameMap = new HashMap<>();
 
+    private boolean isPlaceholderAPI = false;
+
     @Override
     public void onEnable() {
         instance = this;
@@ -59,6 +60,16 @@ public class DrawIt extends JavaPlugin {
         loadDataFiles();
         loadGames();
         connectDatabase();
+        placeholderApiHook();
+    }
+
+    private void placeholderApiHook() {
+
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            isPlaceholderAPI = true;
+            new PlaceholderAPI().register();
+        }
+
     }
 
     @Override
@@ -208,10 +219,26 @@ public class DrawIt extends JavaPlugin {
 
     public void activateLobbySettings(Player player) {
         teleportToLobby(player);
+        player.getInventory().clear();
         player.setGameMode(GameMode.ADVENTURE);
+        player.setHealth(20.0D);
+        player.setFoodLevel(20);
         player.setLevel(0);
         player.setExp(0.0F);
-        player.setHealth(20.0D);
+        player.setAllowFlight(false);
+        player.setFlying(false);
+        player.getInventory().setArmorContents(null);
+        for (Player p : getGamePlayers()) {
+            player.hidePlayer(p);
+            p.hidePlayer(p);
+        }
+        for (Player p : getLobbyPlayers()) {
+            player.showPlayer(p);
+            p.showPlayer(player);
+        }
+        for (PotionEffect potionEffect : player.getActivePotionEffects()) {
+            player.removePotionEffect(potionEffect.getType());
+        }
         PlayerInventory pi = player.getInventory();
         pi.clear();
         pi.setArmorContents(null);
@@ -273,7 +300,6 @@ public class DrawIt extends JavaPlugin {
         return playerDataMap;
     }
 
-
     public void enableSetupMode(Player player, SetupGame setupGame) {
         setupGameMap.put(player, setupGame);
         player.sendMessage(TextUtil.colorize("{prefix} &aLoading world &2" + setupGame.getName() + "&a, please wait..."));
@@ -302,7 +328,7 @@ public class DrawIt extends JavaPlugin {
 
     public void teleportToLobby(Player player) {
         if (isLobbySet()) {
-            player.teleport(OtherUtils.readLocation(getConfigData().getString(ConfigData.LOBBY_LOCATION)));
+            player.teleport(getConfigData().getLocation(ConfigData.LOBBY_LOCATION));
         }else {
             player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
             if (player.hasPermission(PermissionsUtil.COMMAND_SETMAINLOBBY)) {
@@ -330,6 +356,30 @@ public class DrawIt extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage("§cAuthor: §aMrIronMan (Mher)");
         Bukkit.getConsoleSender().sendMessage("§cVersion: §a" + getDescription().getVersion());
+    }
+
+    public boolean isPlaceholderAPI() {
+        return isPlaceholderAPI;
+    }
+
+    public List<Player> getLobbyPlayers() {
+        List<Player> playerList = new ArrayList<>(Bukkit.getOnlinePlayers());
+        for (Game game : games) {
+            for (UUID uuid : game.getPlayers()) {
+                playerList.remove(Bukkit.getPlayer(uuid));
+            }
+        }
+        return playerList;
+    }
+
+    public List<Player> getGamePlayers() {
+        List<Player> playerList = new ArrayList<>();
+        for (Game game : games) {
+            for (UUID uuid : game.getPlayers()) {
+                playerList.add(Bukkit.getPlayer(uuid));
+            }
+        }
+        return playerList;
     }
 
 }

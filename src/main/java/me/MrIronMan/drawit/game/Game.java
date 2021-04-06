@@ -30,6 +30,7 @@ public class Game {
     private boolean enabled;
 
     private List<UUID> players;
+    private List<UUID> spectators;
     private List<String> words;
     private HashMap<UUID, ItemStack> playerColorMap;
 
@@ -52,6 +53,7 @@ public class Game {
                readLocation(gameFile.getString("locations.board-pos2")));
         this.round = 0;
         this.players = new ArrayList<>();
+        this.spectators = new ArrayList<>();
         this.playerColorMap = new HashMap<>();
         this.tasks = new ArrayList<>();
         this.board.burn();
@@ -145,6 +147,19 @@ public class Game {
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public void setSpectator(UUID uuid) {
+        if (!spectators.contains(uuid)) this.spectators.add(uuid);
+    }
+
+    public boolean isSpectator(UUID uuid) {
+        return this.spectators.contains(uuid);
+    }
+
+    public void removeSpectator(UUID uuid) {
+        if (!spectators.contains(uuid)) return;
+        spectators.remove(uuid);
     }
 
     // Util

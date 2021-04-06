@@ -1,11 +1,12 @@
 package me.MrIronMan.drawit.data;
 
+import me.MrIronMan.drawit.api.data.DataManager;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 
-public class WordsData extends DataManager{
+public class WordsData extends DataManager {
 
     public WordsData(Plugin plugin, String dir, String name) {
         super(plugin, dir, name);
@@ -103,14 +104,5 @@ public class WordsData extends DataManager{
     public List<String> getWords() {
         return getStringList("words");
     }
-
-//    public void sort() {
-//        List<String> words = new ArrayList<>(getWords());
-//        Set<String> sortedSet = new HashSet<>(words);
-//        List<String> sortedList = new ArrayList<>(sortedSet);
-//        sortedList.sort(Comparator.naturalOrder());
-//        set("words", sortedList);
-//        save();
-//    }
 
 }

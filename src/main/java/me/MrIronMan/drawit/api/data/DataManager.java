@@ -1,4 +1,4 @@
-package me.MrIronMan.drawit.data;
+package me.MrIronMan.drawit.api.data;
 
 import java.io.File;
 import java.io.IOException;
