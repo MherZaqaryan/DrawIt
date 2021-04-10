@@ -24,6 +24,7 @@ public class MessagesData extends DataManager {
         msg.addDefault(FULL_GAME, "{prefix} &c&lThis game is full.");
         msg.addDefault(IN_GAME, "{prefix} &c&lYou can't do this while in game.");
         msg.addDefault(NOT_IN_GAME, "{prefix} &c&lYou are not in game.");
+        msg.addDefault(NOT_SPECTATING, "{prefix} &cYou are not spectating game.");
         msg.addDefault(GAME_NOT_FOUND, "{prefix} &cThat game not found.");
         msg.addDefault(GAME_NOT_ENABLED, "{prefix} &cThis game not enabled.");
         msg.addDefault(NEXT_ROUND, "{prefix} &9{drawer} &7is now drawing! &8[Round {round}].");
@@ -36,7 +37,7 @@ public class MessagesData extends DataManager {
         msg.addDefault(NOT_DRAWER_TO_SKIP, "{prefix} &cYou need to be drawer to skip.");
         msg.addDefault(NO_PERM_SKIP, "{prefix} &cYou cant skip the game, you need to be at least VIP.");
         msg.addDefault(GAME_SKIPPED, "{prefix} &c&l{drawer} decided to skip the word.&a&l Next round will start shortly.");
-        msg.addDefault(QUICK_JOIN_GAME_NOT_FOUNG, "{prefix} &cCurrently there is no game available to join.");
+        msg.addDefault(QUICK_JOIN_GAME_NOT_FOUND, "{prefix} &cCurrently there is no game available to join.");
 
         msg.addDefault(COLOR_PICKER_TITLE, "&5&lColor Picker");
         msg.addDefault(START_COUNTDOWN, "&aStarting game in &a&l{time}.");
@@ -162,6 +163,7 @@ public class MessagesData extends DataManager {
     public static String FULL_GAME = "full-game";
     public static String IN_GAME = "in-game";
     public static String NOT_IN_GAME = "not-in-game";
+    public static String NOT_SPECTATING = "not-spectating";
     public static String GAME_NOT_FOUND = "game-not-found";
     public static String GAME_NOT_ENABLED = "game-not-enabled";
     public static String NEXT_ROUND = "next-round";
@@ -170,7 +172,7 @@ public class MessagesData extends DataManager {
     public static String EVERYONE_GOT_THE_WORD = "everyone-got-word";
     public static String PLAYER_GUESSED = "player-guessed";
     public static String DRAWER_CHAT_LOCK = "drawer-chat-lock";
-    public static String QUICK_JOIN_GAME_NOT_FOUNG = "quick-join-game-not-found";
+    public static String QUICK_JOIN_GAME_NOT_FOUND = "quick-join-game-not-found";
 
     public static String START_COUNTDOWN = "action-bar-messages.start-countdown";
     public static String START_COUNTDOWN_UNDER_5 = "action-bar-messages.start-countdown-under-5";

@@ -4,10 +4,7 @@ import com.cryptomorin.xseries.XSound;
 import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.commands.subCommands.game.*;
 import me.MrIronMan.drawit.commands.subCommands.setup.*;
-import me.MrIronMan.drawit.commands.subCommands.util.AddPointsCommand;
-import me.MrIronMan.drawit.commands.subCommands.util.BuildModeCommand;
-import me.MrIronMan.drawit.commands.subCommands.util.ReloadCommand;
-import me.MrIronMan.drawit.commands.subCommands.util.SetMainLobbyCommand;
+import me.MrIronMan.drawit.commands.subCommands.util.*;
 import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.data.PluginMessages;
 import me.MrIronMan.drawit.utility.PermissionsUtil;
@@ -106,9 +103,6 @@ public class DrawItCommand extends BukkitCommand {
         }
         else if (arg.equalsIgnoreCase("Skip")) {
             new SkipGameCommand().execute(sender, newArgs);
-        }
-        else if (arg.equalsIgnoreCase("Spectate")) {
-            new SpectateCommand().execute(sender, newArgs);
         }
         else if (arg.equalsIgnoreCase("BuildMode")) {
             new BuildModeCommand().execute(sender, newArgs);

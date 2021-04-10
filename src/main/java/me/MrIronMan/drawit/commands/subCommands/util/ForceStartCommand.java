@@ -1,4 +1,4 @@
-package me.MrIronMan.drawit.commands.subCommands.game;
+package me.MrIronMan.drawit.commands.subCommands.util;
 
 import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.commands.SubCommand;

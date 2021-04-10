@@ -197,7 +197,7 @@ public class DrawIt extends JavaPlugin {
             }
         }
         if (gameMap.isEmpty()) {
-            player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.QUICK_JOIN_GAME_NOT_FOUNG)));
+            player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.QUICK_JOIN_GAME_NOT_FOUND)));
             return;
         }
         List<Map.Entry<Game, Integer>> list = new ArrayList<>(gameMap.entrySet());
