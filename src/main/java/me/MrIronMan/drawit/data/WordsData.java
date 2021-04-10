@@ -72,6 +72,7 @@ public class WordsData extends DataManager {
                 "Penguin",
                 "Phone",
                 "Pig",
+                "Piggy Bank",
                 "Polaroid",
                 "Pumpkin",
                 "Queen",

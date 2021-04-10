@@ -12,10 +12,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class WordChooseTask extends BukkitRunnable {
 
-    private PlayingTask activeTask;
-    private WordChooseMenu menu;
-    private Game game;
-    private Player drawer;
+    private final WordChooseMenu menu;
+    private final Game game;
+    private final Player drawer;
 
     private int time = DrawIt.getConfigData().getInt(ConfigData.COUNTDOWN_WORD_CHOOSE);
     private final int constTime = time;
@@ -55,9 +54,9 @@ public class WordChooseTask extends BukkitRunnable {
     }
 
     public void startActiveTask() {
-        this.activeTask = new PlayingTask(game);
+        PlayingTask activeTask = new PlayingTask(game);
         this.game.getGameManager().setActiveTask(activeTask);
-        activeTask.runTaskTimer(DrawIt.getInstance(), 0, 20);
+        activeTask.runTaskTimer(DrawIt.getInstance(), 0L, 20L);
     }
 
 }

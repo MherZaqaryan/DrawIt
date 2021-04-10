@@ -17,6 +17,11 @@ public class TextUtil {
         return ChatColor.translateAlternateColorCodes('&', s.replace("{prefix}", prefix()));
     }
 
+    public static String strip(String s) {
+        if (s == null) return "";
+        return ChatColor.stripColor(s);
+    }
+
     public static List<String> colorize(List<String> s) {
         List<String> newList = new ArrayList<>();
         for (String str : s) {
@@ -34,8 +39,8 @@ public class TextUtil {
     }
 
     public static String getByPlaceholders(String text, Player player) {
-        if (!DrawIt.getInstance().isPlaceholderAPI()) return text;
-        return PlaceholderAPI.setPlaceholders(player, text);
+        if (player == null || !DrawIt.getInstance().isPlaceholderAPI()) return colorize(text);
+        return colorize(PlaceholderAPI.setPlaceholders(player, text));
     }
 
     public static List<String> getByPlaceholders(List<String> list, Player player) {

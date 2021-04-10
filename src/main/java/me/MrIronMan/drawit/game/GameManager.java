@@ -24,32 +24,27 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
-import sun.tools.jconsole.inspector.XSheet;
 
 import java.util.*;
 
 public class GameManager {
 
     private Game game;
-
-    private List<String> wordsList;
     private String word;
     private Player drawer;
 
+    private List<String> wordsList;
     private List<UUID> waitingPlayers;
     private List<UUID> skippedPlayers;
-
-    private boolean force;
+    private List<UUID> guessersList;
 
     private HashMap<UUID, SideBar> playerSidebarMap;
     private HashMap<UUID, Integer> playerPointMap;
     private HashMap<UUID, Integer> playerCorrectGuessesMap;
     private HashMap<UUID, Integer> playerIncorrectGuessesMap;
 
-    private List<UUID> guessersList;
-
     private PlayingTask activeTask;
+    private boolean force;
 
     public GameManager(Game game) {
         this.game = game;
@@ -75,6 +70,7 @@ public class GameManager {
                         player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.FULL_GAME)));
                     } else {
                         game.getPlayers().add(uuid);
+                        setWaitingItems(player);
                         DrawIt.getInstance().setPlayerGame(player, game);
                         activateGameSettings(player);
                         player.teleport(game.getLobbyLocation());
@@ -117,9 +113,6 @@ public class GameManager {
         sendMessage(DrawIt.getMessagesData().getString(MessagesData.PLAYER_QUIT).replace("{player}", player.getDisplayName()));
     }
 
-    public PlayingTask getActiveTask() {
-        return activeTask;
-    }
 
     public void startCountdown() {
         game.setGameState(GameState.STARTING);
@@ -131,19 +124,18 @@ public class GameManager {
         game.setGameState(GameState.PLAYING);
         this.waitingPlayers = new ArrayList<>(game.getPlayers());
         for (UUID uuid : game.getPlayers()) {
-            SideBar sideBar = new SideBar(Bukkit.getPlayer(uuid));
-            sideBar.updateTitle(DrawIt.getMessagesData().getString(MessagesData.BOARD_GAME_TITLE));
-            reloadSidebar(sideBar, -1);
-            this.playerSidebarMap.put(uuid, sideBar);
+            setScoreboard(uuid);
+            activateGameSettings(Bukkit.getPlayer(uuid));
         }
         startNextRound();
     }
 
     public void startNextRound() {
+        game.getGameManager().setActiveTask(null);
         game.getGameManager().setDrawer(null);
-        this.game.getBoard().burn();
+        this.game.getBoard().burn(game.getBoardColor());
         if (isNoWaiting()) {
-            this.game.getBoard().burn();
+            this.game.getBoard().burn(game.getBoardColor());
             game.setGameState(GameState.RESTARTING);
             new RestartingTask(game).runTaskLater(DrawIt.getInstance(), DrawIt.getConfigData().getInt(ConfigData.COUNTDOWN_RESTART) * 20L);
             return;
@@ -153,7 +145,7 @@ public class GameManager {
         Bukkit.getScheduler().runTaskLater(DrawIt.getInstance(), () -> {
             WordChooseTask wordChooseTask = new WordChooseTask(game);
             wordChooseTask.runTaskTimer(DrawIt.getInstance(), 0, 20);
-        }, 40L);
+        }, DrawIt.getConfigData().getInt(ConfigData.COUNTDOWN_AFTER_ROUND) * 20L);
     }
 
     public void activateDrawerSettings(Player player) {
@@ -164,11 +156,16 @@ public class GameManager {
     private void addDrawingTools(Player player) {
         Inventory inv = player.getInventory();
         for (DrawerTool tool : DrawerTool.values()) {
-            ItemStack itemStack = DrawIt.getConfigData().getDrawerTool(tool);
-            NBTItem nbti = new NBTItem(itemStack);
-            if (nbti.hasKey("slot")) {
-                inv.setItem(nbti.getInteger("slot"), itemStack);
-            }
+            NBTItem nbti = new NBTItem(DrawIt.getConfigData().getDrawerTool(tool));
+            inv.setItem(nbti.getInteger("slot"), nbti.getItem());
+        }
+    }
+
+    public void setWaitingItems(Player player) {
+        Inventory inv = player.getInventory();
+        for (ItemStack itemStack : DrawIt.getConfigData().getWaitingItems()) {
+            NBTItem nbtItem = new NBTItem(itemStack);
+            inv.setItem(nbtItem.getInteger("slot"), itemStack);
         }
     }
 
@@ -204,12 +201,19 @@ public class GameManager {
         player.setFlying(true);
         player.teleport(game.getLobbyLocation());
         player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 0));
+        setScoreboard(player.getUniqueId());
         for (Player p : DrawIt.getInstance().getLobbyPlayers()) {
             p.hidePlayer(player);
             player.hidePlayer(p);
         }
         for (UUID uuid : game.getPlayers()) {
             Player p = Bukkit.getPlayer(uuid);
+            player.showPlayer(p);
+            p.hidePlayer(player);
+        }
+        for (UUID uuid : game.getSpectators()) {
+            Player p = Bukkit.getPlayer(uuid);
+            p.showPlayer(player);
             player.showPlayer(p);
         }
         if (!DrawIt.getConfigData().getSpectatorItems().isEmpty()) {
@@ -221,10 +225,6 @@ public class GameManager {
                 }
             }
         }
-    }
-
-    public Player getCurrentDrawer() {
-        return drawer;
     }
 
     public Player getNextDrawer() {
@@ -239,18 +239,6 @@ public class GameManager {
         }
     }
 
-    public void setDrawer(Player drawer) {
-        this.drawer = drawer;
-    }
-
-    public boolean isDrawer(Player drawer) {
-        return this.drawer == drawer;
-    }
-
-    public boolean isNoWaiting() {
-        return waitingPlayers.isEmpty();
-    }
-
     public List<String> getWordsForPlayer() {
         if (game.getPlayers().isEmpty()) return null;
         Random random = new Random();
@@ -263,20 +251,6 @@ public class GameManager {
         return wordsForPlayer;
     }
 
-    public void setWord(String word) {
-        this.word = word;
-    }
-
-    public String getWord() {
-        return word;
-    }
-
-    public void clearTasks() {
-        for (BukkitRunnable br : game.getTasks()) {
-            br.cancel();
-        }
-     }
-
     public List<UUID> getGuessers() {
         List<UUID> guessers = new ArrayList<>();
         for (UUID uuid : game.getPlayers()) {
@@ -288,86 +262,30 @@ public class GameManager {
         return guessers;
     }
 
-    public void sendMessage(String message) {
-        for (UUID uuid : game.getPlayers()) {
-            Bukkit.getPlayer(uuid).sendMessage(TextUtil.colorize(message));
-        }
-    }
-
-    public void sendMessage(List<String> messageList) {
-        for (String message : messageList) {
-            sendMessage(message);
-        }
-    }
-
-    public void sendActionBar(Player p, String s) {
-        ActionBar.sendActionBar(p, TextUtil.colorize(s));
-    }
-
-    public void sendActionBar(String s) {
-        for (UUID uuid : game.getPlayers()) {
-            Player p = Bukkit.getPlayer(uuid);
-            sendActionBar(p, s);
-        }
-    }
-
-    public void sendActionBarToGuessers(String s) {
-        if (drawer == null) return;
-        for (UUID uuid : getGuessers()) {
-            Player p = Bukkit.getPlayer(uuid);
-            sendActionBar(p, s);
-        }
-    }
-
-    public void sendTitle(Player player, String title, String subTitle, int fadeIn, int fadeOut, int stay) {
-        if (player == null) return;
-        Titles.sendTitle(player, fadeIn, stay, fadeOut, TextUtil.colorize(title), TextUtil.colorize(subTitle));
-    }
-
-    public void sendTitle(String title, String subTitle, int fadeIn, int fadeOut, int stay) {
-        for (UUID uuid : game.getPlayers()) {
-            Player p = Bukkit.getPlayer(uuid);
-           sendTitle(p, title, subTitle, fadeIn, fadeOut, stay);
-        }
-    }
-
-    public void resetGame() {
-        clearTasks();
-    }
-
-    public void reloadSidebar(SideBar sideBar, int time) {
+    public void reloadSidebar(SideBar sideBar, int time, Player player) {
         List<String> newLines = new ArrayList<>();
         for (String s : DrawIt.getMessagesData().getStringList(MessagesData.BOARD_GAME_LINES)) {
-            newLines.add(s
+            newLines.add(TextUtil.getByPlaceholders(s
                     .replace("{time}", time != -1 ? OtherUtils.formatTime(time) : "&8Waiting...")
                     .replace("{drawer}", drawer != null ? "&f"+drawer.getDisplayName() : "&8None")
                     .replace("{rounds_left}", "&f"+getWaitingPlayers().size())
                     .replace("{leader_1}", getLeader(0))
                     .replace("{leader_2}", getLeader(1))
-                    .replace("{leader_3}", getLeader(2)));
+                    .replace("{leader_3}", getLeader(2)), player));
         }
         sideBar.updateLines(newLines);
     }
 
-    public void playSound(String sound) {
-        for (UUID uuid : game.getPlayers()) {
-            if (Bukkit.getPlayer(uuid) != null) {
-                XSound.play(Bukkit.getPlayer(uuid), sound);
-            }
-        }
-    }
-
     public void updateSidebars(int time) {
-        for (SideBar sideBar : playerSidebarMap.values()) {
-            reloadSidebar(sideBar, time);
+        for (UUID uuid : playerSidebarMap.keySet()) {
+            SideBar sideBar = playerSidebarMap.get(uuid);
+            Player player = Bukkit.getPlayer(uuid);
+            reloadSidebar(sideBar, time, player);
         }
-    }
-
-    public List<UUID> getWaitingPlayers() {
-        return waitingPlayers;
     }
 
     public void addPoint(Player player, int point) {
+        if (player == null) return;
         UUID uuid = player.getUniqueId();
         playerPointMap.put(uuid, getPoint(player)+point);
         if (!isDrawer(player)) {
@@ -376,6 +294,7 @@ public class GameManager {
     }
 
     public int getPoint(Player player) {
+        if (player == null) return 0;
         UUID uuid = player.getUniqueId();
         if (!playerPointMap.containsKey(uuid)) {
             playerPointMap.put(uuid, 0);
@@ -411,15 +330,7 @@ public class GameManager {
         if (getLeaders().size() <= i) return "&8Waiting...";
         Map.Entry<UUID, Integer> e = getLeaders().get(i);
         String playerName = Bukkit.getPlayer(e.getKey()).getDisplayName();
-        return MessagesData.LEADER_FORMAT.replace("{point}", String.valueOf(e.getValue())).replace("{player}", playerName);
-    }
-
-    public List<UUID> getWordGuessers() {
-        return guessersList;
-    }
-
-    public void setActiveTask(PlayingTask activeTask) {
-        this.activeTask = activeTask;
+        return DrawIt.getMessagesData().getString(MessagesData.LEADER_FORMAT).replace("{point}", String.valueOf(e.getValue())).replace("{player}", playerName);
     }
 
     public int getCorrectGuesses(Player player) {
@@ -448,6 +359,15 @@ public class GameManager {
         playerIncorrectGuessesMap.put(uuid, getIncorrectGuesses(player)+1);
     }
 
+
+    public void setScoreboard(UUID uuid) {
+        Player player = Bukkit.getPlayer(uuid);
+        SideBar sideBar = new SideBar(player);
+        sideBar.updateTitle(DrawIt.getMessagesData().getString(MessagesData.BOARD_GAME_TITLE));
+        reloadSidebar(sideBar, -1, player);
+        this.playerSidebarMap.put(uuid, sideBar);
+    }
+
     public boolean isForce() {
         return force;
     }
@@ -458,6 +378,109 @@ public class GameManager {
 
     public List<UUID> getSkippedPlayers() {
         return skippedPlayers;
+    }
+
+    public PlayingTask getActiveTask() {
+        return activeTask;
+    }
+
+    public void setActiveTask(PlayingTask activeTask) {
+        this.activeTask = activeTask;
+    }
+
+    public List<UUID> getWordGuessers() {
+        return guessersList;
+    }
+
+    public void setWord(String word) {
+        this.word = word;
+    }
+
+    public String getWord() {
+        return word;
+    }
+
+    public Player getCurrentDrawer() {
+        return drawer;
+    }
+
+    public void setDrawer(Player drawer) {
+        this.drawer = drawer;
+    }
+
+    public boolean isDrawer(Player drawer) {
+        return this.drawer == drawer;
+    }
+
+    public boolean isNoWaiting() {
+        return waitingPlayers.isEmpty();
+    }
+
+    public List<UUID> getWaitingPlayers() {
+        return waitingPlayers;
+    }
+
+    // Utilities
+
+    public void sendMessage(String message) {
+        for (UUID uuid : game.getPlayers()) {
+            Bukkit.getPlayer(uuid).sendMessage(TextUtil.colorize(message));
+        }
+        for (UUID uuid : game.getSpectators()) {
+            Bukkit.getPlayer(uuid).sendMessage(TextUtil.colorize(message));
+        }
+    }
+
+    public void sendActionBar(Player p, String s) {
+        ActionBar.sendActionBar(p, TextUtil.colorize(s));
+    }
+
+    public void sendActionBar(String s) {
+        for (UUID uuid : game.getPlayers()) {
+            Player p = Bukkit.getPlayer(uuid);
+            sendActionBar(p, s);
+        }
+        for (UUID uuid : game.getSpectators()) {
+            Player p = Bukkit.getPlayer(uuid);
+            sendActionBar(p, s);
+        }
+    }
+
+    public void sendActionBarToGuessers(String s) {
+        if (drawer == null) return;
+        for (UUID uuid : getGuessers()) {
+            Player p = Bukkit.getPlayer(uuid);
+            sendActionBar(p, s);
+        }
+        for (UUID uuid : game.getSpectators()) {
+            Player p = Bukkit.getPlayer(uuid);
+            sendActionBar(p, s);
+        }
+    }
+
+    public void sendTitle(Player player, String title, String subTitle, int fadeIn, int fadeOut, int stay) {
+        if (player == null) return;
+        Titles.sendTitle(player, fadeIn, stay, fadeOut, TextUtil.colorize(title), TextUtil.colorize(subTitle));
+    }
+
+    public void sendTitle(String title, String subTitle, int fadeIn, int fadeOut, int stay) {
+        for (UUID uuid : game.getPlayers()) {
+            Player p = Bukkit.getPlayer(uuid);
+            sendTitle(p, title, subTitle, fadeIn, fadeOut, stay);
+        }
+        for (UUID uuid : game.getSpectators()) {
+            Player p = Bukkit.getPlayer(uuid);
+            sendTitle(p, title, subTitle, fadeIn, fadeOut, stay);
+        }
+    }
+
+    public void playSound(String sound) {
+        for (UUID uuid : game.getPlayers()) {
+            XSound.play(Bukkit.getPlayer(uuid), sound);
+        }
+        for (UUID uuid : game.getSpectators()) {
+            XSound.play(Bukkit.getPlayer(uuid), sound);
+        }
     }
 
 }

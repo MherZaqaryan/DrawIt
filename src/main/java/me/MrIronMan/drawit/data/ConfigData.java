@@ -7,9 +7,13 @@ import me.MrIronMan.drawit.api.data.DataManager;
 import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.game.GameState;
 import me.MrIronMan.drawit.game.utility.DrawerTool;
+import me.MrIronMan.drawit.sql.PlayerData;
+import me.MrIronMan.drawit.sql.PlayerDataType;
 import me.MrIronMan.drawit.utility.TextUtil;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -32,23 +36,34 @@ public class ConfigData extends DataManager {
         config.addDefault("mysql.username", "root");
         config.addDefault("mysql.password", "pass");
 
+        config.addDefault(CHAT_FORMAT, true);
+
         config.addDefault(COUNTDOWN_STARTING, 20);
         config.addDefault(COUNTDOWN_WORD_CHOOSE, 10);
         config.addDefault(COUNTDOWN_PER_ROUND, 70);
+        config.addDefault(COUNTDOWN_AFTER_ROUND, 3);
         config.addDefault(COUNTDOWN_RESTART, 10);
 
         config.addDefault(SOUND_UNDER_5, "CLICK,1,1");
         config.addDefault(SOUND_DRAWER_WORD_CHOOSE, "SUCCESSFUL_HIT,1,0");
         config.addDefault(SOUND_SPRAY_CANVAS, "DIG_GRASS,0.5,0.5");
+        config.addDefault(SOUND_COLOR_PICK, "SUCCESSFUL_HIT,1,1");
         config.addDefault(SOUND_LETTER_EXPLAIN, "CHICKEN_EGG_POP,1,2");
+        config.addDefault(SOUND_LESS_TIME, "BLOCK_NOTE_BASS,1,1");
         config.addDefault(SOUND_WORD_GUESS, "ANVIL_LAND,1,1");
         config.addDefault(SOUND_GAME_OVER, "WITHER_DEATH,1,1");
 
-        config.addDefault("lobby-items", new String[]{});
+        config.addDefault(LOBBY_ITEMS, new String[]{});
 
         if (isFirstTime()) {
-            saveItem("lobby-items.game-selector", "CHEST", false, 0, "drawit menu games");
-            saveItem("lobby-items.return-to-lobby", "ARROW", false, 8, "drawit leave");
+            saveItem(LOBBY_ITEMS+".game-selector", "CHEST", false, 0, "drawit menu games");
+            saveItem(LOBBY_ITEMS+".return-to-lobby", "SLIME_BALL", false, 8, "drawit leave");
+        }
+
+        config.addDefault(WAITING_ITEMS, new String[]{});
+
+        if (isFirstTime()) {
+            saveItem(WAITING_ITEMS+".leave", "SLIME_BALL", false, 8, "drawit leave");
         }
 
         config.addDefault(GAMES_MENU_SETTINGS_SIZE, 45);
@@ -131,10 +146,6 @@ public class ConfigData extends DataManager {
                 "44; &7Pastel White; STAINED_CLAY; 0"
         });
 
-        config.addDefault(STATS_TOKENS_VICTORY, 40);
-        config.addDefault(STATS_TOKENS_DRAWER_PER_RIGHT_WORD, 4);
-        config.addDefault(STATS_TOKENS_GUESSER_PER_RIGHT_GUESS, 4);
-
         config.addDefault(STATS_POINTS_DRAWER_PER_RIGHT_WORD, 2);
 
         if (isFirstTime()) {
@@ -146,6 +157,21 @@ public class ConfigData extends DataManager {
 
         config.addDefault(STATS_POINTS_GUESSER_OTHER, 2);
 
+        config.addDefault(PLAYER_LEVELING+".0-250.format", "&7Finger Painter");
+        config.addDefault(PLAYER_LEVELING+".250-1000.format", "&6Crayon Set");
+        config.addDefault(PLAYER_LEVELING+".1000-2500.format", "&dPaint Brush");
+        config.addDefault(PLAYER_LEVELING+".2500-5000.format", "&bRaphael");
+        config.addDefault(PLAYER_LEVELING+".5000-7500.format", "&5Kandinsky");
+        config.addDefault(PLAYER_LEVELING+".7500-12500.format", "&aRembrandt");
+        config.addDefault(PLAYER_LEVELING+".12500-20000.format", "&cManet");
+        config.addDefault(PLAYER_LEVELING+".20000-40000.format", "&9Warhol");
+        config.addDefault(PLAYER_LEVELING+".40000-70000.format", "&5Dali");
+        config.addDefault(PLAYER_LEVELING+".70000-100000.format", "&6&lMonet");
+        config.addDefault(PLAYER_LEVELING+".100000-150000.format", "&b&lMondrian");
+        config.addDefault(PLAYER_LEVELING+".150000-200000.format", "&3&lLichenstein");
+        config.addDefault(PLAYER_LEVELING+".200000-250000.format", "&e&lMichelangelo");
+        config.addDefault(PLAYER_LEVELING+".250000-300000.format", "&e&lLeonardo da Vinci");
+        config.addDefault(PLAYER_LEVELING+".other.format", "&a&lVincent van Gogh");
         config.options().copyDefaults(true);
         save();
     }
@@ -235,6 +261,20 @@ public class ConfigData extends DataManager {
         return items;
     }
 
+    public List<ItemStack> getWaitingItems() {
+        List<ItemStack> items = new ArrayList<>();
+        if (getConfig().getConfigurationSection(WAITING_ITEMS).getKeys(false).isEmpty()) return Collections.emptyList();
+        for (String s : getConfig().getConfigurationSection(WAITING_ITEMS).getKeys(false)) {
+            ItemStack itemStack = getItem(WAITING_ITEMS+"."+s);
+            NBTItem nbti = new NBTItem(itemStack);
+            nbti.setString("name", "waiting-item");
+            nbti.setInteger("slot", getInt(WAITING_ITEMS+"."+s+".slot"));
+            nbti.setString("command", getString(WAITING_ITEMS+"."+s+".command"));
+            items.add(nbti.getItem());
+        }
+        return items;
+    }
+
     public ItemStack getItem(String path, Game game) {
         ItemStack item = DrawIt.getConfigData().getItem(path);
         ItemMeta itemMeta = item.getItemMeta();
@@ -288,6 +328,25 @@ public class ConfigData extends DataManager {
         return getBoolean("mysql.enabled");
     }
 
+    public String getPointFormat(Player player) {
+        PlayerData playerData = DrawIt.getPlayerData(player);
+        int points = playerData.getData(PlayerDataType.POINTS);
+        for (String st : getConfig().getConfigurationSection(PLAYER_LEVELING).getKeys(false)) {
+            if (st.split("-").length == 2) {
+                int min = Integer.parseInt(st.split("-")[0]);
+                int max = Integer.parseInt(st.split("-")[1]);
+                if (points >= min && points <= max) {
+                    return TextUtil.colorize(getConfig().getString(PLAYER_LEVELING+"."+st+".format"));
+                }
+            }else if (st.equals("other")) {
+                return TextUtil.colorize(getConfig().getString(PLAYER_LEVELING+".other.format"));
+            }
+        }
+        return null;
+    }
+
+    public static String CHAT_FORMAT = "use-chat-format";
+
     public static String GAMES_MENU_SETTINGS_SIZE = "games-menu.settings.size";
     public static String GAMES_MENU_SETTINGS_SLOTS = "games-menu.settings.slots";
     public static String GAMES_MENU_SETTINGS_WAITING = "games-menu.settings.waiting";
@@ -302,6 +361,8 @@ public class ConfigData extends DataManager {
     public static String SPECTATE_MENU_GAME = "spectate-menu.settings.game";
     public static String SPECTATE_MENU_ITEMS = "spectate-menu.items";
 
+    public static String LOBBY_ITEMS = "lobby-items";
+    public static String WAITING_ITEMS = "waiting-items";
     public static String SPECTATE_ITEMS = "spectate-items";
 
     public static String COLOR_PICKER = "color-picker";
@@ -311,6 +372,7 @@ public class ConfigData extends DataManager {
     public static String COUNTDOWN_STARTING = "countdowns.starting";
     public static String COUNTDOWN_WORD_CHOOSE = "countdowns.word-choose";
     public static String COUNTDOWN_PER_ROUND = "countdowns.per-round";
+    public static String COUNTDOWN_AFTER_ROUND = "countdowns.after-round";
     public static String COUNTDOWN_RESTART = "countdowns.restart";
 
     public static String SOUND_UNDER_5 = "sounds.starting-under-5";
@@ -319,12 +381,13 @@ public class ConfigData extends DataManager {
     public static String SOUND_LETTER_EXPLAIN = "sounds.letter-explain";
     public static String SOUND_WORD_GUESS = "sounds.word-guess";
     public static String SOUND_GAME_OVER = "sounds.game-over";
+    public static String SOUND_COLOR_PICK = "sounds.color-pick";
+    public static String SOUND_LESS_TIME = "sounds.less-time";
 
-    public static String STATS_TOKENS_VICTORY = "stats.tokens.victory";
-    public static String STATS_TOKENS_DRAWER_PER_RIGHT_WORD = "stats.tokens.drawer.per-right-word";
-    public static String STATS_TOKENS_GUESSER_PER_RIGHT_GUESS = "stats.tokens.guesser.per-right-guess";
     public static String STATS_POINTS_DRAWER_PER_RIGHT_WORD = "stats.points.drawer.per-right-word";
     public static String STATS_POINTS_GUESSER = "stats.points.guesser";
     public static String STATS_POINTS_GUESSER_OTHER = "stats.points.guesser.other";
+
+    public static String PLAYER_LEVELING = "player-leveling";
 
 }

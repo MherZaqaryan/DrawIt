@@ -132,14 +132,16 @@ public class SetupGame {
             player.sendMessage(customize("{game} &aSaving game, please wait..."));
             if (createGameFile()) {
                 YamlConfiguration gameFile = YamlConfiguration.loadConfiguration(file);
-                gameFile.set("display-name", displayName);
-                gameFile.set("enabled", enabled);
-                gameFile.set("min-players", minPlayers);
-                gameFile.set("max-players", maxPlayers);
-                gameFile.set("locations.lobby", writeLocation(lobbyLocation, true));
-                gameFile.set("locations.drawer", writeLocation(drawerLocation, true));
-                gameFile.set("locations.board-pos1", writeLocation(boardPos1, false));
-                gameFile.set("locations.board-pos2", writeLocation(boardPos2, false));
+                gameFile.addDefault("display-name", displayName);
+                gameFile.addDefault("enabled", enabled);
+                gameFile.addDefault("min-players", minPlayers);
+                gameFile.addDefault("max-players", maxPlayers);
+                gameFile.addDefault("locations.lobby", writeLocation(lobbyLocation, true));
+                gameFile.addDefault("locations.drawer", writeLocation(drawerLocation, true));
+                gameFile.addDefault("locations.board-pos1", writeLocation(boardPos1, false));
+                gameFile.addDefault("locations.board-pos2", writeLocation(boardPos2, false));
+                gameFile.addDefault("advanced-settings.board-color", "WOOL:0");
+                gameFile.options().copyDefaults(true);
                 try {
                     gameFile.save(file);
                 } catch (IOException e) {

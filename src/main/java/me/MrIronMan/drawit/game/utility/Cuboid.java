@@ -5,6 +5,7 @@ import java.util.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.inventory.ItemStack;
 
 public class Cuboid {
 
@@ -42,9 +43,10 @@ public class Cuboid {
         return getBlocks().contains(block);
     }
 
-    public void burn() {
+    public void burn(ItemStack itemStack) {
         for (Block block : getBlocks()) {
-            block.setType(Material.WOOL);
+            byte data = (byte) itemStack.getDurability();
+            block.setTypeIdAndData(itemStack.getTypeId(), data, false);
         }
     }
 

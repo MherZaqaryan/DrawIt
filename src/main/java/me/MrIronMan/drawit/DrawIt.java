@@ -15,6 +15,7 @@ import me.MrIronMan.drawit.sql.PlayerData;
 import me.MrIronMan.drawit.sql.PlayerDataType;
 import me.MrIronMan.drawit.sql.SQLite;
 import me.MrIronMan.drawit.game.utility.SideBar;
+import me.MrIronMan.drawit.support.PlaceholderAPI;
 import me.MrIronMan.drawit.utility.*;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -43,6 +44,7 @@ public class DrawIt extends JavaPlugin {
 
     private static HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
     private static HashMap<Player, PlayerData> playerDataMap = new HashMap<>();
+    private static HashMap<Player, Boolean> playerBuildMap = new HashMap<>();
 
     private HashMap<Player, Game> playerGameMap = new HashMap<>();
     private HashMap<Player, SideBar> lobbySidebarMap = new HashMap<>();
@@ -63,19 +65,13 @@ public class DrawIt extends JavaPlugin {
         placeholderApiHook();
     }
 
-    private void placeholderApiHook() {
-
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            isPlaceholderAPI = true;
-            new PlaceholderAPI().register();
-        }
-
-    }
-
     @Override
     public void onDisable() {
         disconnectDatabase();
         Bukkit.getScheduler().cancelAllTasks();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.kickPlayer("Server Reloading!");
+        }
     }
 
     public static PlayerMenuUtility getPlayerMenuUtility(Player p) {
@@ -115,11 +111,15 @@ public class DrawIt extends JavaPlugin {
     public void registerListeners() {
         Arrays.asList(
             new GameListener(),
-            new InteractEvent(),
+            new InteractListener(),
             new SystemListener(),
             new JoinQuitListener(),
-            new GuessWordListener())
+            new ChatListener(),
+            new MainListener())
             .forEach(listener -> getServer().getPluginManager().registerEvents(listener, this));
+        if (!ReflectionUtils.VERSION.contains("1_8")) {
+            Bukkit.getPluginManager().registerEvents(new SwapItemListener(), this);
+        }
     }
 
     public void loadDataFiles() {
@@ -145,12 +145,6 @@ public class DrawIt extends JavaPlugin {
                 registerGame(game);
             }
         }
-    }
-
-
-
-    public static DrawIt getInstance() {
-        return instance;
     }
 
     public List<Game> getGames() {
@@ -198,26 +192,23 @@ public class DrawIt extends JavaPlugin {
     public void quickJoinGame(Player player) {
         HashMap<Game, Integer> gameMap = new HashMap<>();
         for (Game game : games) {
-            gameMap.put(game, game.getPlayers().size());
+            if (game.isGameState(GameState.STARTING) || game.isGameState(GameState.WAITING)) {
+                gameMap.put(game, game.getPlayers().size());
+            }
+        }
+        if (gameMap.isEmpty()) {
+            player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.QUICK_JOIN_GAME_NOT_FOUNG)));
+            return;
         }
         List<Map.Entry<Game, Integer>> list = new ArrayList<>(gameMap.entrySet());
         list.sort((e1, e2) -> -e1.getValue().compareTo(e2.getValue()));
         list.get(0).getKey().getGameManager().joinGame(player);
     }
 
-    public static ConfigData getConfigData() {
-        return config;
-    }
-
-    public static MessagesData getMessagesData() {
-        return messages;
-    }
-
-    public static WordsData getWordsData() {
-        return words;
-    }
-
     public void activateLobbySettings(Player player) {
+        if (player.hasPermission(PermissionsUtil.COMMAND_BUILD)) {
+            setBuildMode(player, false);
+        }
         teleportToLobby(player);
         player.getInventory().clear();
         player.setGameMode(GameMode.ADVENTURE);
@@ -228,14 +219,7 @@ public class DrawIt extends JavaPlugin {
         player.setAllowFlight(false);
         player.setFlying(false);
         player.getInventory().setArmorContents(null);
-        for (Player p : getGamePlayers()) {
-            player.hidePlayer(p);
-            p.hidePlayer(p);
-        }
-        for (Player p : getLobbyPlayers()) {
-            player.showPlayer(p);
-            p.showPlayer(player);
-        }
+        setPlayerGame(player, null);
         for (PotionEffect potionEffect : player.getActivePotionEffects()) {
             player.removePotionEffect(potionEffect.getType());
         }
@@ -252,6 +236,14 @@ public class DrawIt extends JavaPlugin {
             pi.setItem(nbti.getInteger("slot"), item);
         }
         setLobbySidebar(player);
+        for (Player p : getGamePlayers()) {
+            player.hidePlayer(p);
+            p.hidePlayer(player);
+        }
+        for (Player p : getLobbyPlayers()) {
+            player.showPlayer(p);
+            p.showPlayer(player);
+        }
     }
 
     public void setLobbyLocation(Location loc) {
@@ -270,7 +262,7 @@ public class DrawIt extends JavaPlugin {
         PlayerData pd = DrawIt.getPlayerData(player);
         for (String s : getMessagesData().getStringList(MessagesData.BOARD_LOBBY_LINES)) {
             newLines.add(s
-                .replace("{tokens}", String.valueOf(pd.getData(PlayerDataType.TOKENS)))
+                .replace("{player}", player.getDisplayName())
                 .replace("{points}", String.valueOf(pd.getData(PlayerDataType.POINTS)))
                 .replace("{games_played}", String.valueOf(pd.getData(PlayerDataType.GAMES_PLAYED)))
                 .replace("{victories}", String.valueOf(pd.getData(PlayerDataType.VICTORIES)))
@@ -278,15 +270,7 @@ public class DrawIt extends JavaPlugin {
                 .replace("{incorrect_guesses}", String.valueOf(pd.getData(PlayerDataType.INCORRECT_GUESSES)))
                 .replace("{skips}", String.valueOf(pd.getData(PlayerDataType.SKIPS))));
         }
-        lobbySidebarMap.get(player).updateLines(newLines);
-    }
-
-    public MySQL getMySQL() {
-        return mySQL;
-    }
-
-    public SQLite getSqLite() {
-        return sqLite;
+        lobbySidebarMap.get(player).updateLines(TextUtil.getByPlaceholders(newLines, player));
     }
 
     public static PlayerData getPlayerData(Player player) {
@@ -294,10 +278,6 @@ public class DrawIt extends JavaPlugin {
             playerDataMap.put(player, new PlayerData(player));
         }
         return playerDataMap.get(player);
-    }
-
-    public static HashMap<Player, PlayerData> getPlayerDataMap() {
-        return playerDataMap;
     }
 
     public void enableSetupMode(Player player, SetupGame setupGame) {
@@ -358,8 +338,12 @@ public class DrawIt extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage("§cVersion: §a" + getDescription().getVersion());
     }
 
-    public boolean isPlaceholderAPI() {
-        return isPlaceholderAPI;
+    private void placeholderApiHook() {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            isPlaceholderAPI = true;
+            new PlaceholderAPI().register();
+            getLogger().info("Hook into PlaceholderAPI support...");
+        }
     }
 
     public List<Player> getLobbyPlayers() {
@@ -378,8 +362,52 @@ public class DrawIt extends JavaPlugin {
             for (UUID uuid : game.getPlayers()) {
                 playerList.add(Bukkit.getPlayer(uuid));
             }
+            for (UUID uuid : game.getSpectators()) {
+                playerList.add(Bukkit.getPlayer(uuid));
+            }
         }
         return playerList;
+    }
+
+    public static void setBuildMode(Player player, Boolean bool) {
+        playerBuildMap.put(player, bool);
+    }
+
+    public static boolean getBuildMode(Player player) {
+        if (!player.hasPermission(PermissionsUtil.COMMAND_BUILD)) return false;
+        return playerBuildMap.get(player);
+    }
+
+    public boolean isPlaceholderAPI() {
+        return isPlaceholderAPI;
+    }
+
+    public static HashMap<Player, PlayerData> getPlayerDataMap() {
+        return playerDataMap;
+    }
+
+    public MySQL getMySQL() {
+        return mySQL;
+    }
+
+    public SQLite getSqLite() {
+        return sqLite;
+    }
+
+    public static ConfigData getConfigData() {
+        return config;
+    }
+
+    public static MessagesData getMessagesData() {
+        return messages;
+    }
+
+    public static WordsData getWordsData() {
+        return words;
+    }
+
+    public static DrawIt getInstance() {
+        return instance;
     }
 
 }

@@ -1,10 +1,11 @@
 package me.MrIronMan.drawit.commands;
 
+import com.cryptomorin.xseries.XSound;
 import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.commands.subCommands.game.*;
 import me.MrIronMan.drawit.commands.subCommands.setup.*;
 import me.MrIronMan.drawit.commands.subCommands.util.AddPointsCommand;
-import me.MrIronMan.drawit.commands.subCommands.util.AddTokensCommand;
+import me.MrIronMan.drawit.commands.subCommands.util.BuildModeCommand;
 import me.MrIronMan.drawit.commands.subCommands.util.ReloadCommand;
 import me.MrIronMan.drawit.commands.subCommands.util.SetMainLobbyCommand;
 import me.MrIronMan.drawit.data.MessagesData;
@@ -41,6 +42,7 @@ public class DrawItCommand extends BukkitCommand {
         if (args.length == 0) {
             if (player.hasPermission(PermissionsUtil.COMMAND_MAIN)) {
                 PluginMessages.sendMessage(player, PluginMessages.DRAWIT_COMMANDS);
+                XSound.play(player, "CLICK,1,2");
             }else {
                 for (String msg : DrawIt.getMessagesData().getStringList(MessagesData.DRAWIT_COMMANDS_PLAYER)) {
                     player.sendMessage(TextUtil.colorize(msg));
@@ -102,14 +104,14 @@ public class DrawItCommand extends BukkitCommand {
         else if (arg.equalsIgnoreCase("AddPoints")) {
             new AddPointsCommand().execute(sender, newArgs);
         }
-        else if (arg.equalsIgnoreCase("AddTokens")) {
-            new AddTokensCommand().execute(sender, newArgs);
-        }
         else if (arg.equalsIgnoreCase("Skip")) {
             new SkipGameCommand().execute(sender, newArgs);
         }
         else if (arg.equalsIgnoreCase("Spectate")) {
             new SpectateCommand().execute(sender, newArgs);
+        }
+        else if (arg.equalsIgnoreCase("BuildMode")) {
+            new BuildModeCommand().execute(sender, newArgs);
         }
         else {
             player.sendMessage(TextUtil.colorize(PluginMessages.SUBCOMMAND_NOT_FOUND));

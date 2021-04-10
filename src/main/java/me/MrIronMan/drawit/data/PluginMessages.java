@@ -48,11 +48,11 @@ public class PluginMessages {
             commandSuggest("  &c• &7/DrawIt Setup <WorldName>", "&7Click to setup game.", "/DrawIt Setup "),
             commandSuggest("  &c• &7/DrawIt Delete <Game>", "&7Click to delete game.", "/DrawIt Delete "),
             commandSuggest("  &c• &7/DrawIt Join <Game>", "&7Click to join game.", "/DrawIt Join "),
-            commandSuggest("  &c• &7/DrawIt Start", "&7Force start game when there is not enough players.", "/DrawIt Start"),
+            commandRun("  &c• &7/DrawIt Start", "&7Force start game when there is not enough players.", "/DrawIt Start"),
             commandSuggest("  &c• &7/DrawIt Menu <Games|Spectate>", "&7Click to open gui.", "/DrawIt Menu"),
-            commandSuggest("  &c• &7/DrawIt Reload", "&7Click to reload configuration files.", "/DrawIt Reload"),
+            commandRun("  &c• &7/DrawIt Reload", "&7Click to reload configuration files.", "/DrawIt Reload"),
+            commandRun("  &c• &7/DrawIt BuildMode", "&7Click to activate build mode.", "/DrawIt BuildMode"),
             commandSuggest("  &c• &7/DrawIt AddPoint <Player> <Amount>", "&7Click to add points for player.", "/DrawIt AddPoints <Player> <Amount>"),
-            commandSuggest("  &c• &7/DrawIt AddTokens <Player> <Amount>", "&7Click to add tokens for player.", "/DrawIt AddTokens <Player> <Amount>"),
             simpleText(""),
             simpleText("&3&l&m----------------------------"),
     };
@@ -61,6 +61,8 @@ public class PluginMessages {
     public static String USAGE_COMMAND_SETBOARD = "{prefix} &cUsage: &7/DrawIt SetBoard <Pos1|Pos2>";
     public static String USAGE_COMMAND_DELETE = "{prefix} &cUsage: &7/DrawIt Remove <Game>";
 
+    public static String BUILDMODE_ENABLED = "{prefix} &aBuild mode has been enabled.";
+    public static String BUILDMODE_DISABLED = "{prefix} &cBuild mode has been disabled.";
     public static String NOT_IN_SETUP = "{prefix} &cYou are not setting game.";
     public static String ALREADY_IN_SETUP = "{prefix} &cPlease finish your setup first.";
     public static String EXIT_SETUP = "{prefix} &cYou have left from setup.";
@@ -70,7 +72,5 @@ public class PluginMessages {
     public static String DISABLE_GAME = "{prefix} &cPlease disable this game first.";
     public static String SUBCOMMAND_NOT_FOUND = "{prefix} &cSub-command not found, type /drawit for all list of commands.";
     public static String CONFIG_RELOADED = "{prefix} &aConfiguration files has been successfully reloaded.";
-
-
 
 }

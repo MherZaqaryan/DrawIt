@@ -2,7 +2,6 @@ package me.MrIronMan.drawit.sql;
 
 public enum PlayerDataType {
 
-    TOKENS,
     POINTS,
     GAMES_PLAYED,
     VICTORIES,
@@ -12,8 +11,6 @@ public enum PlayerDataType {
 
     static String getEnum(PlayerDataType pdt) {
         switch (pdt) {
-            case TOKENS:
-                return "Tokens";
             case POINTS:
                 return "Points";
             case GAMES_PLAYED:

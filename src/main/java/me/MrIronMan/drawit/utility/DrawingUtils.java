@@ -8,8 +8,6 @@ import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.game.GameManager;
 import me.MrIronMan.drawit.game.utility.FloodFill;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -25,12 +23,12 @@ public class DrawingUtils {
     private UUID uuid;
     private Cuboid board;
 
-    public DrawingUtils(Cuboid board, Game game, Player player) {
+    public DrawingUtils(Game game, Player player) {
         this.game = game;
         this.gameManager = game.getGameManager();
         this.player = player;
         this.uuid = player.getUniqueId();
-        this.board = board;
+        this.board = game.getBoard();
     }
 
     public void thinBrush(Block block) {
@@ -75,9 +73,7 @@ public class DrawingUtils {
     }
 
     public void burnCanvas() {
-        for (Block block : board.getBlocks()) {
-            block.setType(Material.WOOL);
-        }
+        game.getBoard().burn(game.getBoardColor());
     }
 
 }

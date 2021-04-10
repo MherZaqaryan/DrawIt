@@ -4,8 +4,6 @@ import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.data.ConfigData;
 import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.game.Game;
-import me.MrIronMan.drawit.game.GameState;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -40,8 +38,7 @@ public class PlayingTask extends BukkitRunnable {
     public void run() {
         game.getGameManager().updateSidebars(time);
         if (game.getPlayers().isEmpty()) {
-            cancel();
-            game.setGameState(GameState.WAITING);
+            startNext();
         }
         else if (game.getGameManager().getCurrentDrawer() == null) {
             game.getGameManager().sendMessage(DrawIt.getMessagesData().getString(MessagesData.QUIT_MID_GAME));
@@ -49,7 +46,7 @@ public class PlayingTask extends BukkitRunnable {
         }else if (time == 0) {
             startNext();
         }
-        else if (game.getGameManager().getWordGuessers().size() == game.getGameManager().getGuessers().size() && game.getGameManager().getWordGuessers().size() != 0) {
+        else if (game.getGameManager().getWordGuessers().size() == game.getGameManager().getGuessers().size() && !game.getGameManager().getWordGuessers().isEmpty()) {
             game.getGameManager().sendMessage(DrawIt.getMessagesData().getString(MessagesData.EVERYONE_GOT_THE_WORD));
             game.getGameManager().getActiveTask().startNext();
         }
@@ -84,13 +81,13 @@ public class PlayingTask extends BukkitRunnable {
 
     public void startNext() {
         cancel();
-        game.getGameManager().updateSidebars(-1);
         game.getGameManager().setDrawer(null);
+        game.getGameManager().updateSidebars(-1);
         if (drawer != null) {
             drawer.teleport(game.getLobbyLocation());
             game.getGameManager().activateGameSettings(drawer);
         }
-        game.getGameManager().sendMessage(DrawIt.getMessagesData().getString(MessagesData.WORD_ANNOUNCE) .replace("{word}", word));
+        game.getGameManager().sendMessage(DrawIt.getMessagesData().getString(MessagesData.WORD_ANNOUNCE).replace("{word}", word));
         game.getGameManager().startNextRound();
     }
 

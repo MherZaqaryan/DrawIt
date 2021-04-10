@@ -1,4 +1,4 @@
-package me.MrIronMan.drawit.utility;
+package me.MrIronMan.drawit.support;
 
 import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.sql.PlayerData;
@@ -29,8 +29,6 @@ public class PlaceholderAPI extends PlaceholderExpansion {
     public String onRequest(OfflinePlayer player, String identifier){
         PlayerData pd = DrawIt.getPlayerData((Player) player);
         switch (identifier) {
-            case "tokens":
-                return String.valueOf(pd.getData(PlayerDataType.TOKENS));
             case "points":
                 return String.valueOf(pd.getData(PlayerDataType.POINTS));
             case "games_played":

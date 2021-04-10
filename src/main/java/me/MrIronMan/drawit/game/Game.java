@@ -1,12 +1,13 @@
 package me.MrIronMan.drawit.game;
 
+import com.cryptomorin.xseries.XMaterial;
 import me.MrIronMan.drawit.DrawIt;
+import me.MrIronMan.drawit.api.events.game.GameStateChangeEvent;
 import me.MrIronMan.drawit.game.utility.Cuboid;
 import me.MrIronMan.drawit.utility.OtherUtils;
 import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.util.*;
@@ -26,6 +27,7 @@ public class Game {
     private Location drawerLocation;
     private Cuboid board;
     private int round;
+    private ItemStack boardColor;
 
     private boolean enabled;
 
@@ -34,8 +36,7 @@ public class Game {
     private List<String> words;
     private HashMap<UUID, ItemStack> playerColorMap;
 
-    private List<BukkitRunnable> tasks;
-    private GameState gameState = GameState.WAITING;
+    private GameState gameState;
 
     public Game(String name) {
         this.name = name;
@@ -55,8 +56,9 @@ public class Game {
         this.players = new ArrayList<>();
         this.spectators = new ArrayList<>();
         this.playerColorMap = new HashMap<>();
-        this.tasks = new ArrayList<>();
-        this.board.burn();
+        this.boardColor = XMaterial.matchXMaterial(gameFile.getString("advanced-settings.board-color")).get().parseItem();
+        this.board.burn(boardColor);
+        this.gameState = GameState.WAITING;
         DrawIt.getInstance().getLogger().info("Loaded Game: " + name);
     }
 
@@ -97,8 +99,10 @@ public class Game {
         return this.gameState == gameState;
     }
 
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
+    public void setGameState(GameState newState) {
+        GameStateChangeEvent event = new GameStateChangeEvent(this, gameState, newState);
+        Bukkit.getPluginManager().callEvent(event);
+        this.gameState = newState;
     }
 
     public GameState getGameState() {
@@ -107,10 +111,6 @@ public class Game {
 
     public Cuboid getBoard() {
         return board;
-    }
-
-    public List<BukkitRunnable> getTasks() {
-        return tasks;
     }
 
     public ItemStack getPlayerColor(UUID uuid) {
@@ -160,6 +160,14 @@ public class Game {
     public void removeSpectator(UUID uuid) {
         if (!spectators.contains(uuid)) return;
         spectators.remove(uuid);
+    }
+
+    public List<UUID> getSpectators() {
+        return spectators;
+    }
+
+    public ItemStack getBoardColor() {
+        return boardColor;
     }
 
     // Util

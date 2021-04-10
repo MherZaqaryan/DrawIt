@@ -1,13 +1,14 @@
 package me.MrIronMan.drawit.menuSystem.menus;
 
+import com.cryptomorin.xseries.XSound;
 import me.MrIronMan.drawit.DrawIt;
+import me.MrIronMan.drawit.data.ConfigData;
 import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.menuSystem.Menu;
 import me.MrIronMan.drawit.menuSystem.PlayerMenuUtility;
 import me.MrIronMan.drawit.utility.OtherUtils;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -37,7 +38,7 @@ public class ColorPickerMenu extends Menu {
         if (DrawIt.getInstance().isInGame(player)) {
             Game game = DrawIt.getInstance().getGame(player);
             player.closeInventory();
-            player.playSound(player.getLocation(), Sound.SUCCESSFUL_HIT, 1, 1);
+            XSound.play(player.getLocation(), DrawIt.getConfigData().getString(ConfigData.SOUND_COLOR_PICK));
             game.setPlayerColor(player.getUniqueId(), e.getCurrentItem());
         }
     }

@@ -11,5 +11,6 @@ public class PermissionsUtil {
     public static String COMMAND_RELOAD = "DrawIt.Reload";
     public static String COMMAND_SKIP = "DrawIt.Skip";
     public static String COMMAND_MAIN = "DrawIt.Main";
+    public static String COMMAND_BUILD = "DrawIt.Build";
 
 }

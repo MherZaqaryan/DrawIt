@@ -21,9 +21,7 @@ public class RestartingTask extends BukkitRunnable {
 
     public RestartingTask(Game game) {
         this.game = game;
-        game.getBoard().burn();
-        game.getGameManager().playSound(DrawIt.getConfigData().getString(ConfigData.SOUND_GAME_OVER));
-        game.getGameManager().sendTitle("&c&lGame Over!", "&9" + game.getGameManager().getLeaderName(0) + " won the game.", 10, 10, 50);
+        game.getBoard().burn(game.getBoardColor());
         for (UUID uuid : game.getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
             PlayerData pd = DrawIt.getPlayerData(player);
@@ -37,31 +35,45 @@ public class RestartingTask extends BukkitRunnable {
             if (game.getGameManager().getLeaders().get(0).getKey().equals(player.getUniqueId())) {
                 pd.addData(PlayerDataType.VICTORIES, 1);
             }
-            for (String msg : getMessage(uuid)) {
-                player.sendMessage(TextUtil.colorize(msg));
+            for (String msg : getMessage()) {
+                player.sendMessage(TextUtil.getByPlaceholders(msg, player));
             }
         }
-
+        game.getGameManager().playSound(DrawIt.getConfigData().getString(ConfigData.SOUND_GAME_OVER));
+        game.getGameManager().sendTitle("&c&lGame Over!", "&9" + game.getGameManager().getLeaderName(0) + " won the game.", 10, 10, 50);
+        for (UUID uuid : game.getSpectators()) {
+            Player player = Bukkit.getPlayer(uuid);
+            for (String msg : getMessage()) {
+                player.sendMessage(TextUtil.getByPlaceholders(msg, player));
+            }
+        }
     }
 
     @Override
     public void run() {
-        for (UUID uuid : game.getPlayers()) {
+        List<UUID> players = new ArrayList<>(game.getPlayers());
+        for (UUID uuid : players) {
             Player player = Bukkit.getPlayer(uuid);
-            DrawIt.getInstance().setPlayerGame(player, null);
-            DrawIt.getInstance().activateLobbySettings(Bukkit.getPlayer(uuid));
+            game.getPlayers().remove(uuid);
+            DrawIt.getInstance().activateLobbySettings(player);
         }
-        game.getGameManager().resetGame();
+        game.getPlayers().clear();
+        List<UUID> spectators = new ArrayList<>(game.getSpectators());
+        for (UUID uuid : spectators) {
+            Player player = Bukkit.getPlayer(uuid);
+            game.getSpectators().remove(uuid);
+            DrawIt.getInstance().activateLobbySettings(player);
+        }
+        game.getSpectators().clear();
         DrawIt.getInstance().restartGame(game.getName());
     }
 
-    public List<String> getMessage(UUID uuid) {
+    public List<String> getMessage() {
         List<String> msg = new ArrayList<>();
         for (String s : DrawIt.getMessagesData().getStringList(MessagesData.GAME_END_MESSAGE)) {
             msg.add(s.replace("{winner_1}", game.getGameManager().getLeaderName(0))
                     .replace("{winner_2}",game.getGameManager().getLeaderName(1))
-                    .replace("{winner_3}", game.getGameManager().getLeaderName(2))
-                    .replace("{points}", String.valueOf(game.getGameManager().getLeaderPoint(uuid))));
+                    .replace("{winner_3}", game.getGameManager().getLeaderName(2)));
         }
         return msg;
     }

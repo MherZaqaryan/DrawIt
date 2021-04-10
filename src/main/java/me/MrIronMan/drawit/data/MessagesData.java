@@ -10,7 +10,7 @@ public class MessagesData extends DataManager {
         super(plugin, dir, name);
         YamlConfiguration msg = getConfig();
 
-        msg.addDefault(PREFIX, "&b&lDraw&a&lIt &8►&r");
+        msg.addDefault(PREFIX, "&8▍ &b&lDraw&a&lIt &8▏&r");
 
         msg.addDefault(DRAWIT_COMMANDS_PLAYER, new String[]{
                 "&b&lDraw&a&lIt &c&lCommands",
@@ -36,8 +36,9 @@ public class MessagesData extends DataManager {
         msg.addDefault(NOT_DRAWER_TO_SKIP, "{prefix} &cYou need to be drawer to skip.");
         msg.addDefault(NO_PERM_SKIP, "{prefix} &cYou cant skip the game, you need to be at least VIP.");
         msg.addDefault(GAME_SKIPPED, "{prefix} &c&l{drawer} decided to skip the word.&a&l Next round will start shortly.");
-        msg.addDefault(COLOR_PICKER_TITLE, "&5&lColor Picker");
+        msg.addDefault(QUICK_JOIN_GAME_NOT_FOUNG, "{prefix} &cCurrently there is no game available to join.");
 
+        msg.addDefault(COLOR_PICKER_TITLE, "&5&lColor Picker");
         msg.addDefault(START_COUNTDOWN, "&aStarting game in &a&l{time}.");
         msg.addDefault(START_COUNTDOWN_UNDER_5, "&aStarting game in &c&l{time}.");
         msg.addDefault(DRAWER, "&e&lYou must draw: &f&l{word}&e&l!");
@@ -45,6 +46,8 @@ public class MessagesData extends DataManager {
         msg.addDefault(START_DRAW, "&e&lWaiting for the drawer to start drawing.");
         msg.addDefault(GUESSERS, "&e&l{word}");
         msg.addDefault(HIDING_CHARACTER, "_");
+
+        msg.addDefault(LEADER_FORMAT, "&f{point} &8- &7{player}");
 
         msg.addDefault(GAME_END_MESSAGE, new String[]{
                 "",
@@ -58,22 +61,11 @@ public class MessagesData extends DataManager {
                 "&cGame will restart in 10 seconds."
         });
 
-        msg.addDefault("lobby-items", new String[]{});
+        msg.addDefault(ConfigData.LOBBY_ITEMS, new String[]{});
 
         if (isFirstTime()) {
-
-            msg.addDefault("lobby-items.game-selector.display-name", "&aGame Selector &7[Right-click]");
-            msg.addDefault("lobby-items.game-selector.lore", new String[]{
-                    "",
-                    "&7Click to open game selector"
-            });
-
-            msg.addDefault("lobby-items.return-to-lobby.display-name", "&cReturn to lobby &7[Right-click]");
-            msg.addDefault("lobby-items.return-to-lobby.lore", new String[]{
-                    "",
-                    "&7Click to return to lobby."
-            });
-
+            saveItem(ConfigData.LOBBY_ITEMS+".game-selector", "&aGame Selector &7[Right-click]", "","&7Click to open game selector");
+            saveItem(ConfigData.LOBBY_ITEMS+".return-to-lobby", "&cReturn to lobby &7[Right-click]", "","&7Click to return to lobby.");
         }
 
         msg.addDefault(GAME_MENU_SETTINGS_TITLE, "&7Game Selector");
@@ -96,6 +88,7 @@ public class MessagesData extends DataManager {
             saveItem(ConfigData.SPECTATE_MENU_ITEMS,"back", "&c&lBack", "","&bClick here to go back");
         }
 
+        msg.addDefault(TELEPORTER_MENU_SETTINGS_TITLE, "&7Teleporter");
         msg.addDefault(ConfigData.SPECTATE_ITEMS, new String[]{});
 
         if (isFirstTime()) {
@@ -103,7 +96,6 @@ public class MessagesData extends DataManager {
             saveItem(ConfigData.SPECTATE_ITEMS+".leave", "&cLeave &7[Right-click]", "","&bClick to leave.");
         }
 
-        msg.addDefault(TELEPORTER_MENU_SETTINGS_TITLE, "&7Teleporter");
         saveItem(TELEPORTER_MENU_PLAYER_HEAD, "&9{player}", "","&bClick to teleport.");
 
         saveItem("drawer-tools.thin-brush", "&6&lThin Brush", "","&7Paints a one pixel line.");
@@ -115,8 +107,8 @@ public class MessagesData extends DataManager {
         msg.addDefault(BOARD_LOBBY_TITLE, "&b&lDraw&a&lIt");
         msg.addDefault(BOARD_LOBBY_LINES, new String[]{
                 "",
-                "&a&lTokens",
-                "&7{tokens}",
+                "&a&lPlayer",
+                "&7{player}",
                 "",
                 "&e&lYour Stats",
                 "&3Points: &b{points}",
@@ -148,6 +140,11 @@ public class MessagesData extends DataManager {
                 "&emc.server.net"
         });
 
+        msg.addDefault(CHAT_FORMAT+".lobby", "&e{points} &8▍ {pointFormat} &7{player} &8» &7{message}");
+        msg.addDefault(CHAT_FORMAT+".waiting", "&e{points} &8▍ {pointFormat} &7{player} &8» &7{message}");
+        msg.addDefault(CHAT_FORMAT+".game", "{pointFormat} &7{player} &8» &7{message}");
+        msg.addDefault(CHAT_FORMAT+".spectator", "&e{points} &8▍ &4SPEC &8▏ {pointFormat} &7{player} &8» &7{message}");
+
         save();
     }
 
@@ -173,6 +170,7 @@ public class MessagesData extends DataManager {
     public static String EVERYONE_GOT_THE_WORD = "everyone-got-word";
     public static String PLAYER_GUESSED = "player-guessed";
     public static String DRAWER_CHAT_LOCK = "drawer-chat-lock";
+    public static String QUICK_JOIN_GAME_NOT_FOUNG = "quick-join-game-not-found";
 
     public static String START_COUNTDOWN = "action-bar-messages.start-countdown";
     public static String START_COUNTDOWN_UNDER_5 = "action-bar-messages.start-countdown-under-5";
@@ -199,5 +197,7 @@ public class MessagesData extends DataManager {
     public static String BOARD_LOBBY_LINES = "scoreboards.lobby.lines";
     public static String BOARD_GAME_TITLE = "scoreboards.game.title";
     public static String BOARD_GAME_LINES = "scoreboards.game.lines";
+
+    public static String CHAT_FORMAT = "chat-format";
 
 }

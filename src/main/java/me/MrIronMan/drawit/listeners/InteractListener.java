@@ -3,6 +3,7 @@ package me.MrIronMan.drawit.listeners;
 import de.tr7zw.nbtapi.NBTItem;
 import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.game.Game;
+import me.MrIronMan.drawit.game.GameState;
 import me.MrIronMan.drawit.game.utility.DrawerTool;
 import me.MrIronMan.drawit.menuSystem.menus.ColorPickerMenu;
 import me.MrIronMan.drawit.utility.DrawingUtils;
@@ -16,14 +17,13 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 
 
-public class InteractEvent implements Listener {
+public class InteractListener implements Listener {
 
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -36,39 +36,47 @@ public class InteractEvent implements Listener {
         if (DrawIt.getInstance().isInGame(player)) {
             Game game = DrawIt.getInstance().getGame(player);
             if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK) || e.getAction().equals(Action.RIGHT_CLICK_AIR)) {
-                if (game.isSpectator(uuid)) {
+                if (game.isGameState(GameState.WAITING)) {
                     if (nbti.hasKey("name")) {
-                        if (nbti.getString("name").equals("spectate-item")) {
+                        if (nbti.getString("name").equals("waiting-item")) {
                             Bukkit.dispatchCommand(player, nbti.getString("command"));
                         }
                     }
-                }else if (game.getGameManager().isDrawer(player)) {
-                    DrawingUtils drawingUtils = new DrawingUtils(game.getBoard(), game, player);
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            if (!player.isBlocking()) return;
-                            Block boardBlock = OtherUtils.getTargetBlock(player, 100);
-                            if (nbti.hasKey("name") && nbti.getString("name").equals("drawer-tool")) {
-                                if (nbti.hasKey("type")) {
-                                    if (game.getBoard().isIn(boardBlock)) {
-                                        String type = nbti.getString("type");
-                                        if (type.equals(DrawerTool.THIN_BRUSH.getPath())) {
-                                            drawingUtils.thinBrush(boardBlock);
-                                        } else if (type.equals(DrawerTool.THICK_BRUSH.getPath())) {
-                                            drawingUtils.thickBrush(boardBlock);
-                                        } else if (type.equals(DrawerTool.SPRAY_CANVAS.getPath())) {
-                                            drawingUtils.sprayCan(boardBlock);
-                                        } else if (type.equals(DrawerTool.FILL_CAN.getPath())) {
-                                            drawingUtils.fillCan(boardBlock);
-                                        } else if (type.equals(DrawerTool.BURN_CANVAS.getPath())) {
-                                            drawingUtils.burnCanvas();
+                }else if (game.isGameState(GameState.PLAYING)) {
+                    if (game.isSpectator(uuid)) {
+                        if (nbti.hasKey("name")) {
+                            if (nbti.getString("name").equals("spectate-item")) {
+                                Bukkit.dispatchCommand(player, nbti.getString("command"));
+                            }
+                        }
+                    } else if (game.getGameManager().isDrawer(player)) {
+                        DrawingUtils drawingUtils = new DrawingUtils(game, player);
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                if (!player.isBlocking()) cancel();
+                                Block boardBlock = OtherUtils.getTargetBlock(player, 100);
+                                if (nbti.hasKey("name") && nbti.getString("name").equals("drawer-tool")) {
+                                    if (nbti.hasKey("type")) {
+                                        if (game.getBoard().isIn(boardBlock)) {
+                                            String type = nbti.getString("type");
+                                            if (type.equals(DrawerTool.THIN_BRUSH.getPath())) {
+                                                drawingUtils.thinBrush(boardBlock);
+                                            } else if (type.equals(DrawerTool.THICK_BRUSH.getPath())) {
+                                                drawingUtils.thickBrush(boardBlock);
+                                            } else if (type.equals(DrawerTool.SPRAY_CANVAS.getPath())) {
+                                                drawingUtils.sprayCan(boardBlock);
+                                            } else if (type.equals(DrawerTool.FILL_CAN.getPath())) {
+                                                drawingUtils.fillCan(boardBlock);
+                                            } else if (type.equals(DrawerTool.BURN_CANVAS.getPath())) {
+                                                drawingUtils.burnCanvas();
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
-                    }.runTaskTimer(DrawIt.getInstance(), 0L, 1L);
+                        }.runTaskTimer(DrawIt.getInstance(), 0L, 1L);
+                    }
                 }
             }
             else if (e.getAction().equals(Action.LEFT_CLICK_BLOCK) || e.getAction().equals(Action.LEFT_CLICK_AIR)) {
@@ -90,17 +98,4 @@ public class InteractEvent implements Listener {
 
     }
 
-    @EventHandler
-    public void onHeadMove(PlayerMoveEvent e) {
-        if (e.getFrom().getYaw() == e.getTo().getYaw() || e.getFrom().getPitch() == e.getTo().getPitch()) return;
-
-        Player player = e.getPlayer();
-        UUID uuid = player.getUniqueId();
-        ItemStack item = player.getItemInHand();
-        if (item.getType().equals(Material.AIR)) return;
-        NBTItem nbti = new NBTItem(item);
-
-
-
-    }
 }
