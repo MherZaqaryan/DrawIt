@@ -3,7 +3,7 @@ package me.MrIronMan.drawit.utility;
 public class PermissionsUtil {
 
     public static String COMMAND_SETMAINLOBBY = "DrawIt.SetMainLobby";
-    public static String COMMANDS_REMOVE = "DrawIt.Delete";
+    public static String COMMANDS_DELETE = "DrawIt.Delete";
     public static String COMMAND_SETUP = "DrawIt.Setup";
     public static String COMMAND_FORCESTART = "DrawIt.ForceStart";
     public static String COMMAND_ADDPOINTS = "DrawIt.AddPoints";

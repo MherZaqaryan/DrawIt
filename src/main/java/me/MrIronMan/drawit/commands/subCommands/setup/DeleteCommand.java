@@ -16,7 +16,8 @@ public class DeleteCommand extends SubCommand {
     @Override
     public boolean execute(CommandSender sender, String[] args) {
         Player player = (Player) sender;
-        if (player.hasPermission(PermissionsUtil.COMMANDS_REMOVE)) {
+
+        if (player.hasPermission(PermissionsUtil.COMMANDS_DELETE)) {
             if (args.length == 1) {
                 String gameName = args[0];
                 if (DrawIt.getInstance().getGame(gameName) != null) {

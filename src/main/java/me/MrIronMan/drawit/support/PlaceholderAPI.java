@@ -41,6 +41,8 @@ public class PlaceholderAPI extends PlaceholderExpansion {
                 return String.valueOf(pd.getData(PlayerDataType.INCORRECT_GUESSES));
             case "skips":
                 return String.valueOf(pd.getData(PlayerDataType.SKIPS));
+            case "rank_format":
+                return DrawIt.getConfigData().getPointFormat((Player) player);
         }
         return null;
     }

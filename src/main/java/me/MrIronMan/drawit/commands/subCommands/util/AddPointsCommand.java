@@ -28,6 +28,7 @@ public class AddPointsCommand extends SubCommand {
                     Player playerToAdd = Bukkit.getPlayer(playerName);
                     PlayerData playerData = DrawIt.getPlayerData(playerToAdd);
                     playerData.addData(PlayerDataType.POINTS, amount);
+                    player.sendMessage(TextUtil.colorize("{prefix} &a"+playerName+" &epoints has been added by "+amount));
                 }else {
                     player.sendMessage(TextUtil.colorize("{prefix} &cPlayer not found."));
                 }
