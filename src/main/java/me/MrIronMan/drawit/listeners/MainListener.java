@@ -12,6 +12,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
@@ -21,44 +22,74 @@ public class MainListener implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent e) {
+        if (e.isCancelled()) return;
         Player player = e.getPlayer();
-        if (DrawIt.getBuildMode(player)) return;
-        e.setCancelled(true);
+        if (DrawIt.getInstance().isIn(player)) {
+            if (DrawIt.getBuildMode(player)) return;
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
+        if (e.isCancelled()) return;
         Player player = e.getPlayer();
-        if (DrawIt.getBuildMode(player)) return;
-        e.setCancelled(true);
+        if (DrawIt.getInstance().isIn(player)) {
+            if (DrawIt.getBuildMode(player)) return;
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler
     public void onItemDrop(PlayerDropItemEvent e) {
+        if (e.isCancelled()) return;
         Player player = e.getPlayer();
-        if (DrawIt.getBuildMode(player)) return;
-        e.setCancelled(true);
+        if (DrawIt.getInstance().isIn(player)) {
+            if (DrawIt.getBuildMode(player)) return;
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler
     public void onItemPick(PlayerPickupItemEvent e) {
+        if (e.isCancelled()) return;
         Player player = e.getPlayer();
-        if (DrawIt.getBuildMode(player)) return;
-        e.setCancelled(true);
+        if (DrawIt.getInstance().isIn(player)) {
+            if (DrawIt.getBuildMode(player)) return;
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler
     public void onDamage(EntityDamageEvent e) {
         if (e.isCancelled()) return;
         if (e.getEntity() instanceof Player) {
-            e.setCancelled(true);
+            Player player = (Player) e.getEntity();
+            if (DrawIt.getInstance().isIn(player)) {
+                e.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onFoodLevelChange(FoodLevelChangeEvent e) {
+        if (e.isCancelled()) return;
+        if (e.getEntity() instanceof Player) {
+            Player player = (Player) e.getEntity();
+            if (DrawIt.getInstance().isIn(player)) {
+                e.setCancelled(true);
+            }
         }
     }
 
     @EventHandler
     public void onPlayerDamageByPlayer(EntityDamageByEntityEvent e) {
         if (e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
-            e.setCancelled(true);
+            if (e.isCancelled()) return;
+            Player damager = (Player) e.getDamager();
+            if (DrawIt.getInstance().isIn(damager)) {
+                e.setCancelled(true);
+            }
         }
     }
 
@@ -72,20 +103,22 @@ public class MainListener implements Listener {
     @EventHandler
     public void onInventoryInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
-        if (DrawIt.getBuildMode(player)) return;
         if (e.isCancelled()) return;
-        Block b = e.getClickedBlock();
-        if (b != null && e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (b.getType() == XMaterial.CRAFTING_TABLE.parseMaterial()) {
-                e.setCancelled(true);
-            } else if (b.getType() == XMaterial.ENCHANTING_TABLE.parseMaterial()) {
-                e.setCancelled(true);
-            } else if (b.getType() == Material.FURNACE) {
-                e.setCancelled(true);
-            } else if (b.getType() == Material.BREWING_STAND) {
-                e.setCancelled(true);
-            } else if (b.getType() == Material.ANVIL) {
-                e.setCancelled(true);
+        if (DrawIt.getInstance().isIn(player)) {
+            if (DrawIt.getBuildMode(player)) return;
+            Block b = e.getClickedBlock();
+            if (b != null && e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                if (b.getType() == XMaterial.CRAFTING_TABLE.parseMaterial()) {
+                    e.setCancelled(true);
+                } else if (b.getType() == XMaterial.ENCHANTING_TABLE.parseMaterial()) {
+                    e.setCancelled(true);
+                } else if (b.getType() == Material.FURNACE) {
+                    e.setCancelled(true);
+                } else if (b.getType() == Material.BREWING_STAND) {
+                    e.setCancelled(true);
+                } else if (b.getType() == Material.ANVIL) {
+                    e.setCancelled(true);
+                }
             }
         }
     }

@@ -44,22 +44,26 @@ public class PluginMessages {
             simpleText(""),
             simpleHover("  &b&lDraw&a&lIt &e&lCommands", "&aAuthor: &7MrIronMan (Spigot: Mher)"),
             simpleText(""),
-            commandRun("  &c• &7/DrawIt SetMainLobby", "&7Click to set main lobby.", "/DrawIt SetMainLobby"),
-            commandSuggest("  &c• &7/DrawIt Setup <WorldName>", "&7Click to setup game.", "/DrawIt Setup "),
-            commandSuggest("  &c• &7/DrawIt Delete <Game>", "&7Click to delete game.", "/DrawIt Delete "),
-            commandSuggest("  &c• &7/DrawIt Join <Game>", "&7Click to join game.", "/DrawIt Join "),
-            commandRun("  &c• &7/DrawIt Start", "&7Force start game when there is not enough players.", "/DrawIt Start"),
-            commandSuggest("  &c• &7/DrawIt Menu <Games|Spectate>", "&7Click to open gui.", "/DrawIt Menu"),
-            commandRun("  &c• &7/DrawIt Reload", "&7Click to reload configuration files.", "/DrawIt Reload"),
-            commandRun("  &c• &7/DrawIt BuildMode", "&7Click to activate build mode.", "/DrawIt BuildMode"),
-            commandSuggest("  &c• &7/DrawIt AddPoint <Player> <Amount>", "&7Click to add points for player.", "/DrawIt AddPoints <Player> <Amount>"),
+            commandRun("  &c• &7/DrawIt SetMainLobby", "&7Set main lobby location.", "/DrawIt SetMainLobby"),
+            commandSuggest("  &c• &7/DrawIt Setup (World|Exit)", "&7Start setup a new or edit game or exit from current.", "/DrawIt Setup "),
+            commandSuggest("  &c• &7/DrawIt Delete (Game)", "&7Delete specified game.", "/DrawIt Delete "),
+            commandSuggest("  &c• &7/DrawIt Join (Game)", "&7Join a specified game.", "/DrawIt Join "),
+            commandSuggest("  &c• &7/DrawIt Leave", "&7Leave from the current game (Connect to lobby server).", "/DrawIt Leave"),
+            commandSuggest("  &c• &7/DrawIt Menu (Games|Spectate|Teleporter)", "&7Open the games, spectate games or teleporter menu.", "/DrawIt Menu "),
+            commandRun("  &c• &7/DrawIt Start", "&7Force start the game when there is not enough players.", "/DrawIt Start"),
+            commandRun("  &c• &7/DrawIt Reload", "&7Reload all configuration files (Config.yml, Messages.yml, Words.yml).", "/DrawIt Reload"),
+            commandRun("  &c• &7/DrawIt BuildMode", "&7Enable/disable build mode.", "/DrawIt BuildMode"),
+            commandSuggest("  &c• &7/DrawIt AddPoint (Player) (Amount)", "&7Add player points.", "/DrawIt AddPoints <Player> <Amount>"),
             simpleText(""),
             simpleText("&3&l&m----------------------------"),
     };
 
-    public static String USAGE_COMMAND_SETUP = "{prefix} &cUsage: &7/DrawIt Setup <WorldName>";
-    public static String USAGE_COMMAND_SETBOARD = "{prefix} &cUsage: &7/DrawIt SetBoard <Pos1|Pos2>";
-    public static String USAGE_COMMAND_DELETE = "{prefix} &cUsage: &7/DrawIt Remove <Game>";
+    public static String USAGE_COMMAND_MENU = "{prefix} &cUsage: &7/DrawIt Menu (Games|Spectate|Teleporter)";
+    public static String USAGE_COMMAND_SETUP = "{prefix} &cUsage: &7/DrawIt Setup (World|Exit)";
+    public static String USAGE_COMMAND_SETBOARD = "{prefix} &cUsage: &7/DrawIt SetBoard (Pos1|Pos2)";
+    public static String USAGE_COMMAND_DELETE = "{prefix} &cUsage: &7/DrawIt Remove (Game)";
+    public static String USAGE_COMMAND_JOIN = "{prefix} &cUsage: &7/DrawIt Join (Game)";
+    public static String USAGE_COMMAND_ADD_POINTS = "{prefix} &cUsage: &7&7/DrawIt AddPoint (Player) (Amount)";
 
     public static String BUILDMODE_ENABLED = "{prefix} &aBuild mode has been enabled.";
     public static String BUILDMODE_DISABLED = "{prefix} &cBuild mode has been disabled.";
@@ -72,5 +76,11 @@ public class PluginMessages {
     public static String DISABLE_GAME = "{prefix} &cPlease disable this game first.";
     public static String SUBCOMMAND_NOT_FOUND = "{prefix} &cSub-command not found, type /drawit for all list of commands.";
     public static String CONFIG_RELOADED = "{prefix} &aConfiguration files has been successfully reloaded.";
+
+    public static String POINTS_NOT_NUMBER = "{prefix} &cAmount must be number.";
+    public static String POINTS_NOT_POSITIVE = "{prefix} &cAmount must be positive";
+    public static String POINTS_ADDED = "{prefix} &a{player} &ePoints has been added by &a{points}.";
+
+    public static String PLAYER_NOT_FOUND = "{prefix} &cPlayer not found.";
 
 }

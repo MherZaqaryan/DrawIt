@@ -151,6 +151,16 @@ public class DrawIt extends JavaPlugin {
         return this.games;
     }
 
+    public Set<World> getGamesWorlds() {
+        Set<World> worlds = new HashSet<>();
+        for (Game game : games) {
+            if (game.isEnabled()) {
+                worlds.add(game.getWorld());
+            }
+        }
+        return worlds;
+    }
+
     public boolean isInGame(Player player) {
         return playerGameMap.get(player) != null;
     }
@@ -306,11 +316,17 @@ public class DrawIt extends JavaPlugin {
         return setupGameMap.get(player);
     }
 
-    public void teleportToLobby(Player player) {
+    public Location getLobbyLocation() {
         if (isLobbySet()) {
-            player.teleport(getConfigData().getLocation(ConfigData.LOBBY_LOCATION));
+            return getConfigData().getLocation(ConfigData.LOBBY_LOCATION);
         }else {
-            player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
+            return Bukkit.getWorlds().get(0).getSpawnLocation();
+        }
+    }
+
+    public void teleportToLobby(Player player) {
+        player.teleport(getLobbyLocation());
+        if (!isLobbySet()) {
             if (player.hasPermission(PermissionsUtil.COMMAND_SETMAINLOBBY)) {
                 player.sendMessage(TextUtil.colorize(PluginMessages.LOBBY_NOT_SET));
             }
@@ -408,6 +424,14 @@ public class DrawIt extends JavaPlugin {
 
     public static DrawIt getInstance() {
         return instance;
+    }
+
+    public World getLobbyWorld() {
+        return getLobbyLocation().getWorld();
+    }
+
+    public boolean isIn(Player player) {
+        return player.getLocation().getWorld().equals(getLobbyWorld()) || getGamesWorlds().contains(player.getLocation().getWorld());
     }
 
 }
