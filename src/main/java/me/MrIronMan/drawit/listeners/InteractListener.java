@@ -30,8 +30,8 @@ public class InteractListener implements Listener {
     public void onInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
         UUID uuid = player.getUniqueId();
-        if (player.getItemOnCursor() == null || player.getItemOnCursor().getType().equals(Material.AIR)) return;
-        ItemStack itemStack = player.getItemOnCursor();
+        if (player.getItemInHand() == null || player.getItemInHand().getType().equals(Material.AIR)) return;
+        ItemStack itemStack = player.getItemInHand();
         NBTItem nbti = new NBTItem(itemStack);
         if (DrawIt.getInstance().isInGame(player)) {
             Game game = DrawIt.getInstance().getGame(player);
