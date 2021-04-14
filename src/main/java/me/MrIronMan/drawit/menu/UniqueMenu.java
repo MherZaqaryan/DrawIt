@@ -1,4 +1,4 @@
-package me.MrIronMan.drawit.menuSystem;
+package me.MrIronMan.drawit.menu;
 
 import org.bukkit.event.inventory.InventoryCloseEvent;
 

@@ -53,7 +53,7 @@ public class PluginMessages {
             commandRun("  &c• &7/DrawIt Start", "&7Force start the game when there is not enough players.", "/DrawIt Start"),
             commandRun("  &c• &7/DrawIt Reload", "&7Reload all configuration files (Config.yml, Messages.yml, Words.yml).", "/DrawIt Reload"),
             commandRun("  &c• &7/DrawIt BuildMode", "&7Enable/disable build mode.", "/DrawIt BuildMode"),
-            commandSuggest("  &c• &7/DrawIt AddPoint (Player) (Amount)", "&7Add player points.", "/DrawIt AddPoints <Player> <Amount>"),
+            commandSuggest("  &c• &7/DrawIt AddPoints (Player) (Amount)", "&7Add player points.", "/DrawIt AddPoints <Player> <Amount>"),
             simpleText(""),
             simpleText("&3&l&m----------------------------"),
     };
@@ -63,7 +63,7 @@ public class PluginMessages {
     public static String USAGE_COMMAND_SETBOARD = "{prefix} &cUsage: &7/DrawIt SetBoard (Pos1|Pos2)";
     public static String USAGE_COMMAND_DELETE = "{prefix} &cUsage: &7/DrawIt Remove (Game)";
     public static String USAGE_COMMAND_JOIN = "{prefix} &cUsage: &7/DrawIt Join (Game)";
-    public static String USAGE_COMMAND_ADD_POINTS = "{prefix} &cUsage: &7&7/DrawIt AddPoint (Player) (Amount)";
+    public static String USAGE_COMMAND_ADD_POINTS = "{prefix} &cUsage: &7&7/DrawIt AddPoints (Player) (Amount)";
 
     public static String BUILDMODE_ENABLED = "{prefix} &aBuild mode has been enabled.";
     public static String BUILDMODE_DISABLED = "{prefix} &cBuild mode has been disabled.";

@@ -5,7 +5,7 @@ import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.game.GameState;
 import me.MrIronMan.drawit.game.utility.DrawerTool;
-import me.MrIronMan.drawit.menuSystem.menus.ColorPickerMenu;
+import me.MrIronMan.drawit.menu.menus.ColorPickerMenu;
 import me.MrIronMan.drawit.utility.DrawingUtils;
 import me.MrIronMan.drawit.utility.OtherUtils;
 import org.bukkit.Bukkit;
@@ -30,8 +30,8 @@ public class InteractListener implements Listener {
     public void onInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
         UUID uuid = player.getUniqueId();
-        if (player.getItemInHand() == null || player.getItemInHand().getType().equals(Material.AIR)) return;
-        ItemStack itemStack = player.getItemInHand();
+        if (player.getItemOnCursor() == null || player.getItemOnCursor().getType().equals(Material.AIR)) return;
+        ItemStack itemStack = player.getItemOnCursor();
         NBTItem nbti = new NBTItem(itemStack);
         if (DrawIt.getInstance().isInGame(player)) {
             Game game = DrawIt.getInstance().getGame(player);

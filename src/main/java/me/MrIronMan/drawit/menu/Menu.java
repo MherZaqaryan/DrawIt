@@ -1,4 +1,4 @@
-package me.MrIronMan.drawit.menuSystem;
+package me.MrIronMan.drawit.menu;
 
 import me.MrIronMan.drawit.utility.ItemUtil;
 import me.MrIronMan.drawit.utility.TextUtil;

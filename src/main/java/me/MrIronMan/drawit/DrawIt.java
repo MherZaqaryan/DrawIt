@@ -9,7 +9,7 @@ import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.game.GameState;
 import me.MrIronMan.drawit.game.SetupGame;
 import me.MrIronMan.drawit.listeners.*;
-import me.MrIronMan.drawit.menuSystem.PlayerMenuUtility;
+import me.MrIronMan.drawit.menu.PlayerMenuUtility;
 import me.MrIronMan.drawit.sql.MySQL;
 import me.MrIronMan.drawit.sql.PlayerData;
 import me.MrIronMan.drawit.sql.PlayerDataType;

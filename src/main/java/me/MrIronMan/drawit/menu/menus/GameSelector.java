@@ -1,4 +1,4 @@
-package me.MrIronMan.drawit.menuSystem.menus;
+package me.MrIronMan.drawit.menu.menus;
 
 import de.tr7zw.nbtapi.NBTItem;
 import me.MrIronMan.drawit.DrawIt;
@@ -6,8 +6,8 @@ import me.MrIronMan.drawit.data.ConfigData;
 import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.game.GameState;
-import me.MrIronMan.drawit.menuSystem.PlayerMenuUtility;
-import me.MrIronMan.drawit.menuSystem.UniqueMenu;
+import me.MrIronMan.drawit.menu.PlayerMenuUtility;
+import me.MrIronMan.drawit.menu.UniqueMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

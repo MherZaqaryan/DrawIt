@@ -6,7 +6,7 @@ import me.MrIronMan.drawit.data.ConfigData;
 import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.game.GameState;
-import me.MrIronMan.drawit.menuSystem.menus.WordChooseMenu;
+import me.MrIronMan.drawit.menu.menus.WordChooseMenu;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 

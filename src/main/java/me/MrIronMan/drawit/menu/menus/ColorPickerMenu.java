@@ -1,12 +1,12 @@
-package me.MrIronMan.drawit.menuSystem.menus;
+package me.MrIronMan.drawit.menu.menus;
 
 import com.cryptomorin.xseries.XSound;
 import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.data.ConfigData;
 import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.game.Game;
-import me.MrIronMan.drawit.menuSystem.Menu;
-import me.MrIronMan.drawit.menuSystem.PlayerMenuUtility;
+import me.MrIronMan.drawit.menu.Menu;
+import me.MrIronMan.drawit.menu.PlayerMenuUtility;
 import me.MrIronMan.drawit.utility.OtherUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

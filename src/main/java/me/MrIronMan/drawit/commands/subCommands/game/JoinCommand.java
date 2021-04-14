@@ -3,6 +3,7 @@ package me.MrIronMan.drawit.commands.subCommands.game;
 import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.commands.SubCommand;
 import me.MrIronMan.drawit.data.MessagesData;
+import me.MrIronMan.drawit.data.PluginMessages;
 import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.utility.TextUtil;
 import org.bukkit.command.CommandSender;
@@ -22,6 +23,8 @@ public class JoinCommand extends SubCommand {
             }else {
                 player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.GAME_NOT_FOUND)));
             }
+        }else {
+            player.sendMessage(TextUtil.colorize(PluginMessages.USAGE_COMMAND_JOIN));
         }
 
         return false;

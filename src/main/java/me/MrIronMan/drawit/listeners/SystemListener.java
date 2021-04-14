@@ -1,11 +1,9 @@
 package me.MrIronMan.drawit.listeners;
 
 import de.tr7zw.nbtapi.NBTItem;
-import me.MrIronMan.drawit.DrawIt;
-import me.MrIronMan.drawit.menuSystem.UniqueMenu;
-import me.MrIronMan.drawit.menuSystem.Menu;
+import me.MrIronMan.drawit.menu.UniqueMenu;
+import me.MrIronMan.drawit.menu.Menu;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;

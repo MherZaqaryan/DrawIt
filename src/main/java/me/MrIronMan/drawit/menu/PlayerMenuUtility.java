@@ -1,6 +1,6 @@
-package me.MrIronMan.drawit.menuSystem;
+package me.MrIronMan.drawit.menu;
 
-import me.MrIronMan.drawit.menuSystem.menus.GameSelector;
+import me.MrIronMan.drawit.menu.menus.GameSelector;
 import org.bukkit.entity.Player;
 
 public class PlayerMenuUtility {

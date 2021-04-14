@@ -1,9 +1,9 @@
-package me.MrIronMan.drawit.menuSystem.menus;
+package me.MrIronMan.drawit.menu.menus;
 
 import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.game.Game;
-import me.MrIronMan.drawit.menuSystem.UniqueMenu;
-import me.MrIronMan.drawit.menuSystem.PlayerMenuUtility;
+import me.MrIronMan.drawit.menu.UniqueMenu;
+import me.MrIronMan.drawit.menu.PlayerMenuUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
