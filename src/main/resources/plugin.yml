@@ -7,30 +7,14 @@ description: DrawIt Mini-game by MrIronMan (MherZaqaryan)
 softdepend: [PlaceholderAPI]
 
 permissions:
-  DrawIt.SetMainLobby:
-    description: Allow to set main lobby.
-    default: false
-  DrawIt.Setup:
-    description: Allow to setup game.
-    default: false
-  DrawIt.Delete:
-    description: Allow to delete game.
-    default: false
-  DrawIt.ForceStart:
-    description: Allow to force start game.
-    default: false
-  DrawIt.AddPoints:
-    description: Allow to add player points.
-    default: false
-  DrawIt.Reload:
-    description: Allow to reload configuration files.
-    default: false
-  DrawIt.Main:
-    description: Allow to see all list of commands.
-    default: false
-  DrawIt.BuildMode:
-    description: Allow to enable/disable build mode.
-    default: false
-  DrawIt.Skip:
-    description: Allow to skip the word in game.
-    default: false
+  DrawIt.*:
+    description: Allow to use all DrawIt commands
+    children:
+      DrawIt.Setup: true
+      DrawIt.Delete: true
+      DrawIt.ForceStart: true
+      DrawIt.AddPoints: true
+      DrawIt.Reload: true
+      DrawIt.Main: true
+      DrawIt.BuildMode: true
+      DrawIt.Skip: true
