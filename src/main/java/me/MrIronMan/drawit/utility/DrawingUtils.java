@@ -68,7 +68,7 @@ public class DrawingUtils {
     }
 
     public void fillCan(Block block) {
-        FloodFill floodFill = new FloodFill(board, block.getLocation(), game.getPlayerColor(uuid).getType(), (byte) game.getPlayerColor(uuid).getDurability());
+        FloodFill floodFill = new FloodFill(board, block, game.getPlayerColor(uuid).getType(), (byte) game.getPlayerColor(uuid).getDurability());
         floodFill.setBlocks();
     }
 
