@@ -13,12 +13,22 @@ import org.bukkit.plugin.Plugin;
 public class DataManager {
 
     private Plugin plugin;
+    private String name;
+    private String dir;
+
     private YamlConfiguration yml;
     private File config;
+
     private boolean firstTime = false;
 
     public DataManager(Plugin plugin, String dir, String name) {
         this.plugin = plugin;
+        this.name = name;
+        this.dir = dir;
+        createFile();
+    }
+
+    public void createFile() {
         File d = new File(dir);
         if (!d.exists() && !d.mkdirs()) {
             plugin.getLogger().warning("Couldn't create " + d.getPath());
@@ -42,6 +52,7 @@ public class DataManager {
     }
 
     public void reload() {
+        createFile();
         plugin.getLogger().info("Reloading configuration file " + this.config.getPath());
         this.yml = YamlConfiguration.loadConfiguration(this.config);
     }

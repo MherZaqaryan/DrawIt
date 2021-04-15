@@ -83,7 +83,7 @@ public class MessagesData extends DataManager {
         }
 
         msg.addDefault(WORD_CHOOSE_MENU_SETTINGS_TITLE, "&8Select a Word");
-        saveItem(ConfigData.WORD_CHOOSE_MENU_WORD_ITEM, "&e&l{word}", "","&7Click to select: {word}","&7as the word!","","&bClick to select");
+        saveItem(ConfigData.WORD_CHOOSE_MENU_WORD_ITEM, "&e&l{word}", "","&7Click to select: &f{word}","&7as the word!","","&bClick to select");
 
         msg.addDefault(SPECTATE_MENU_SETTINGS_TITLE, "&7Spectate Game");
         saveItem(ConfigData.SPECTATE_MENU_GAME, "&e{game}", "","&7Players: &f{in}/{max}","&7State: &f{state}","","&bClick to join");
