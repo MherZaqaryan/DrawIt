@@ -43,6 +43,7 @@ public class SystemListener implements Listener {
             if (nbti.getString("name").equals("lobby-item") ||
                     nbti.getString("name").equals("drawer-tool") ||
                     nbti.getString("name").equals("waiting-tool") ||
+                    nbti.getString("name").equals("waiting-item") ||
                     nbti.getString("name").equals("spectate-item")) {
                 e.setCancelled(true);
             }

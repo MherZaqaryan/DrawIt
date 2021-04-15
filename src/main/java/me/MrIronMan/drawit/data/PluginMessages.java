@@ -82,5 +82,7 @@ public class PluginMessages {
     public static String POINTS_ADDED = "{prefix} &a{player} &ePoints has been added by &a{points}.";
 
     public static String PLAYER_NOT_FOUND = "{prefix} &cPlayer not found.";
+    public static String SET_LOBBY_IN_GAME = "{prefix} &cYou cant set main lobby location while in game.";
+
 
 }

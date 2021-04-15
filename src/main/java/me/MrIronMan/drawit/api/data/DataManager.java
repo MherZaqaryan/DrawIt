@@ -52,8 +52,6 @@ public class DataManager {
     }
 
     public void reload() {
-        createFile();
-        plugin.getLogger().info("Reloading configuration file " + this.config.getPath());
         this.yml = YamlConfiguration.loadConfiguration(this.config);
     }
 

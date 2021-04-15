@@ -48,7 +48,9 @@ public class SpectateMenu extends Menu {
         NBTItem nbtItem = new NBTItem(item);
         if (nbtItem.hasKey("name")) {
             if (nbtItem.getString("name").equals("spectate-menu")) {
-                Bukkit.dispatchCommand(player, nbtItem.getString("command"));
+                if (!nbtItem.getString("command").equals("none")) {
+                    Bukkit.dispatchCommand(player, nbtItem.getString("command"));
+                }
             }
         }
     }

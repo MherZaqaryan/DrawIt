@@ -36,10 +36,12 @@ public class InteractListener implements Listener {
         if (DrawIt.getInstance().isInGame(player)) {
             Game game = DrawIt.getInstance().getGame(player);
             if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK) || e.getAction().equals(Action.RIGHT_CLICK_AIR)) {
-                if (game.isGameState(GameState.WAITING)) {
+                if (game.isGameState(GameState.WAITING) || game.isGameState(GameState.STARTING)) {
                     if (nbti.hasKey("name")) {
                         if (nbti.getString("name").equals("waiting-item")) {
-                            Bukkit.dispatchCommand(player, nbti.getString("command"));
+                            if (!nbti.getString("command").equals("none")) {
+                                Bukkit.dispatchCommand(player, nbti.getString("command"));
+                            }
                         }
                     }
                 }else if (game.isGameState(GameState.PLAYING)) {
@@ -90,7 +92,9 @@ public class InteractListener implements Listener {
             if (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
                 if (nbti.hasKey("name")) {
                     if (nbti.getString("name").equals("lobby-item")) {
-                        Bukkit.dispatchCommand(player, nbti.getString("command"));
+                        if (!nbti.getString("command").equals("none")) {
+                            Bukkit.dispatchCommand(player, nbti.getString("command"));
+                        }
                     }
                 }
             }

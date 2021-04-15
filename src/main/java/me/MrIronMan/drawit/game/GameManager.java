@@ -70,14 +70,20 @@ public class GameManager {
                         player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.FULL_GAME)));
                     } else {
                         game.getPlayers().add(uuid);
-                        setWaitingItems(player);
                         DrawIt.getInstance().setPlayerGame(player, game);
                         activateGameSettings(player);
                         player.teleport(game.getLobbyLocation());
+                        setWaitingItems(player);
                         sendMessage(DrawIt.getMessagesData().getString(MessagesData.PLAYER_JOIN).replace("{player}", player.getDisplayName()));
                         if (game.getPlayers().size() >= game.getMinPlayers() && !game.isGameState(GameState.STARTING)) {
                             startCountdown();
                         }
+                    }
+                }else if (game.isGameState(GameState.PLAYING)) {
+                    if (DrawIt.getInstance().isInGame(player)) {
+                        player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.IN_GAME)));
+                    }else {
+                        activateSpectatorSettings(player);
                     }
                 }
             } else {
@@ -266,8 +272,8 @@ public class GameManager {
         List<String> newLines = new ArrayList<>();
         for (String s : DrawIt.getMessagesData().getStringList(MessagesData.BOARD_GAME_LINES)) {
             newLines.add(TextUtil.getByPlaceholders(s
-                    .replace("{time}", time != -1 ? OtherUtils.formatTime(time) : "&8Waiting...")
-                    .replace("{drawer}", drawer != null ? "&f"+drawer.getDisplayName() : "&8None")
+                    .replace("{time}", time != -1 ? OtherUtils.formatTime(time) : DrawIt.getMessagesData().getString(MessagesData.SCOREBOARD_WAITING))
+                    .replace("{drawer}", drawer != null ? "&f"+drawer.getDisplayName() : DrawIt.getMessagesData().getString(MessagesData.SCOREBOARD_NO_DRAWER))
                     .replace("{rounds_left}", "&f"+getWaitingPlayers().size())
                     .replace("{leader_1}", getLeader(0))
                     .replace("{leader_2}", getLeader(1))
@@ -327,10 +333,10 @@ public class GameManager {
     }
 
     public String getLeader(int i) {
-        if (getLeaders().size() <= i) return "&8Waiting...";
+        if (getLeaders().size() <= i) return DrawIt.getMessagesData().getString(MessagesData.SCOREBOARD_WAITING);
         Map.Entry<UUID, Integer> e = getLeaders().get(i);
         String playerName = Bukkit.getPlayer(e.getKey()).getDisplayName();
-        return DrawIt.getMessagesData().getString(MessagesData.LEADER_FORMAT).replace("{point}", String.valueOf(e.getValue())).replace("{player}", playerName);
+        return DrawIt.getMessagesData().getString(MessagesData.SCOREBOARD_LEADER_FORMAT).replace("{point}", String.valueOf(e.getValue())).replace("{player}", playerName);
     }
 
     public int getCorrectGuesses(Player player) {

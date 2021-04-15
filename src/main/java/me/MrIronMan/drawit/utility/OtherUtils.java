@@ -157,4 +157,8 @@ public class OtherUtils {
         return online;
     }
 
+    public static int getWordsCount() {
+        return DrawIt.getWordsData().getStringList("words").size();
+    }
+
 }

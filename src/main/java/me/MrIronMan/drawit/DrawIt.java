@@ -206,12 +206,12 @@ public class DrawIt extends JavaPlugin {
                 gameMap.put(game, game.getPlayers().size());
             }
         }
-        if (gameMap.isEmpty()) {
+        List<Map.Entry<Game, Integer>> list = new ArrayList<>(gameMap.entrySet());
+        list.sort((e1, e2) -> -e1.getValue().compareTo(e2.getValue()));
+        if (gameMap.isEmpty() || !list.get(0).getKey().isEnabled()) {
             player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.QUICK_JOIN_GAME_NOT_FOUND)));
             return;
         }
-        List<Map.Entry<Game, Integer>> list = new ArrayList<>(gameMap.entrySet());
-        list.sort((e1, e2) -> -e1.getValue().compareTo(e2.getValue()));
         list.get(0).getKey().getGameManager().joinGame(player);
     }
 

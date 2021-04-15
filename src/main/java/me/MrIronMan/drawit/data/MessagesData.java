@@ -37,7 +37,7 @@ public class MessagesData extends DataManager {
         msg.addDefault(NO_PERMS, "{prefix} &cCommand dose not exists or you don't have permission.");
         msg.addDefault(NOT_DRAWER_TO_SKIP, "{prefix} &cYou need to be drawer to skip.");
         msg.addDefault(NO_PERM_SKIP, "{prefix} &cYou cant skip the game, you need to be at least VIP.");
-        msg.addDefault(GAME_SKIPPED, "{prefix} &c&l{drawer} decided to skip the word.&a&l Next round will start shortly.");
+        msg.addDefault(GAME_SKIPPED, "{prefix} &c&l{drawer} decided to skip.");
         msg.addDefault(QUICK_JOIN_GAME_NOT_FOUND, "{prefix} &cCurrently there is no game available to join.");
 
         msg.addDefault(COLOR_PICKER_TITLE, "&5&lColor Picker");
@@ -49,7 +49,9 @@ public class MessagesData extends DataManager {
         msg.addDefault(GUESSERS, "&e&l{word}");
         msg.addDefault(HIDING_CHARACTER, "_");
 
-        msg.addDefault(LEADER_FORMAT, "&f{point} &8- &7{player}");
+        msg.addDefault(SCOREBOARD_WAITING, "&8Waiting...");
+        msg.addDefault(SCOREBOARD_NO_DRAWER, "&8None");
+        msg.addDefault(SCOREBOARD_LEADER_FORMAT, "&f{point} &8- &7{player}");
 
         msg.addDefault(GAME_END_MESSAGE, new String[]{
                 "",
@@ -72,32 +74,38 @@ public class MessagesData extends DataManager {
 
         msg.addDefault(GAME_MENU_SETTINGS_TITLE, "&7Game Selector");
 
-        saveItem(ConfigData.GAMES_MENU_SETTINGS_WAITING, "&a{game}", "","&7Players: &f{in}/{max}","&7State: &f{state}","","&bClick to join");
-        saveItem(ConfigData.GAMES_MENU_SETTINGS_STARTING, "&a{game}", "","&7Players: &f{in}/{max}","&7State: &f{state}","","&bClick to join");
-        saveItem(ConfigData.GAMES_MENU_SETTINGS_PLAYING, "&a{game}", "","&7Players: &f{in}/{max}","&7State: &f{state}","","&bClick to join");
+        saveItem(ConfigData.GAMES_MENU_SETTINGS_WAITING, "&a{game}", "","&7Players: &f{in}/{max}","&7State: &f{state}","","&b► Click to join");
+        saveItem(ConfigData.GAMES_MENU_SETTINGS_STARTING, "&a{game}", "","&7Players: &f{in}/{max}","&7State: &f{state}","","&b► Click to join");
+        saveItem(ConfigData.GAMES_MENU_SETTINGS_PLAYING, "&a{game}", "","&7Players: &f{in}/{max}","&7State: &f{state}","","&b► Click to spectate");
         saveItem(ConfigData.GAMES_MENU_SETTINGS_WAITING_SLOTS, "&7Waiting...", "","&bWaiting for instance...");
 
         if (isFirstTime()) {
-            saveItem(ConfigData.GAMES_MENU_ITEMS+".spectate-game", "&c&lSpectate Game", "","&7Allows you to browse","&7playing games to spectate","","&bClick to view games");
-            saveItem(ConfigData.GAMES_MENU_ITEMS+".quick-join", "&a&lQuick Join", "","&7Adds you to join the","&7quick join queue to find","&7you a game!","","&bClick to join queue");
+            saveItem(ConfigData.GAMES_MENU_ITEMS+".spectate-game", "&c&lSpectate Game", "","&7Allows you to browse","&7playing games to spectate","","&b► Click to view games");
+            saveItem(ConfigData.GAMES_MENU_ITEMS+".quick-join", "&a&lQuick Join", "","&7Adds you to join the","&7quick join queue to find","&7you a game!","","&b► Click to join queue");
+        }
+
+        msg.addDefault(ConfigData.WAITING_ITEMS, new String[]{});
+
+        if (isFirstTime()) {
+            saveItem(ConfigData.WAITING_ITEMS+".leave", "&cLeave &7[Right-click]", "","&b► Click to leave.");
         }
 
         msg.addDefault(WORD_CHOOSE_MENU_SETTINGS_TITLE, "&8Select a Word");
-        saveItem(ConfigData.WORD_CHOOSE_MENU_WORD_ITEM, "&e&l{word}", "","&7Click to select: &f{word}","&7as the word!","","&bClick to select");
+        saveItem(ConfigData.WORD_CHOOSE_MENU_WORD_ITEM, "&e&l{word}", "","&7Click to select: &f{word}","&7as the word!","","&b► Click to select");
 
         msg.addDefault(SPECTATE_MENU_SETTINGS_TITLE, "&7Spectate Game");
-        saveItem(ConfigData.SPECTATE_MENU_GAME, "&e{game}", "","&7Players: &f{in}/{max}","&7State: &f{state}","","&bClick to join");
+        saveItem(ConfigData.SPECTATE_MENU_GAME, "&e{game}", "","&7Players: &f{in}/{max}","&7State: &f{state}","","&b► Click to join");
 
 
         if (isFirstTime()) {
-            saveItem(ConfigData.SPECTATE_MENU_ITEMS+".back", "&c&lBack", "","&bClick here to go back");
+            saveItem(ConfigData.SPECTATE_MENU_ITEMS+".back", "&c&lBack", "","&b► Click here to go back");
         }
 
         msg.addDefault(ConfigData.SPECTATE_ITEMS, new String[]{});
 
         if (isFirstTime()) {
-            saveItem(ConfigData.SPECTATE_ITEMS+".teleporter", "&aTeleporter &7[Right-click]", "","&bClick to open teleporter menu.");
-            saveItem(ConfigData.SPECTATE_ITEMS+".leave", "&cLeave &7[Right-click]", "","&bClick to leave.");
+            saveItem(ConfigData.SPECTATE_ITEMS+".teleporter", "&aTeleporter &7[Right-click]", "","&b► Click to open teleporter menu.");
+            saveItem(ConfigData.SPECTATE_ITEMS+".leave", "&cLeave &7[Right-click]", "","&b► Click to leave.");
         }
 
         msg.addDefault(TELEPORTER_MENU_SETTINGS_TITLE, "&7Teleporter");
@@ -191,7 +199,9 @@ public class MessagesData extends DataManager {
     public static String NOT_DRAWER_TO_SKIP = "not-drawer-to-skip";
     public static String NO_PERM_SKIP = "skip-no-permission";
     public static String COLOR_PICKER_TITLE = "color-picker-title";
-    public static String LEADER_FORMAT = "scoreboard-leader-format";
+    public static String SCOREBOARD_WAITING = "scoreboard.waiting";
+    public static String SCOREBOARD_NO_DRAWER = "scoreboard.no-drawer";
+    public static String SCOREBOARD_LEADER_FORMAT = "scoreboard.leader-format";
     public static String GAME_END_MESSAGE = "game-end-message";
 
     public static String GAME_MENU_SETTINGS_TITLE = "games-menu.settings.title";

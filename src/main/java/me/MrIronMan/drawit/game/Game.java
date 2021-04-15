@@ -46,7 +46,7 @@ public class Game {
         this.enabled = gameFile.getBoolean("enabled");
         this.minPlayers = gameFile.getInt("min-players");
         this.maxPlayers = gameFile.getInt("max-players");
-        this.words = OtherUtils.getWords(maxPlayers*3);
+        this.words = OtherUtils.getWords(maxPlayers*DrawIt.getConfigData().getGameWordsCount());
         this.gameManager = new GameManager(this);
         this.lobbyLocation = readLocation(gameFile.getString("locations.lobby"));
         this.drawerLocation = readLocation(gameFile.getString("locations.drawer"));

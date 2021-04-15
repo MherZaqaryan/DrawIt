@@ -2,7 +2,6 @@ package me.MrIronMan.drawit.listeners;
 
 import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.game.Game;
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

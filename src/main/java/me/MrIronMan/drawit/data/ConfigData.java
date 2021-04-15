@@ -27,7 +27,7 @@ public class ConfigData extends DataManager {
         super(plugin, dir, name);
         YamlConfiguration config = getConfig();
 
-        config.options().header("DrawIt Mini-game by MrIronMan (Spigot: Mher)");
+        config.options().header("DrawIt Mini-game by MrIronMan (Spigot: Mher) Version: " + DrawIt.getInstance().getDescription().getVersion());
         config.addDefault("lobby-server", "lobby");
         config.addDefault("mysql.enabled", false);
         config.addDefault("mysql.host", "localhost");
@@ -347,6 +347,10 @@ public class ConfigData extends DataManager {
             }
         }
         return null;
+    }
+
+    public int getGameWordsCount() {
+        return getIntegerList(ConfigData.WORD_CHOOSE_MENU_SETTINGS_SLOTS).size();
     }
 
     public static String CHAT_FORMAT = "use-chat-format";

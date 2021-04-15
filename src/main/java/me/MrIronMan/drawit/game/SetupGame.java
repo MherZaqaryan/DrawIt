@@ -1,11 +1,12 @@
 package me.MrIronMan.drawit.game;
 
 import me.MrIronMan.drawit.DrawIt;
-import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.data.PluginMessages;
 import me.MrIronMan.drawit.utility.TextUtil;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -15,6 +16,7 @@ import java.text.DecimalFormat;
 
 public class SetupGame {
 
+    private World world;
     private String name;
     private String displayName;
 
@@ -34,6 +36,7 @@ public class SetupGame {
 
     public SetupGame(String name) {
         this.name = name;
+        this.world = Bukkit.getWorld(name);
         this.displayName = name;
         this.enabled = false;
         this.minPlayers = 6;
@@ -119,6 +122,10 @@ public class SetupGame {
         return enabled;
     }
 
+    public World getWorld() {
+        return world;
+    }
+
     public void save(Player player) {
         if (this.lobbyLocation == null) {
             player.sendMessage(customize("{game} &cLobby location not set."));
@@ -132,16 +139,15 @@ public class SetupGame {
             player.sendMessage(customize("{game} &aSaving game, please wait..."));
             if (createGameFile()) {
                 YamlConfiguration gameFile = YamlConfiguration.loadConfiguration(file);
-                gameFile.addDefault("display-name", displayName);
-                gameFile.addDefault("enabled", enabled);
-                gameFile.addDefault("min-players", minPlayers);
-                gameFile.addDefault("max-players", maxPlayers);
-                gameFile.addDefault("locations.lobby", writeLocation(lobbyLocation, true));
-                gameFile.addDefault("locations.drawer", writeLocation(drawerLocation, true));
-                gameFile.addDefault("locations.board-pos1", writeLocation(boardPos1, false));
-                gameFile.addDefault("locations.board-pos2", writeLocation(boardPos2, false));
-                gameFile.addDefault("advanced-settings.board-color", "WOOL:0");
-                gameFile.options().copyDefaults(true);
+                gameFile.set("display-name", displayName);
+                gameFile.set("enabled", enabled);
+                gameFile.set("min-players", minPlayers);
+                gameFile.set("max-players", maxPlayers);
+                gameFile.set("locations.lobby", writeLocation(lobbyLocation, true));
+                gameFile.set("locations.drawer", writeLocation(drawerLocation, true));
+                gameFile.set("locations.board-pos1", writeLocation(boardPos1, false));
+                gameFile.set("locations.board-pos2", writeLocation(boardPos2, false));
+                gameFile.set("advanced-settings.board-color", "WOOL:0");
                 try {
                     gameFile.save(file);
                 } catch (IOException e) {

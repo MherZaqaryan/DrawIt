@@ -54,7 +54,9 @@ public class GameSelector extends UniqueMenu {
         NBTItem nbtItem = new NBTItem(item);
         if (nbtItem.hasKey("name")) {
             if (nbtItem.getString("name").equals("game-menu")) {
-                Bukkit.dispatchCommand(player, nbtItem.getString("command"));
+                if (!nbtItem.getString("command").equals("none")) {
+                    Bukkit.dispatchCommand(player, nbtItem.getString("command"));
+                }
             }
         }
     }

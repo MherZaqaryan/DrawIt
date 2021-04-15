@@ -2,6 +2,8 @@ package me.MrIronMan.drawit.listeners;
 
 import com.cryptomorin.xseries.XMaterial;
 import me.MrIronMan.drawit.DrawIt;
+import me.MrIronMan.drawit.game.Game;
+import me.MrIronMan.drawit.game.SetupGame;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -67,6 +69,17 @@ public class MainListener implements Listener {
             Player player = (Player) e.getEntity();
             if (DrawIt.getInstance().isIn(player)) {
                 e.setCancelled(true);
+                if (e.getCause().equals(EntityDamageEvent.DamageCause.VOID)) {
+                    if (DrawIt.getInstance().isInGame(player)) {
+                        Game game = DrawIt.getInstance().getGame(player);
+                        player.teleport(game.getLobbyLocation());
+                    }else if (DrawIt.getInstance().isInSetup(player)) {
+                        SetupGame setupGame = DrawIt.getInstance().getSetupGame(player);
+                        player.teleport(setupGame.getWorld().getSpawnLocation());
+                    }else {
+                        player.teleport(DrawIt.getInstance().getLobbyLocation());
+                    }
+                }
             }
         }
     }
