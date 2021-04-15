@@ -1,15 +1,20 @@
 package me.MrIronMan.drawit.menu.menus;
 
 import me.MrIronMan.drawit.DrawIt;
+import me.MrIronMan.drawit.data.ConfigData;
+import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.menu.UniqueMenu;
 import me.MrIronMan.drawit.menu.PlayerMenuUtility;
+import me.MrIronMan.drawit.utility.TextUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -20,7 +25,7 @@ public class WordChooseMenu extends UniqueMenu {
     private Game game;
     private List<String> words;
     private HashMap<Integer, String> wordMap;
-    private Integer[] slots = {11, 13, 15};
+    private Integer[] slots = DrawIt.getConfigData().getIntegerList(ConfigData.WORD_CHOOSE_MENU_SETTINGS_SLOTS).toArray(new Integer[0]);
 
     public WordChooseMenu(PlayerMenuUtility playerMenuUtility, Game game) {
         super(playerMenuUtility);
@@ -31,18 +36,18 @@ public class WordChooseMenu extends UniqueMenu {
 
     @Override
     public String getMenuName() {
-        return "&dChoose The Word";
+        return DrawIt.getMessagesData().getString(MessagesData.WORD_CHOOSE_MENU_SETTINGS_TITLE);
     }
 
     @Override
     public int getSlots() {
-        return 27;
+        return DrawIt.getConfigData().getInt(ConfigData.WORD_CHOOSE_MENU_SETTINGS_SIZE);
     }
 
     @Override
     public void handleClose(InventoryCloseEvent e) {
         if (!isChooses) {
-            Bukkit.getScheduler().runTask(DrawIt.getInstance(), this::open);
+            Bukkit.getServer().getScheduler().runTaskLater(DrawIt.getInstance(), this::open, 10);
         }
     }
 
@@ -59,7 +64,7 @@ public class WordChooseMenu extends UniqueMenu {
     @Override
     public void setMenuItems() {
         for (int i = 0; i < slots.length; i++) {
-            inventory.setItem(slots[i], makeItem(Material.PAPER, "&a"+words.get(i)));
+            inventory.setItem(slots[i], getItem(words.get(i)));
             wordMap.put(slots[i], words.get(i));
         }
     }
@@ -68,6 +73,19 @@ public class WordChooseMenu extends UniqueMenu {
         isChooses = true;
         playerMenuUtility.getPlayer().closeInventory();
         game.getGameManager().setWord(words.get(new Random().nextInt(words.size())));
+    }
+
+    public ItemStack getItem(String word) {
+        ItemStack item = DrawIt.getConfigData().getItem(ConfigData.WORD_CHOOSE_MENU_WORD_ITEM);
+        ItemMeta itemMeta = item.getItemMeta();
+        itemMeta.setDisplayName(TextUtil.colorize(itemMeta.getDisplayName().replace("{word}", word)));
+        List<String> newLore = new ArrayList<>();
+        for (String s : itemMeta.getLore()) {
+            newLore.add(TextUtil.colorize(s.replace("{word}", word)));
+        }
+        itemMeta.setLore(newLore);
+        item.setItemMeta(itemMeta);
+        return item;
     }
 
 }

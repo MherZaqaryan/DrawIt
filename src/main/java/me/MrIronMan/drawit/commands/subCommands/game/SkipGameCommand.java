@@ -19,10 +19,10 @@ public class SkipGameCommand extends SubCommand {
                 Game game = DrawIt.getInstance().getGame(player);
                 game.getGameManager().skip(player);
             } else {
-                player.sendMessage(TextUtil.colorize(MessagesData.NOT_IN_GAME));
+                player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.NOT_IN_GAME)));
             }
         }else {
-            player.sendMessage(TextUtil.colorize(MessagesData.NO_PERM_SKIP));
+            player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.NO_PERM_SKIP)));
         }
         return true;
     }

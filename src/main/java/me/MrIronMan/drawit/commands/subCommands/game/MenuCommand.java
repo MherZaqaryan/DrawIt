@@ -19,7 +19,7 @@ public class MenuCommand extends SubCommand {
         Player player = (Player) sender;
 
         if (args.length > 0) {
-            if (args[0].equalsIgnoreCase("Menu")) {
+            if (args[0].equalsIgnoreCase("Games")) {
                 new GameSelector(DrawIt.getPlayerMenuUtility(player)).open();
             }
             else if (args[0].equalsIgnoreCase("Spectate")) {

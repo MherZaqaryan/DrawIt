@@ -7,27 +7,24 @@ import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.game.GameState;
 import me.MrIronMan.drawit.menu.menus.WordChooseMenu;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class WordChooseTask extends BukkitRunnable {
 
     private final WordChooseMenu menu;
     private final Game game;
-    private final Player drawer;
 
     private int time = DrawIt.getConfigData().getInt(ConfigData.COUNTDOWN_WORD_CHOOSE);
     private final int constTime = time;
 
     public WordChooseTask(Game game) {
         this.game = game;
-        this.drawer = game.getGameManager().getNextDrawer();
-        this.game.getGameManager().setDrawer(drawer);
-        this.drawer.teleport(game.getDrawerLocation());
-        this.menu = new WordChooseMenu(DrawIt.getPlayerMenuUtility(drawer), game);
+        this.game.getGameManager().setDrawer(game.getGameManager().getNextDrawer());
+        this.game.getGameManager().getCurrentDrawer().teleport(game.getDrawerLocation());
+        this.menu = new WordChooseMenu(DrawIt.getPlayerMenuUtility(game.getGameManager().getCurrentDrawer()), game);
         this.menu.open();
         this.game.addRound();
-        this.game.getGameManager().sendMessage(DrawIt.getMessagesData().getString(MessagesData.NEXT_ROUND).replace("{round}", String.valueOf(game.getRound())).replace("{drawer}", drawer.getDisplayName()));
+        this.game.getGameManager().sendMessage(DrawIt.getMessagesData().getString(MessagesData.NEXT_ROUND).replace("{round}", String.valueOf(game.getRound())).replace("{drawer}", game.getGameManager().getCurrentDrawer().getDisplayName()));
     }
 
     @Override
@@ -46,7 +43,7 @@ public class WordChooseTask extends BukkitRunnable {
             startActiveTask();
         }
         else if (time <= (constTime/2)) {
-            XSound.play(drawer, DrawIt.getConfigData().getString(ConfigData.SOUND_DRAWER_WORD_CHOOSE));
+            XSound.play(game.getGameManager().getCurrentDrawer(), DrawIt.getConfigData().getString(ConfigData.SOUND_DRAWER_WORD_CHOOSE));
         }
         time--;
         game.getGameManager().sendActionBarToGuessers(DrawIt.getMessagesData().getString(MessagesData.PICK_WORD));

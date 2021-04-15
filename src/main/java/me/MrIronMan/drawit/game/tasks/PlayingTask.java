@@ -4,7 +4,6 @@ import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.data.ConfigData;
 import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.game.Game;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -14,12 +13,9 @@ import java.util.Random;
 public class PlayingTask extends BukkitRunnable {
 
     private Game game;
-    private Player drawer;
-
     private String word;
     private StringBuilder wordToShow;
     private List<Integer> charIndex;
-
     private boolean isClean = true;
 
     private int time = DrawIt.getConfigData().getInt(ConfigData.COUNTDOWN_PER_ROUND);
@@ -27,8 +23,7 @@ public class PlayingTask extends BukkitRunnable {
 
     public PlayingTask(Game game) {
         this.game = game;
-        this.drawer = game.getGameManager().getCurrentDrawer();
-        this.game.getGameManager().activateDrawerSettings(drawer);
+        this.game.getGameManager().activateDrawerSettings();
         this.charIndex = new ArrayList<>();
         this.word = game.getGameManager().getWord();
         this.wordToShow = new StringBuilder(this.word.replaceAll("[a-zA-Z]", String.valueOf(DrawIt.getMessagesData().getString(MessagesData.HIDING_CHARACTER).replaceAll(" ", "").charAt(0))));
@@ -53,7 +48,7 @@ public class PlayingTask extends BukkitRunnable {
         else {
             if (!game.getBoard().isClean() && isClean) isClean = false;
             addCharacter();
-            game.getGameManager().sendActionBar(drawer, DrawIt.getMessagesData().getString(MessagesData.DRAWER).replace("{word}", word));
+            game.getGameManager().sendActionBar(game.getGameManager().getCurrentDrawer(), DrawIt.getMessagesData().getString(MessagesData.DRAWER).replace("{word}", word));
             game.getGameManager().sendActionBarToGuessers(isClean ? DrawIt.getMessagesData().getString(MessagesData.START_DRAW) : DrawIt.getMessagesData().getString(MessagesData.GUESSERS).replace("{word}", wordToShow.toString().replaceAll(".(?=.)", "$0 ")));
             time--;
         }
@@ -81,12 +76,12 @@ public class PlayingTask extends BukkitRunnable {
 
     public void startNext() {
         cancel();
+        if (game.getGameManager().getCurrentDrawer() != null) {
+            game.getGameManager().getCurrentDrawer().teleport(game.getLobbyLocation());
+            game.getGameManager().activateGameSettings(game.getGameManager().getCurrentDrawer());
+        }
         game.getGameManager().setDrawer(null);
         game.getGameManager().updateSidebars(-1);
-        if (drawer != null) {
-            drawer.teleport(game.getLobbyLocation());
-            game.getGameManager().activateGameSettings(drawer);
-        }
         game.getGameManager().sendMessage(DrawIt.getMessagesData().getString(MessagesData.WORD_ANNOUNCE).replace("{word}", word));
         game.getGameManager().startNextRound();
     }

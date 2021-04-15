@@ -14,9 +14,10 @@ public class MessagesData extends DataManager {
 
         msg.addDefault(DRAWIT_COMMANDS_PLAYER, new String[]{
                 "&b&lDraw&a&lIt &c&lCommands",
-                "&7/DrawIt Join <Quick|Game> &8- Run to join game.",
-                "&7/DrawIt Skip &8- Run to skip your round.",
-                "&7/DrawIt Leave &8- Run to leave from game."
+                "&7/DrawIt Join (Game) &8- Join the specified game.",
+                "&7/DrawIt Quickjoin &8- Quick join game.",
+                "&7/DrawIt Skip &8- Skip word when drawer.",
+                "&7/DrawIt Leave &8-Leave from current game."
         });
 
         msg.addDefault(PLAYER_JOIN, "{prefix} &7{player} &ajoined the game.");
@@ -81,15 +82,17 @@ public class MessagesData extends DataManager {
             saveItem(ConfigData.GAMES_MENU_ITEMS+".quick-join", "&a&lQuick Join", "","&7Adds you to join the","&7quick join queue to find","&7you a game!","","&bClick to join queue");
         }
 
-        msg.addDefault(SECTATE_MENU_SETTINGS_TITLE, "&7Spectate Game");
+        msg.addDefault(WORD_CHOOSE_MENU_SETTINGS_TITLE, "&8Select a Word");
+        saveItem(ConfigData.WORD_CHOOSE_MENU_WORD_ITEM, "&e&l{word}", "","&7Click to select: {word}","&7as the word!","","&bClick to select");
+
+        msg.addDefault(SPECTATE_MENU_SETTINGS_TITLE, "&7Spectate Game");
         saveItem(ConfigData.SPECTATE_MENU_GAME, "&e{game}", "","&7Players: &f{in}/{max}","&7State: &f{state}","","&bClick to join");
 
 
         if (isFirstTime()) {
-            saveItem(ConfigData.SPECTATE_MENU_ITEMS,"back", "&c&lBack", "","&bClick here to go back");
+            saveItem(ConfigData.SPECTATE_MENU_ITEMS+".back", "&c&lBack", "","&bClick here to go back");
         }
 
-        msg.addDefault(TELEPORTER_MENU_SETTINGS_TITLE, "&7Teleporter");
         msg.addDefault(ConfigData.SPECTATE_ITEMS, new String[]{});
 
         if (isFirstTime()) {
@@ -97,6 +100,7 @@ public class MessagesData extends DataManager {
             saveItem(ConfigData.SPECTATE_ITEMS+".leave", "&cLeave &7[Right-click]", "","&bClick to leave.");
         }
 
+        msg.addDefault(TELEPORTER_MENU_SETTINGS_TITLE, "&7Teleporter");
         saveItem(TELEPORTER_MENU_PLAYER_HEAD, "&9{player}", "","&bClick to teleport.");
 
         saveItem("drawer-tools.thin-brush", "&6&lThin Brush", "","&7Paints a one pixel line.");
@@ -191,9 +195,12 @@ public class MessagesData extends DataManager {
     public static String GAME_END_MESSAGE = "game-end-message";
 
     public static String GAME_MENU_SETTINGS_TITLE = "games-menu.settings.title";
-    public static String SECTATE_MENU_SETTINGS_TITLE = "spectate-menu.settings.title";
-    public static String TELEPORTER_MENU_SETTINGS_TITLE = "spectate-menu.settings.title";
-    public static String TELEPORTER_MENU_PLAYER_HEAD = "spectate-menu.player-head";
+    public static String SPECTATE_MENU_SETTINGS_TITLE = "spectate-menu.settings.title";
+
+    public static String WORD_CHOOSE_MENU_SETTINGS_TITLE = "word-choose-menu.settings.title";
+
+    public static String TELEPORTER_MENU_SETTINGS_TITLE = "teleporter.settings.title";
+    public static String TELEPORTER_MENU_PLAYER_HEAD = "teleporter.player-head";
 
     public static String BOARD_LOBBY_TITLE = "scoreboards.lobby.title";
     public static String BOARD_LOBBY_LINES = "scoreboards.lobby.lines";

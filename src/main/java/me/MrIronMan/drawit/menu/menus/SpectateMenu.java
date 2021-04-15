@@ -29,7 +29,7 @@ public class SpectateMenu extends Menu {
 
     @Override
     public String getMenuName() {
-        return DrawIt.getMessagesData().getString(MessagesData.SECTATE_MENU_SETTINGS_TITLE);
+        return DrawIt.getMessagesData().getString(MessagesData.SPECTATE_MENU_SETTINGS_TITLE);
     }
 
     @Override
@@ -55,7 +55,6 @@ public class SpectateMenu extends Menu {
 
     @Override
     public void setMenuItems() {
-
         for (ItemStack item : DrawIt.getConfigData().getSpectateMenuItems()) {
             if (item == null || item.getType().equals(Material.AIR)) return;
             NBTItem nbti = new NBTItem(item);
@@ -79,7 +78,6 @@ public class SpectateMenu extends Menu {
                 index++;
             }
         }
-
     }
 
 }

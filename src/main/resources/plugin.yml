@@ -8,13 +8,20 @@ softdepend: [PlaceholderAPI]
 
 permissions:
   DrawIt.*:
-    description: Allow to use all DrawIt commands
-    children:
-      DrawIt.Setup: true
-      DrawIt.Delete: true
-      DrawIt.ForceStart: true
-      DrawIt.AddPoints: true
-      DrawIt.Reload: true
-      DrawIt.Main: true
-      DrawIt.BuildMode: true
-      DrawIt.Skip: true
+    description: Allow to use all commands
+  DrawIt.Setup:
+    description: Allow to setup game.
+  DrawIt.Delete:
+    description: Allow to delete game.
+  DrawIt.ForceStart:
+    description: Allow to force start game.
+  DrawIt.AddPoints:
+    description: Allow to add player points.
+  DrawIt.Reload:
+    description: Allow to reload configuration files.
+  DrawIt.Main:
+    description: Allow to see all list of commands.
+  DrawIt.BuildMode:
+    description: Allow to enable/disable build mode.
+  DrawIt.Skip:
+    description: Allow to skip the word in game.

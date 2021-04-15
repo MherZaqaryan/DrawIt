@@ -82,6 +82,10 @@ public class ConfigData extends DataManager {
             saveItem(GAMES_MENU_ITEMS+".quick-join", "MINECART", false, 14, "drawit quickjoin");
         }
 
+        config.addDefault(WORD_CHOOSE_MENU_SETTINGS_SIZE, 27);
+        config.addDefault(WORD_CHOOSE_MENU_SETTINGS_SLOTS, new Integer[]{11, 13, 15});
+        saveItem(WORD_CHOOSE_MENU_WORD_ITEM, "PAPER", false);
+
         config.addDefault(SPECTATE_MENU_SIZE, 45);
         config.addDefault(SPECTATE_MENU_SLOTS, new Integer[]{10,11,12,13,14,15,16,19,20,21,22,23,24,25,28,29,30,31,32,33,34});
         saveItem(SPECTATE_MENU_GAME, "MAGMA_CREAM", false);
@@ -95,8 +99,8 @@ public class ConfigData extends DataManager {
         config.addDefault(SPECTATE_ITEMS, new String[]{});
 
         if (isFirstTime()) {
-            saveItem(SPECTATE_ITEMS+".teleporter", "COMPASS", false, 0, "di spectate teleporter");
-            saveItem(SPECTATE_ITEMS+".leave", "ARROW", false, 8, "di spectate leave");
+            saveItem(SPECTATE_ITEMS+".teleporter", "COMPASS", false, 0, "di menu teleporter");
+            saveItem(SPECTATE_ITEMS+".leave", "ARROW", false, 8, "di leave");
         }
 
         saveItem("drawer-tools.thin-brush", "WOOD_SWORD", false, 0);
@@ -355,6 +359,10 @@ public class ConfigData extends DataManager {
     public static String GAMES_MENU_SETTINGS_WAITING_SLOTS = "games-menu.settings.waiting-slots";
     public static String GAMES_MENU_SETTINGS_SHOW_PLAYINGS = "games-menu.settings.show-playings";
     public static String GAMES_MENU_ITEMS = "games-menu.items";
+
+    public static String WORD_CHOOSE_MENU_SETTINGS_SIZE = "word-choose-menu.settings.size";
+    public static String WORD_CHOOSE_MENU_SETTINGS_SLOTS = "word-choose-menu.settings.slots";
+    public static String WORD_CHOOSE_MENU_WORD_ITEM = "word-choose-menu.word-item";
 
     public static String SPECTATE_MENU_SIZE = "spectate-menu.settings.size";
     public static String SPECTATE_MENU_SLOTS = "spectate-menu.settings.slots";

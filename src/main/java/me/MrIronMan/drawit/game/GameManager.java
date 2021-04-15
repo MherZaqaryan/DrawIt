@@ -148,9 +148,9 @@ public class GameManager {
         }, DrawIt.getConfigData().getInt(ConfigData.COUNTDOWN_AFTER_ROUND) * 20L);
     }
 
-    public void activateDrawerSettings(Player player) {
-        activateGameSettings(player);
-        addDrawingTools(player);
+    public void activateDrawerSettings() {
+        activateGameSettings(drawer);
+        addDrawingTools(drawer);
     }
 
     private void addDrawingTools(Player player) {
@@ -243,7 +243,7 @@ public class GameManager {
         if (game.getPlayers().isEmpty()) return null;
         Random random = new Random();
         List<String> wordsForPlayer = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < DrawIt.getConfigData().getIntegerList(ConfigData.WORD_CHOOSE_MENU_SETTINGS_SLOTS).size(); i++) {
             int rand = random.nextInt(wordsList.size());
             wordsForPlayer.add(wordsList.get(rand));
             wordsList.remove(wordsList.get(rand));
