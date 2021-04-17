@@ -47,6 +47,7 @@ public class SetupGame {
     public SetupGame(Game game) {
         this.game = game;
         this.name = game.getName();
+        this.displayName = game.getDisplayName();
         this.enabled = game.isEnabled();
         this.minPlayers = game.getMinPlayers();
         this.maxPlayers = game.getMaxPlayers();
@@ -206,11 +207,11 @@ public class SetupGame {
                 PluginMessages.simpleText(""),
                 PluginMessages.simpleHover("  &b&lDraw&a&lIt &e&lSetup", "&aAuthor: &7MrIronMan (Spigot: Mher)"),
                 PluginMessages.simpleText(""),
-                PluginMessages.commandRun("  &c• &7/DrawIt SetLobby " + (lobbyLocation == null ? "" : "&8(Set)"), "&7Click to set lobby location for game.", "/DrawIt SetLobby"),
-                PluginMessages.commandRun("  &c• &7/DrawIt SetDrawer " + (drawerLocation == null ? "" : "&8(Set)"), "&7Click to set drawer location for game.", "/DrawIt SetDrawer"),
-                PluginMessages.commandSuggest("  &c• &7/DrawIt SetBoard <Pos1|Pos2> " + (boardPos1 != null && boardPos2 != null ? "&8(Set)" : ""), "Click to set board position 1 and 2 for game.", "/DrawIt SetBoard Pos"),
-                PluginMessages.commandSuggest("  &c• &7/DrawIt Setup Exit", "&7Click to exit from setup.", "/DrawIt Setup Exit"),
-                PluginMessages.commandRun("  &c• &7/DrawIt Save", "&7Click to save this game.", "/DrawIt Save"),
+                PluginMessages.commandRun("  &c• &7/DrawIt SetLobby " + (lobbyLocation == null ? "" : "&8(Set)"), "&7Set game lobby location.", "/DrawIt SetLobby"),
+                PluginMessages.commandRun("  &c• &7/DrawIt SetDrawer " + (drawerLocation == null ? "" : "&8(Set)"), "&7Set game drawer location.", "/DrawIt SetDrawer"),
+                PluginMessages.commandSuggest("  &c• &7/DrawIt SetBoard <Pos1|Pos2> " + (boardPos1 != null && boardPos2 != null ? "&8(Set)" : ""), "&7Set game board positions.", "/DrawIt SetBoard Pos"),
+                PluginMessages.commandSuggest("  &c• &7/DrawIt Setup Exit", "&7Exit from current setup.", "/DrawIt Setup Exit"),
+                PluginMessages.commandRun("  &c• &7/DrawIt Save", "&7Save current game.", "/DrawIt Save"),
                 PluginMessages.simpleText(""),
                 PluginMessages.simpleText("&3&l&m----------------------------"),
         };

@@ -83,8 +83,15 @@ public class ChatListener implements Listener {
                             }
                         }
                     } else {
-                        game.getGameManager().addIncorrectGuess(player);
+                        if (!game.getGameManager().getWordGuessers().contains(uuid)) {
+                            game.getGameManager().addIncorrectGuess(player);
+                        }
                     }
+                }
+            }else {
+                e.getRecipients().clear();
+                for (UUID id : game.getPlayers()) {
+                    e.getRecipients().add(Bukkit.getPlayer(id));
                 }
             }
         }else {
