@@ -9,8 +9,8 @@ import me.MrIronMan.drawit.game.GameState;
 import me.MrIronMan.drawit.game.utility.DrawerTool;
 import me.MrIronMan.drawit.sql.PlayerData;
 import me.MrIronMan.drawit.sql.PlayerDataType;
+import me.MrIronMan.drawit.utility.MaterialUtil;
 import me.MrIronMan.drawit.utility.TextUtil;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -56,98 +56,99 @@ public class ConfigData extends DataManager {
         config.addDefault(LOBBY_ITEMS, new String[]{});
 
         if (isFirstTime()) {
-            saveItem(LOBBY_ITEMS+".game-selector", "CHEST", false, 0, "drawit menu games");
-            saveItem(LOBBY_ITEMS+".return-to-lobby", "SLIME_BALL", false, 8, "drawit leave");
+            saveItem(LOBBY_ITEMS+".game-selector", MaterialUtil.getMaterial(XMaterial.CHEST), false, 0, "drawit menu games");
+            saveItem(LOBBY_ITEMS+".return-to-lobby", MaterialUtil.getMaterial(XMaterial.SLIME_BALL), false, 8, "drawit leave");
         }
 
         config.addDefault(WAITING_ITEMS, new String[]{});
 
         if (isFirstTime()) {
-            saveItem(WAITING_ITEMS+".leave", "SLIME_BALL", false, 8, "drawit leave");
+            saveItem(WAITING_ITEMS+".leave", MaterialUtil.getMaterial(XMaterial.SLIME_BALL), false, 8, "drawit leave");
+        }
+
+        config.addDefault(SPECTATE_ITEMS, new String[]{});
+
+        if (isFirstTime()) {
+            saveItem(SPECTATE_ITEMS+".teleporter", MaterialUtil.getMaterial(XMaterial.COMPASS), false, 0, "di menu teleporter");
+            saveItem(SPECTATE_ITEMS+".leave", MaterialUtil.getMaterial(XMaterial.SLIME_BALL), false, 8, "di leave");
         }
 
         config.addDefault(GAMES_MENU_SETTINGS_SIZE, 45);
         config.addDefault(GAMES_MENU_SETTINGS_SLOTS, new Integer[]{28, 29, 30, 31, 32, 33, 34});
         config.addDefault(GAMES_MENU_SETTINGS_SHOW_PLAYINGS, false);
 
-        saveItem(GAMES_MENU_SETTINGS_WAITING, "STAINED_CLAY:5", false);
-        saveItem(GAMES_MENU_SETTINGS_STARTING, "STAINED_CLAY:4", false);
-        saveItem(GAMES_MENU_SETTINGS_PLAYING, "STAINED_CLAY:14", false);
-        saveItem(GAMES_MENU_SETTINGS_WAITING_SLOTS, "STAINED_GLASS_PANE:7", false);
+        saveItem(GAMES_MENU_SETTINGS_WAITING, MaterialUtil.getMaterial(XMaterial.LIME_TERRACOTTA), false);
+        saveItem(GAMES_MENU_SETTINGS_STARTING, MaterialUtil.getMaterial(XMaterial.YELLOW_TERRACOTTA), false);
+        saveItem(GAMES_MENU_SETTINGS_PLAYING, MaterialUtil.getMaterial(XMaterial.RED_TERRACOTTA), false);
+        saveItem(GAMES_MENU_SETTINGS_WAITING_SLOTS, MaterialUtil.getMaterial(XMaterial.GRAY_STAINED_GLASS_PANE), false);
 
         config.addDefault(GAMES_MENU_ITEMS, new String[]{});
 
         if (isFirstTime()) {
-            saveItem(GAMES_MENU_ITEMS+".spectate-game", "MAGMA_CREAM", false, 12, "drawit menu spectate");
-            saveItem(GAMES_MENU_ITEMS+".quick-join", "MINECART", false, 14, "drawit quickjoin");
+            saveItem(GAMES_MENU_ITEMS+".spectate-game", MaterialUtil.getMaterial(XMaterial.MAGMA_CREAM), false, 12, "drawit menu spectate");
+            saveItem(GAMES_MENU_ITEMS+".quick-join", MaterialUtil.getMaterial(XMaterial.MINECART), false, 14, "drawit quickjoin");
         }
 
-        config.addDefault(WORD_CHOOSE_MENU_SETTINGS_SIZE, 27);
-        config.addDefault(WORD_CHOOSE_MENU_SETTINGS_SLOTS, new Integer[]{11, 13, 15});
-        saveItem(WORD_CHOOSE_MENU_WORD_ITEM, "PAPER", false);
+        config.addDefault(SELECT_WORD_MENU_SETTINGS_SIZE, 27);
+        config.addDefault(SELECT_WORD_MENU_SETTINGS_SLOTS, new Integer[]{11, 13, 15});
+        saveItem(SELECT_WORD_MENU_WORD_ITEM, MaterialUtil.getMaterial(XMaterial.PAPER), false);
 
         config.addDefault(SPECTATE_MENU_SIZE, 45);
         config.addDefault(SPECTATE_MENU_SLOTS, new Integer[]{10,11,12,13,14,15,16,19,20,21,22,23,24,25,28,29,30,31,32,33,34});
-        saveItem(SPECTATE_MENU_GAME, "MAGMA_CREAM", false);
+        saveItem(SPECTATE_MENU_GAME, MaterialUtil.getMaterial(XMaterial.MAGMA_CREAM), false);
 
         config.addDefault(SPECTATE_MENU_ITEMS, new String[]{});
 
         if (isFirstTime()) {
-            saveItem(SPECTATE_MENU_ITEMS+".back", "ARROW", false, 36, "drawit menu games");
+            saveItem(SPECTATE_MENU_ITEMS+".back", MaterialUtil.getMaterial(XMaterial.ARROW), false, 36, "drawit menu games");
         }
 
-        config.addDefault(SPECTATE_ITEMS, new String[]{});
+        saveItem("drawer-tools.thin-brush", MaterialUtil.getMaterial(XMaterial.WOODEN_SWORD), false, 0);
+        saveItem("drawer-tools.thick-brush", MaterialUtil.getMaterial(XMaterial.DIAMOND_SWORD), false, 1);
+        saveItem("drawer-tools.spray-canvas", MaterialUtil.getMaterial(XMaterial.SHEARS), false, 2);
+        saveItem("drawer-tools.fill-can", MaterialUtil.getMaterial(XMaterial.BUCKET), false, 3);
+        saveItem("drawer-tools.burn-canvas", MaterialUtil.getMaterial(XMaterial.BLAZE_POWDER), false, 8);
 
-        if (isFirstTime()) {
-            saveItem(SPECTATE_ITEMS+".teleporter", "COMPASS", false, 0, "di menu teleporter");
-            saveItem(SPECTATE_ITEMS+".leave", "ARROW", false, 8, "di leave");
-        }
-
-        saveItem("drawer-tools.thin-brush", "WOOD_SWORD", false, 0);
-        saveItem("drawer-tools.thick-brush", "DIAMOND_SWORD", false, 1);
-        saveItem("drawer-tools.spray-canvas", "SHEARS", false, 2);
-        saveItem("drawer-tools.fill-can", "BUCKET", false, 3);
-        saveItem("drawer-tools.burn-canvas", "BLAZE_POWDER", false, 8);
-
-        config.addDefault("color-picker", new String[]{"" +
-                "0; &7Orange; WOOL; 1",
-                "1; &7Magenta; WOOL; 2",
-                "2; &7Light Blue; WOOL; 3",
-                "3; &7Yellow; WOOL; 4",
-                "4; &7Lime; WOOL; 5",
-                "5; &7Cyan; WOOL; 9",
-                "6; &7Purple; WOOL; 10",
-                "7; &7Blue; WOOL; 11",
-                "8; &7Green; WOOL; 13",
-                "9; &7Red; WOOL; 14",
-                "10; &7Pastel Orange; STAINED_CLAY; 1",
-                "11; &7Pastel Magenta; STAINED_CLAY; 2",
-                "12; &7Pastel Light Blue; STAINED_CLAY; 3",
-                "13; &7Pastel Yellow; STAINED_CLAY; 4",
-                "14; &7Pastel Lime; STAINED_CLAY; 5",
-                "15; &7Pastel Cyan; STAINED_CLAY; 9",
-                "16; &7Pastel Purple; STAINED_CLAY; 10",
-                "17; &7Pastel Blue; STAINED_CLAY; 11",
-                "18; &7Pastel Green; STAINED_CLAY; 13",
-                "19; &7Pastel Red; STAINED_CLAY; 14",
-                "20; &7Gold; GOLD_BLOCK; 0",
-                "21; &7Diamond; DIAMOND_BLOCK; 0",
-                "22; &7Redstone; REDSTONE_BLOCK; 0",
-                "23; &7Sponge; SPONGE; 0",
-                "27; &7Pink; WOOL; 6",
-                "29; &7Emerald; EMERALD_BLOCK; 0",
-                "31; &7Black; WOOL; 15",
-                "32; &7Brown; WOOL; 12",
-                "33; &7Gray; WOOL; 7",
-                "34; &7Light Gray; WOOL; 8",
-                "35; &7White; WOOL; 0",
-                "36; &7Pastel Pink; STAINED_CLAY; 6",
-                "38; &7Iron; IRON_BLOCK; 0",
-                "40; &7Pastel Black; STAINED_CLAY; 15",
-                "41; &7Pastel Brown; STAINED_CLAY; 12",
-                "42; &7Pastel Gray; STAINED_CLAY; 7",
-                "43; &7Pastel Light Gray; STAINED_CLAY; 8",
-                "44; &7Pastel White; STAINED_CLAY; 0"
+        config.addDefault(COLOR_PICKER+".settings.size", 54);
+        config.addDefault(COLOR_PICKER+".items", new String[]{"" +
+                "0; &7Orange; " + MaterialUtil.getMaterial(XMaterial.ORANGE_WOOL),
+                "1; &7Magenta; " + MaterialUtil.getMaterial(XMaterial.MAGENTA_WOOL),
+                "2; &7Light Blue; " + MaterialUtil.getMaterial(XMaterial.LIGHT_BLUE_WOOL),
+                "3; &7Yellow; " + MaterialUtil.getMaterial(XMaterial.YELLOW_WOOL),
+                "4; &7Lime; " + MaterialUtil.getMaterial(XMaterial.LIME_WOOL),
+                "5; &7Cyan; " + MaterialUtil.getMaterial(XMaterial.CYAN_WOOL),
+                "6; &7Purple; " + MaterialUtil.getMaterial(XMaterial.PURPLE_WOOL),
+                "7; &7Blue; " + MaterialUtil.getMaterial(XMaterial.BLUE_WOOL),
+                "8; &7Green; " + MaterialUtil.getMaterial(XMaterial.GREEN_WOOL),
+                "9; &7Red; " + MaterialUtil.getMaterial(XMaterial.RED_WOOL),
+                "10; &7Pastel Orange; " + MaterialUtil.getMaterial(XMaterial.ORANGE_TERRACOTTA),
+                "11; &7Pastel Magenta; "+ MaterialUtil.getMaterial(XMaterial.MAGENTA_TERRACOTTA),
+                "12; &7Pastel Light Blue; "+ MaterialUtil.getMaterial(XMaterial.LIGHT_BLUE_TERRACOTTA),
+                "13; &7Pastel Yellow; "+ MaterialUtil.getMaterial(XMaterial.YELLOW_TERRACOTTA),
+                "14; &7Pastel Lime; "+ MaterialUtil.getMaterial(XMaterial.LIME_TERRACOTTA),
+                "15; &7Pastel Cyan; "+ MaterialUtil.getMaterial(XMaterial.CYAN_TERRACOTTA),
+                "16; &7Pastel Purple; "+ MaterialUtil.getMaterial(XMaterial.PURPLE_TERRACOTTA),
+                "17; &7Pastel Blue; "+ MaterialUtil.getMaterial(XMaterial.BLUE_TERRACOTTA),
+                "18; &7Pastel Green; "+ MaterialUtil.getMaterial(XMaterial.GREEN_TERRACOTTA),
+                "19; &7Pastel Red; "+ MaterialUtil.getMaterial(XMaterial.RED_TERRACOTTA),
+                "20; &7Gold; "+MaterialUtil.getMaterial(XMaterial.GOLD_BLOCK),
+                "21; &7Diamond; "+MaterialUtil.getMaterial(XMaterial.DIAMOND_BLOCK),
+                "22; &7Redstone; "+MaterialUtil.getMaterial(XMaterial.REDSTONE_BLOCK),
+                "23; &7Sponge; "+MaterialUtil.getMaterial(XMaterial.SPONGE),
+                "27; &7Pink; "+MaterialUtil.getMaterial(XMaterial.PINK_WOOL),
+                "29; &7Emerald; "+MaterialUtil.getMaterial(XMaterial.EMERALD_BLOCK),
+                "31; &7Black; "+MaterialUtil.getMaterial(XMaterial.BLACK_WOOL),
+                "32; &7Brown; "+MaterialUtil.getMaterial(XMaterial.BROWN_WOOL),
+                "33; &7Gray; "+MaterialUtil.getMaterial(XMaterial.GRAY_WOOL),
+                "34; &7Light Gray; "+MaterialUtil.getMaterial(XMaterial.LIGHT_GRAY_WOOL),
+                "35; &7White; "+MaterialUtil.getMaterial(XMaterial.WHITE_WOOL),
+                "36; &7Pastel Pink; "+ MaterialUtil.getMaterial(XMaterial.PINK_TERRACOTTA),
+                "38; &7Iron; "+MaterialUtil.getMaterial(XMaterial.IRON_BLOCK),
+                "40; &7Pastel Black; "+ MaterialUtil.getMaterial(XMaterial.BLACK_TERRACOTTA),
+                "41; &7Pastel Brown; "+ MaterialUtil.getMaterial(XMaterial.BROWN_TERRACOTTA),
+                "42; &7Pastel Gray; "+ MaterialUtil.getMaterial(XMaterial.GRAY_TERRACOTTA),
+                "43; &7Pastel Light Gray; "+ MaterialUtil.getMaterial(XMaterial.LIGHT_GRAY_TERRACOTTA),
+                "44; &7Pastel White; "+ MaterialUtil.getMaterial(XMaterial.WHITE_TERRACOTTA)
         });
 
         config.addDefault(STATS_POINTS_DRAWER_PER_RIGHT_WORD, 2);
@@ -161,21 +162,21 @@ public class ConfigData extends DataManager {
 
         config.addDefault(STATS_POINTS_GUESSER_OTHER, 2);
 
-        config.addDefault(PLAYER_LEVELING+".0-250.format", "&7Finger Painter");
-        config.addDefault(PLAYER_LEVELING+".250-1000.format", "&6Crayon Set");
-        config.addDefault(PLAYER_LEVELING+".1000-2500.format", "&dPaint Brush");
-        config.addDefault(PLAYER_LEVELING+".2500-5000.format", "&bRaphael");
-        config.addDefault(PLAYER_LEVELING+".5000-7500.format", "&5Kandinsky");
-        config.addDefault(PLAYER_LEVELING+".7500-12500.format", "&aRembrandt");
-        config.addDefault(PLAYER_LEVELING+".12500-20000.format", "&cManet");
-        config.addDefault(PLAYER_LEVELING+".20000-40000.format", "&9Warhol");
-        config.addDefault(PLAYER_LEVELING+".40000-70000.format", "&5Dali");
-        config.addDefault(PLAYER_LEVELING+".70000-100000.format", "&6&lMonet");
-        config.addDefault(PLAYER_LEVELING+".100000-150000.format", "&b&lMondrian");
-        config.addDefault(PLAYER_LEVELING+".150000-200000.format", "&3&lLichenstein");
-        config.addDefault(PLAYER_LEVELING+".200000-250000.format", "&e&lMichelangelo");
-        config.addDefault(PLAYER_LEVELING+".250000-300000.format", "&e&lLeonardo da Vinci");
-        config.addDefault(PLAYER_LEVELING+".other.format", "&a&lVincent van Gogh");
+        config.addDefault(PLAYER_RANKING +".0-250.format", "&7Finger Painter");
+        config.addDefault(PLAYER_RANKING +".250-1000.format", "&6Crayon Set");
+        config.addDefault(PLAYER_RANKING +".1000-2500.format", "&dPaint Brush");
+        config.addDefault(PLAYER_RANKING +".2500-5000.format", "&bRaphael");
+        config.addDefault(PLAYER_RANKING +".5000-7500.format", "&5Kandinsky");
+        config.addDefault(PLAYER_RANKING +".7500-12500.format", "&aRembrandt");
+        config.addDefault(PLAYER_RANKING +".12500-20000.format", "&cManet");
+        config.addDefault(PLAYER_RANKING +".20000-40000.format", "&9Warhol");
+        config.addDefault(PLAYER_RANKING +".40000-70000.format", "&5Dali");
+        config.addDefault(PLAYER_RANKING +".70000-100000.format", "&6&lMonet");
+        config.addDefault(PLAYER_RANKING +".100000-150000.format", "&b&lMondrian");
+        config.addDefault(PLAYER_RANKING +".150000-200000.format", "&3&lLichenstein");
+        config.addDefault(PLAYER_RANKING +".200000-250000.format", "&e&lMichelangelo");
+        config.addDefault(PLAYER_RANKING +".250000-300000.format", "&e&lLeonardo da Vinci");
+        config.addDefault(PLAYER_RANKING +".other.format", "&a&lVincent van Gogh");
         config.options().copyDefaults(true);
         save();
     }
@@ -335,22 +336,22 @@ public class ConfigData extends DataManager {
     public String getPointFormat(Player player) {
         PlayerData playerData = DrawIt.getPlayerData(player);
         int points = playerData.getData(PlayerDataType.POINTS);
-        for (String st : getConfig().getConfigurationSection(PLAYER_LEVELING).getKeys(false)) {
+        for (String st : getConfig().getConfigurationSection(PLAYER_RANKING).getKeys(false)) {
             if (st.split("-").length == 2) {
                 int min = Integer.parseInt(st.split("-")[0]);
                 int max = Integer.parseInt(st.split("-")[1]);
                 if (points >= min && points <= max) {
-                    return TextUtil.colorize(getConfig().getString(PLAYER_LEVELING+"."+st+".format"));
+                    return TextUtil.colorize(getConfig().getString(PLAYER_RANKING +"."+st+".format"));
                 }
             }else if (st.equals("other")) {
-                return TextUtil.colorize(getConfig().getString(PLAYER_LEVELING+".other.format"));
+                return TextUtil.colorize(getConfig().getString(PLAYER_RANKING +".other.format"));
             }
         }
         return null;
     }
 
     public int getGameWordsCount() {
-        return getIntegerList(ConfigData.WORD_CHOOSE_MENU_SETTINGS_SLOTS).size();
+        return getIntegerList(ConfigData.SELECT_WORD_MENU_SETTINGS_SLOTS).size();
     }
 
     public static String CHAT_FORMAT = "use-chat-format";
@@ -364,9 +365,9 @@ public class ConfigData extends DataManager {
     public static String GAMES_MENU_SETTINGS_SHOW_PLAYINGS = "games-menu.settings.show-playings";
     public static String GAMES_MENU_ITEMS = "games-menu.items";
 
-    public static String WORD_CHOOSE_MENU_SETTINGS_SIZE = "word-choose-menu.settings.size";
-    public static String WORD_CHOOSE_MENU_SETTINGS_SLOTS = "word-choose-menu.settings.slots";
-    public static String WORD_CHOOSE_MENU_WORD_ITEM = "word-choose-menu.word-item";
+    public static String SELECT_WORD_MENU_SETTINGS_SIZE = "select-word-menu.settings.size";
+    public static String SELECT_WORD_MENU_SETTINGS_SLOTS = "select-word-menu.settings.slots";
+    public static String SELECT_WORD_MENU_WORD_ITEM = "select-word-menu.word-item";
 
     public static String SPECTATE_MENU_SIZE = "spectate-menu.settings.size";
     public static String SPECTATE_MENU_SLOTS = "spectate-menu.settings.slots";
@@ -400,6 +401,6 @@ public class ConfigData extends DataManager {
     public static String STATS_POINTS_GUESSER = "stats.points.guesser";
     public static String STATS_POINTS_GUESSER_OTHER = "stats.points.guesser.other";
 
-    public static String PLAYER_LEVELING = "player-leveling";
+    public static String PLAYER_RANKING = "player-ranking";
 
 }

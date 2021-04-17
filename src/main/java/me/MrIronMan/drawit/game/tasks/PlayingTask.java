@@ -46,7 +46,7 @@ public class PlayingTask extends BukkitRunnable {
             game.getGameManager().getActiveTask().startNext();
         }
         else {
-            if (!game.getBoard().isClean() && isClean) isClean = false;
+            if (!game.getBoard().isClean(game.getBoardColor()) && isClean) isClean = false;
             addCharacter();
             game.getGameManager().sendActionBar(game.getGameManager().getCurrentDrawer(), DrawIt.getMessagesData().getString(MessagesData.DRAWER).replace("{word}", word));
             game.getGameManager().sendActionBarToGuessers(isClean ? DrawIt.getMessagesData().getString(MessagesData.START_DRAW) : DrawIt.getMessagesData().getString(MessagesData.GUESSERS).replace("{word}", wordToShow.toString().replaceAll(".(?=.)", "$0 ")));

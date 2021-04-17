@@ -28,7 +28,7 @@ public class ColorPickerMenu extends Menu {
 
     @Override
     public int getSlots() {
-        return 54;
+        return DrawIt.getConfigData().getInt(ConfigData.COLOR_PICKER+".settings.size");
     }
 
     @Override

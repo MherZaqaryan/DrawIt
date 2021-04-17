@@ -33,38 +33,59 @@ public class DrawingUtils {
 
     public void thinBrush(Block block) {
         if (board.isIn(block)) {
-            block.setTypeIdAndData(game.getPlayerColor(uuid).getTypeId(), (byte) game.getPlayerColor(uuid).getDurability(), true);
+            if (ReflectionUtils.isLegacy()) {
+                BlockUtil.setBlock(block, game.getPlayerColor(uuid).getType(), game.getPlayerColor(uuid).getDurability());
+            }else {
+                BlockUtil.setBlock(block, game.getPlayerColor(uuid).getType());
+            }
         }
     }
 
     public void thickBrush(Block block) {
         Block[] crossBlocks = {
                 block,
-                block.getLocation().add(0.0D, 1.0D, 0.0D).getBlock(),
-                block.getLocation().add(0.0D, -1.0D, 0.0D).getBlock(),
-                block.getLocation().add(0.0D, 0.0D, 1.0D).getBlock(),
-                block.getLocation().add(0.0D, 0.0D, -1.0D).getBlock()
+                block.getLocation().clone().add(0.0D, 1.0D, 0.0D).getBlock(),
+                block.getLocation().clone().subtract(0.0D, 1.0D, 0.0D).getBlock(),
+                block.getLocation().clone().add(1.0D, 0.0D, 0.0D).getBlock(),
+                block.getLocation().clone().subtract(1.0D, 0.0D, 0.0D).getBlock()
         };
+        if (BlockUtil.isAxsisZ(block.getLocation())) {
+            crossBlocks[3] = block.getLocation().clone().add(0.0D, 0.0D, 1.0D).getBlock();
+            crossBlocks[4] = block.getLocation().clone().subtract(0.0D, 0.0D, 1.0D).getBlock();
+        }
         for (Block b : crossBlocks) {
             if (board.isIn(b)) {
-                b.setTypeIdAndData(game.getPlayerColor(uuid).getTypeId(), (byte) game.getPlayerColor(uuid).getDurability(), true);
+                if (ReflectionUtils.isLegacy()) {
+                    BlockUtil.setBlock(b, game.getPlayerColor(uuid).getType(), game.getPlayerColor(uuid).getDurability());
+                }else {
+                    BlockUtil.setBlock(b, game.getPlayerColor(uuid).getType());
+                }
             }
         }
     }
 
     public void sprayCan(Block block) {
         Location p1 = block.getLocation().add(0.0D, 2.0D, 2.0D);
-        Location p2 = block.getLocation().subtract(0.0D, 2.0D, 2.0D);
+        Location p2;
+        if (BlockUtil.isAxsisZ(block.getLocation())) {
+             p2 = block.getLocation().subtract(0.0D, 2.0D, 2.0D);
+        }else {
+            p2 = block.getLocation().subtract(2.0D, 2.0D, 0.0D);
+        }
 
         for (Block b : OtherUtils.getBlocks(p1, p2)) {
             Random random = new Random();
             if (board.isIn(b)) {
                 if (random.nextInt(3) == 1) {
-                    b.setTypeIdAndData(game.getPlayerColor(uuid).getTypeId(), (byte) game.getPlayerColor(uuid).getDurability(), true);
-                    XSound.play(player, DrawIt.getConfigData().getString(ConfigData.SOUND_SPRAY_CANVAS));
+                    if (ReflectionUtils.isLegacy()) {
+                        BlockUtil.setBlock(b, game.getPlayerColor(uuid).getType(), game.getPlayerColor(uuid).getDurability());
+                    }else {
+                        BlockUtil.setBlock(b, game.getPlayerColor(uuid).getType());
+                    }
                 }
             }
         }
+        XSound.play(player, DrawIt.getConfigData().getString(ConfigData.SOUND_SPRAY_CANVAS));
     }
 
     public void fillCan(Block block) {

@@ -32,6 +32,7 @@ import java.util.*;
 public class DrawIt extends JavaPlugin {
 
     private static DrawIt instance;
+    private Metrics metrics;
 
     private List<Game> games = new ArrayList<>();
 
@@ -55,21 +56,20 @@ public class DrawIt extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        Metrics metrics = new Metrics(this, 11065);
+        this.metrics = new Metrics(this, 11065);
         loggerMessage();
         loadDataFiles();
         loadCommands();
         registerListeners();
         loadDataFiles();
-        loadGames();
         connectDatabase();
+        loadGames();
         placeholderApiHook();
     }
 
     @Override
     public void onDisable() {
         disconnectDatabase();
-        Bukkit.getScheduler().cancelAllTasks();
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.kickPlayer("Server Reloading!");
         }

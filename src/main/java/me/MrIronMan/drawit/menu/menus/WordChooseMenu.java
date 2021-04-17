@@ -25,7 +25,7 @@ public class WordChooseMenu extends UniqueMenu {
     private Game game;
     private List<String> words;
     private HashMap<Integer, String> wordMap;
-    private Integer[] slots = DrawIt.getConfigData().getIntegerList(ConfigData.WORD_CHOOSE_MENU_SETTINGS_SLOTS).toArray(new Integer[0]);
+    private Integer[] slots = DrawIt.getConfigData().getIntegerList(ConfigData.SELECT_WORD_MENU_SETTINGS_SLOTS).toArray(new Integer[0]);
 
     public WordChooseMenu(PlayerMenuUtility playerMenuUtility, Game game) {
         super(playerMenuUtility);
@@ -41,7 +41,7 @@ public class WordChooseMenu extends UniqueMenu {
 
     @Override
     public int getSlots() {
-        return DrawIt.getConfigData().getInt(ConfigData.WORD_CHOOSE_MENU_SETTINGS_SIZE);
+        return DrawIt.getConfigData().getInt(ConfigData.SELECT_WORD_MENU_SETTINGS_SIZE);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class WordChooseMenu extends UniqueMenu {
     }
 
     public ItemStack getItem(String word) {
-        ItemStack item = DrawIt.getConfigData().getItem(ConfigData.WORD_CHOOSE_MENU_WORD_ITEM);
+        ItemStack item = DrawIt.getConfigData().getItem(ConfigData.SELECT_WORD_MENU_WORD_ITEM);
         ItemMeta itemMeta = item.getItemMeta();
         itemMeta.setDisplayName(TextUtil.colorize(itemMeta.getDisplayName().replace("{word}", word)));
         List<String> newLore = new ArrayList<>();

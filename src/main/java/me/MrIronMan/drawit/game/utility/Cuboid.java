@@ -2,8 +2,8 @@ package me.MrIronMan.drawit.game.utility;
 
 import java.util.*;
 
+import me.MrIronMan.drawit.utility.BlockUtil;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
@@ -36,7 +36,7 @@ public class Cuboid {
     }
 
     public boolean isIn(Location loc) {
-        return getBlocks().contains(loc.getBlock());
+        return isIn(loc.getBlock());
     }
 
     public boolean isIn(Block block) {
@@ -45,8 +45,7 @@ public class Cuboid {
 
     public void burn(ItemStack itemStack) {
         for (Block block : getBlocks()) {
-            byte data = (byte) itemStack.getDurability();
-            block.setTypeIdAndData(itemStack.getTypeId(), data, false);
+            BlockUtil.setBlock(block, itemStack);
         }
     }
 
@@ -58,10 +57,10 @@ public class Cuboid {
         return loc2;
     }
 
-    public boolean isClean() {
+    public boolean isClean(ItemStack itemStack) {
         boolean isClean = true;
         for (Block b : getBlocks()) {
-            if (!(b.getType().equals(Material.WOOL) && b.getData() == (byte) 0)) {
+            if (!(b.getType().equals(itemStack.getType()) && b.getData() == itemStack.getDurability())) {
                 isClean = false;
                 break;
             }

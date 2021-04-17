@@ -57,10 +57,10 @@ public class OtherUtils {
 
     public static HashMap<Integer, ItemStack> getColorPicker() {
         HashMap<Integer, ItemStack> items = new HashMap<>();
-        for (String s : DrawIt.getConfigData().getStringList(ConfigData.COLOR_PICKER)) {
+        for (String s : DrawIt.getConfigData().getStringList(ConfigData.COLOR_PICKER+".items")) {
             String[] args = s.split("; ");
-            if (args.length == 4) {
-                ItemStack itemStack = new ItemStack(Objects.requireNonNull(XMaterial.matchXMaterial(args[2].toUpperCase()).get().parseMaterial()), 1, (byte) Integer.parseInt(args[3]));
+            if (args.length == 3) {
+                ItemStack itemStack = Objects.requireNonNull(XMaterial.matchXMaterial(args[2].toUpperCase()).get().parseItem());
                 ItemMeta itemMeta = itemStack.getItemMeta();
                 itemMeta.setDisplayName(TextUtil.colorize(args[1]));
                 itemStack.setItemMeta(itemMeta);

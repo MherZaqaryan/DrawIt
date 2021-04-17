@@ -249,7 +249,7 @@ public class GameManager {
         if (game.getPlayers().isEmpty()) return null;
         Random random = new Random();
         List<String> wordsForPlayer = new ArrayList<>();
-        for (int i = 0; i < DrawIt.getConfigData().getIntegerList(ConfigData.WORD_CHOOSE_MENU_SETTINGS_SLOTS).size(); i++) {
+        for (int i = 0; i < DrawIt.getConfigData().getIntegerList(ConfigData.SELECT_WORD_MENU_SETTINGS_SLOTS).size(); i++) {
             int rand = random.nextInt(wordsList.size());
             wordsForPlayer.add(wordsList.get(rand));
             wordsList.remove(wordsList.get(rand));

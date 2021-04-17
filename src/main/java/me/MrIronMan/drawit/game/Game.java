@@ -117,7 +117,7 @@ public class Game {
         if (playerColorMap.containsKey(uuid)) {
             return playerColorMap.get(uuid);
         }else {
-            return new ItemStack(Material.WOOL, 1, (byte) 15);
+            return XMaterial.BLACK_WOOL.parseItem();
         }
     }
 
