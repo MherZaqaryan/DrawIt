@@ -55,6 +55,7 @@ public class DrawIt extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        Metrics metrics = new Metrics(this, 11065);
         loggerMessage();
         loadDataFiles();
         loadCommands();

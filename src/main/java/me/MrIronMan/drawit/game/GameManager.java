@@ -309,10 +309,10 @@ public class GameManager {
     }
 
     public String getLeaderName(int i) {
-        if (getLeaders().size() <= i) return "Nobody";
+        if (getLeaders().size() <= i) return DrawIt.getMessagesData().getString(MessagesData.NO_BODY);
         UUID uuid = getLeaders().get(i).getKey();
         Player player = Bukkit.getPlayer(uuid);
-        if (player == null) return "Nobody";
+        if (player == null) return DrawIt.getMessagesData().getString(MessagesData.NO_BODY);
         return player.getDisplayName();
     }
 

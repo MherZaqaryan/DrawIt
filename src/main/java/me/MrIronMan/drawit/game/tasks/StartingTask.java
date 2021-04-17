@@ -22,7 +22,7 @@ public class StartingTask extends BukkitRunnable {
             cancel();
             game.getGameManager().startGame();
         }
-        else if ((game.getPlayers().size() < game.getMinPlayers() || game.getPlayers().size() == 0) && !game.getGameManager().isForce()) {
+        else if ((game.getPlayers().size() < game.getMinPlayers() && !game.getGameManager().isForce()) || game.getPlayers().size() == 0) {
             cancel();
             game.setGameState(GameState.WAITING);
         }else {

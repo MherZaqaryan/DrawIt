@@ -39,6 +39,8 @@ public class MessagesData extends DataManager {
         msg.addDefault(NO_PERM_SKIP, "{prefix} &cYou cant skip the game, you need to be at least VIP.");
         msg.addDefault(GAME_SKIPPED, "{prefix} &c&l{drawer} decided to skip.");
         msg.addDefault(QUICK_JOIN_GAME_NOT_FOUND, "{prefix} &cCurrently there is no game available to join.");
+        msg.addDefault(NO_BODY, "Nobody");
+
 
         msg.addDefault(COLOR_PICKER_TITLE, "&5&lColor Picker");
         msg.addDefault(START_COUNTDOWN, "&aStarting game in &a&l{time}.");
@@ -203,6 +205,7 @@ public class MessagesData extends DataManager {
     public static String SCOREBOARD_NO_DRAWER = "scoreboard.no-drawer";
     public static String SCOREBOARD_LEADER_FORMAT = "scoreboard.leader-format";
     public static String GAME_END_MESSAGE = "game-end-message";
+    public static String NO_BODY = "meaning-no-body";
 
     public static String GAME_MENU_SETTINGS_TITLE = "games-menu.settings.title";
     public static String SPECTATE_MENU_SETTINGS_TITLE = "spectate-menu.settings.title";
