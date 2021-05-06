@@ -11,19 +11,26 @@ import java.util.UUID;
 
 public class LeaveGameCommand extends SubCommand {
 
+    public LeaveGameCommand() {
+        super("leave");
+    }
+
     @Override
-    public boolean execute(CommandSender sender, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         Player player = (Player) sender;
-        UUID uuid = player.getUniqueId();
-        if (DrawIt.getInstance().isInGame(player)) {
-            Game game = DrawIt.getInstance().getGame(player);
-            DrawIt.getInstance().activateLobbySettings(player);
-            if (game.isSpectator(uuid)) return true;
-            game.getGameManager().leaveGame(player);
-        }else {
+
+        if (!DrawIt.getInstance().isInGame(player)) {
             OtherUtils.returnLobby(player);
+            return;
         }
-        return true;
+
+        Game game = DrawIt.getInstance().getGame(player);
+        DrawIt.getInstance().activateLobbySettings(player);
+        if (game.isSpectator(player.getUniqueId())) {
+            return;
+        }
+
+        game.getGameManager().leaveGame(player);
     }
 
 }

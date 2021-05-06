@@ -4,6 +4,9 @@ import de.tr7zw.nbtapi.NBTItem;
 import me.MrIronMan.drawit.commands.DrawItCommand;
 import me.MrIronMan.drawit.commands.LeaveCommand;
 import me.MrIronMan.drawit.commands.SkipCommand;
+import me.MrIronMan.drawit.commands.subCommands.game.*;
+import me.MrIronMan.drawit.commands.subCommands.setup.*;
+import me.MrIronMan.drawit.commands.subCommands.util.*;
 import me.MrIronMan.drawit.data.*;
 import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.game.GameState;
@@ -27,6 +30,8 @@ import org.bukkit.potion.PotionEffect;
 
 import java.io.File;
 import java.util.*;
+
+import static me.MrIronMan.drawit.commands.DrawItCommand.subCommands;
 
 
 public class DrawIt extends JavaPlugin {
@@ -65,6 +70,25 @@ public class DrawIt extends JavaPlugin {
         connectDatabase();
         loadGames();
         placeholderApiHook();
+
+        subCommands.addAll(Arrays.asList(
+                new SetMainLobbyCommand(),
+                new MenuCommand(),
+                new QuickJoinCommand(),
+                new SkipGameCommand(),
+                new LeaveGameCommand(),
+                new JoinCommand(),
+                new DeleteCommand(),
+                new SaveCommand(),
+                new SetBoardCommand(),
+                new SetDrawerCommand(),
+                new SetLobbyCommand(),
+                new SetupCommand(),
+                new AddPointsCommand(),
+                new BuildModeCommand(),
+                new ForceStartCommand(),
+                new ReloadCommand()
+        ));
     }
 
     @Override

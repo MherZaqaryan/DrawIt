@@ -7,11 +7,14 @@ import org.bukkit.entity.Player;
 
 public class QuickJoinCommand extends SubCommand {
 
+    public QuickJoinCommand() {
+        super("quickjoin");
+    }
+
     @Override
-    public boolean execute(CommandSender sender, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         Player player = (Player) sender;
         DrawIt.getInstance().quickJoinGame(player);
-        return true;
     }
 
 }

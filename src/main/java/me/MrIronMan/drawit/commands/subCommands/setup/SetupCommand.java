@@ -12,35 +12,38 @@ import org.bukkit.entity.Player;
 
 public class SetupCommand extends SubCommand {
 
-    @Override
-    public boolean execute(CommandSender sender, String[] args) {
+    public SetupCommand() {
+        super("setup");
+    }
 
+    @Override
+    public void execute(CommandSender sender, String[] args) {
         Player player = (Player) sender;
-        if (player.hasPermission(PermissionsUtil.COMMAND_SETUP)) {
-            if (args.length == 1) {
-                if (args[0].equalsIgnoreCase("Exit")) {
-                    DrawIt.getInstance().exitSetupMode(player);
-                } else if (!DrawIt.getInstance().isLobbySet()) {
-                    player.sendMessage(TextUtil.colorize(PluginMessages.SETUP_LOBBY_NOT_SET));
-                } else if (DrawIt.getInstance().isInSetup(player)) {
-                    player.sendMessage(TextUtil.colorize(PluginMessages.ALREADY_IN_SETUP));
-                } else {
-                    SetupGame setupGame;
-                    if (DrawIt.getInstance().getGame(args[0]) != null) {
-                        setupGame = new SetupGame(DrawIt.getInstance().getGame(args[0]));
-                    } else {
-                        setupGame = new SetupGame(args[0]);
-                    }
-                    DrawIt.getInstance().enableSetupMode(player, setupGame);
-                    PluginMessages.sendMessage(player, setupGame.getCurrentMessage());
-                }
-            } else {
-                player.sendMessage(TextUtil.colorize(PluginMessages.USAGE_COMMAND_SETUP));
+
+        if (args.length != 1) {
+            if (!DrawIt.getInstance().isLobbySet()) {
+                player.sendMessage(TextUtil.colorize(PluginMessages.SETUP_LOBBY_NOT_SET));
+                return;
             }
-        }else {
-            player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.NO_PERMS)));
+
+            if (DrawIt.getInstance().isInSetup(player)) {
+                player.sendMessage(TextUtil.colorize(PluginMessages.ALREADY_IN_SETUP));
+                return;
+            }
+
+            SetupGame setupGame;
+
+            if (DrawIt.getInstance().getGame(args[0]) != null) {
+                setupGame = new SetupGame(DrawIt.getInstance().getGame(args[0]));
+            } else setupGame = new SetupGame(args[0]);
+
+            DrawIt.getInstance().enableSetupMode(player, setupGame);
+            PluginMessages.sendMessage(player, setupGame.getCurrentMessage());
+
+            if (args[0].equalsIgnoreCase("Exit")) {
+                DrawIt.getInstance().exitSetupMode(player);
+            }
         }
-        return true;
     }
 
 }

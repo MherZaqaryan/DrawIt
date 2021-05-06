@@ -10,19 +10,19 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SetMainLobbyCommand extends SubCommand {
+    public SetMainLobbyCommand() {
+        super("setmainlobby");
+    }
     @Override
-    public boolean execute(CommandSender sender, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         Player player = (Player) sender;
-        if (player.hasPermission(PermissionsUtil.COMMAND_SETMAINLOBBY)) {
-            if (!DrawIt.getInstance().isInGame(player)) {
-                DrawIt.getInstance().setLobbyLocation(player.getLocation());
-                player.sendMessage(TextUtil.colorize("{prefix} &aLobby location successfully set."));
-            }else {
-                player.sendMessage(TextUtil.colorize(PluginMessages.SET_LOBBY_IN_GAME));
-            }
-        }else {
-            player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.NO_PERMS)));
+
+        if (DrawIt.getInstance().isInGame(player)) {
+            player.sendMessage(TextUtil.colorize(PluginMessages.SET_LOBBY_IN_GAME));
+            return;
         }
-        return true;
+
+        DrawIt.getInstance().setLobbyLocation(player.getLocation());
+        player.sendMessage(TextUtil.colorize("{prefix} &aLobby location successfully set."));
     }
 }

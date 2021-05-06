@@ -11,20 +11,22 @@ import org.bukkit.entity.Player;
 
 public class SkipGameCommand extends SubCommand {
 
-    @Override
-    public boolean execute(CommandSender sender, String[] args) {
-        Player player = (Player) sender;
-        if (player.hasPermission(PermissionsUtil.COMMAND_SKIP)) {
-            if (DrawIt.getInstance().isInGame(player)) {
-                Game game = DrawIt.getInstance().getGame(player);
-                game.getGameManager().skip(player);
-            } else {
-                player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.NOT_IN_GAME)));
-            }
-        }else {
-            player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.NO_PERM_SKIP)));
-        }
-        return true;
+    public SkipGameCommand() {
+        super("skip");
     }
 
+    @Override
+    public void execute(CommandSender sender, String[] args) {
+        Player player = (Player) sender;
+        if (player.hasPermission(PermissionsUtil.COMMAND_SKIP)) {
+            if (!DrawIt.getInstance().isInGame(player)) {
+                player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.NOT_IN_GAME)));
+                return;
+            }
+
+            Game game = DrawIt.getInstance().getGame(player);
+            game.getGameManager().skip(player);
+
+        } else player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.NO_PERM_SKIP)));
+    }
 }

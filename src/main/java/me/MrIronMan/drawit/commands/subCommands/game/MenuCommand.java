@@ -14,35 +14,37 @@ import org.bukkit.entity.Player;
 
 public class MenuCommand extends SubCommand {
 
+    public MenuCommand() {
+        super("menu");
+    }
+
     @Override
-    public boolean execute(CommandSender sender, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         Player player = (Player) sender;
 
-        if (args.length > 0) {
-            if (args[0].equalsIgnoreCase("Games")) {
-                new GameSelector(DrawIt.getPlayerMenuUtility(player)).open();
-            }
-            else if (args[0].equalsIgnoreCase("Spectate")) {
-                new SpectateMenu(DrawIt.getPlayerMenuUtility(player)).open();
-            }
-            else if (args[0].equalsIgnoreCase("Teleporter")) {
-                if (DrawIt.getInstance().isInGame(player)) {
-                    Game game = DrawIt.getInstance().getGame(player);
-                    if (game.isSpectator(player.getUniqueId())) {
-                        new TeleporterMenu(DrawIt.getPlayerMenuUtility(player), game).open();
-                    }else {
-                        player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.NOT_SPECTATING)));
-                    }
-                }else {
-                    player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.NOT_IN_GAME)));
-                }
-            }else {
-                player.sendMessage(TextUtil.colorize(PluginMessages.USAGE_COMMAND_MENU));
-            }
-            return true;
+        if (args.length <= 0) {
+            player.sendMessage("Error: Unknown");
+            return;
         }
 
-        return true;
+        if (args[0].equalsIgnoreCase("games")) {
+            new GameSelector(DrawIt.getPlayerMenuUtility(player)).open();
+        }
+
+        if (args[0].equalsIgnoreCase("Spectate")) {
+            new SpectateMenu(DrawIt.getPlayerMenuUtility(player)).open();
+        }
+
+        if (args[0].equalsIgnoreCase("Teleporter")) {
+            if (!DrawIt.getInstance().isInGame(player)) {
+                player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.NOT_IN_GAME)));
+                return;
+            }
+            Game game = DrawIt.getInstance().getGame(player);
+            if (game.isSpectator(player.getUniqueId())) {
+                new TeleporterMenu(DrawIt.getPlayerMenuUtility(player), game).open();
+            } else player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.NOT_SPECTATING)));
+        }
     }
 
 }
