@@ -50,8 +50,7 @@ public class DrawItCommand extends BukkitCommand {
         String[] arguments = IntStream.range(0, args.length).filter(i -> i != 0).mapToObj(i -> args[i]).toArray(String[]::new);
         DrawIt.getMessagesData().getStringList(MessagesData.DRAWIT_COMMANDS_PLAYER).stream().map(TextUtil::colorize).forEach(player::sendMessage);
         if (subCommands.stream().noneMatch(subCommand -> subCommand.getName().equalsIgnoreCase(args[0]))) return true;
-        subCommands.stream().filter(subCommand -> subCommand.getName().equalsIgnoreCase(args[0])).findFirst().get()
-                .execute(sender, arguments);
+        subCommands.stream().filter(subCommand -> subCommand.getName().equalsIgnoreCase(args[0])).findFirst().get().execute(sender, arguments);
         return true;
     }
 }
