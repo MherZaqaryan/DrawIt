@@ -14,10 +14,12 @@ import me.MrIronMan.drawit.game.tasks.RestartingTask;
 import me.MrIronMan.drawit.game.tasks.StartingTask;
 import me.MrIronMan.drawit.game.tasks.WordChooseTask;
 import me.MrIronMan.drawit.game.utility.DrawerTool;
-import me.MrIronMan.drawit.utility.OtherUtils;
 import me.MrIronMan.drawit.game.utility.SideBar;
+import me.MrIronMan.drawit.utility.OtherUtils;
 import me.MrIronMan.drawit.utility.TextUtil;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -29,19 +31,19 @@ import java.util.*;
 
 public class GameManager {
 
-    private Game game;
+    private final Game game;
     private String word;
     private Player drawer;
 
-    private List<String> wordsList;
+    private final List<String> wordsList;
     private List<UUID> waitingPlayers;
-    private List<UUID> skippedPlayers;
+    private final List<UUID> skippedPlayers;
     private List<UUID> guessersList;
 
-    private HashMap<UUID, SideBar> playerSidebarMap;
-    private HashMap<UUID, Integer> playerPointMap;
-    private HashMap<UUID, Integer> playerCorrectGuessesMap;
-    private HashMap<UUID, Integer> playerIncorrectGuessesMap;
+    private final HashMap<UUID, SideBar> playerSidebarMap;
+    private final HashMap<UUID, Integer> playerPointMap;
+    private final HashMap<UUID, Integer> playerCorrectGuessesMap;
+    private final HashMap<UUID, Integer> playerIncorrectGuessesMap;
 
     private PlayingTask activeTask;
     private boolean force;
@@ -79,10 +81,10 @@ public class GameManager {
                             startCountdown();
                         }
                     }
-                }else if (game.isGameState(GameState.PLAYING)) {
+                } else if (game.isGameState(GameState.PLAYING)) {
                     if (DrawIt.getInstance().isInGame(player)) {
                         player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.IN_GAME)));
-                    }else {
+                    } else {
                         activateSpectatorSettings(player);
                     }
                 }
@@ -240,7 +242,7 @@ public class GameManager {
             Player newDrawer = Bukkit.getPlayer(drawerUUID);
             waitingPlayers.remove(drawerUUID);
             return newDrawer;
-        }else {
+        } else {
             return null;
         }
     }
@@ -273,8 +275,8 @@ public class GameManager {
         for (String s : DrawIt.getMessagesData().getStringList(MessagesData.BOARD_GAME_LINES)) {
             newLines.add(TextUtil.getByPlaceholders(s
                     .replace("{time}", time != -1 ? OtherUtils.formatTime(time) : DrawIt.getMessagesData().getString(MessagesData.SCOREBOARD_WAITING))
-                    .replace("{drawer}", drawer != null ? "&f"+drawer.getDisplayName() : DrawIt.getMessagesData().getString(MessagesData.SCOREBOARD_NO_DRAWER))
-                    .replace("{rounds_left}", "&f"+getWaitingPlayers().size())
+                    .replace("{drawer}", drawer != null ? "&f" + drawer.getDisplayName() : DrawIt.getMessagesData().getString(MessagesData.SCOREBOARD_NO_DRAWER))
+                    .replace("{rounds_left}", "&f" + getWaitingPlayers().size())
                     .replace("{leader_1}", getLeader(0))
                     .replace("{leader_2}", getLeader(1))
                     .replace("{leader_3}", getLeader(2)), player));
@@ -293,7 +295,7 @@ public class GameManager {
     public void addPoint(Player player, int point) {
         if (player == null) return;
         UUID uuid = player.getUniqueId();
-        playerPointMap.put(uuid, getPoint(player)+point);
+        playerPointMap.put(uuid, getPoint(player) + point);
         if (!isDrawer(player)) {
             game.getGameManager().sendMessage(DrawIt.getMessagesData().getString(MessagesData.PLAYER_GUESSED).replace("{guesser}", player.getDisplayName()).replace("{points}", String.valueOf(point)));
         }
@@ -349,7 +351,7 @@ public class GameManager {
 
     public void addCorrectGuess(Player player) {
         UUID uuid = player.getUniqueId();
-        playerCorrectGuessesMap.put(uuid, getCorrectGuesses(player)+1);
+        playerCorrectGuessesMap.put(uuid, getCorrectGuesses(player) + 1);
     }
 
     public int getIncorrectGuesses(Player player) {
@@ -362,7 +364,7 @@ public class GameManager {
 
     public void addIncorrectGuess(Player player) {
         UUID uuid = player.getUniqueId();
-        playerIncorrectGuessesMap.put(uuid, getIncorrectGuesses(player)+1);
+        playerIncorrectGuessesMap.put(uuid, getIncorrectGuesses(player) + 1);
     }
 
 
@@ -398,12 +400,12 @@ public class GameManager {
         return guessersList;
     }
 
-    public void setWord(String word) {
-        this.word = word;
-    }
-
     public String getWord() {
         return word;
+    }
+
+    public void setWord(String word) {
+        this.word = word;
     }
 
     public Player getCurrentDrawer() {

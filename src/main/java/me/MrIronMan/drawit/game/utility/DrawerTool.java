@@ -8,7 +8,7 @@ public enum DrawerTool {
     FILL_CAN("fill-can"),
     BURN_CANVAS("burn-canvas");
 
-    private String path;
+    private final String path;
 
     DrawerTool(String path) {
         this.path = path;

@@ -24,6 +24,8 @@ public class ChatListener implements Listener {
         UUID uuid = player.getUniqueId();
         String msg = e.getMessage();
 
+
+
         if (DrawIt.getConfigData().getBoolean(ConfigData.CHAT_FORMAT)) {
             if (!DrawIt.getInstance().isInGame(player)) {
                 e.setFormat(getFormat(player, "lobby"));
@@ -88,23 +90,19 @@ public class ChatListener implements Listener {
                         }
                     }
                 }
-            }else {
+            } else {
                 e.getRecipients().clear();
-                for (UUID id : game.getPlayers()) {
-                    e.getRecipients().add(Bukkit.getPlayer(id));
-                }
+                game.getPlayers().forEach(id -> e.getRecipients().add(Bukkit.getPlayer(id)));
             }
-        }else {
+        } else {
             e.getRecipients().clear();
-            for (Player p : DrawIt.getInstance().getLobbyPlayers()) {
-                e.getRecipients().add(p);
-            }
+            DrawIt.getInstance().getLobbyPlayers().forEach(p -> e.getRecipients().add(p));
         }
     }
 
     public String getFormat(Player player, String format) {
         PlayerData playerData = DrawIt.getPlayerData(player);
-        return TextUtil.getByPlaceholders(DrawIt.getMessagesData().getString(MessagesData.CHAT_FORMAT+"."+format)
+        return TextUtil.getByPlaceholders(DrawIt.getMessagesData().getString(MessagesData.CHAT_FORMAT + "." + format)
                 .replace("{points}", String.valueOf(playerData.getData(PlayerDataType.POINTS)))
                 .replace("{pointFormat}", DrawIt.getConfigData().getPointFormat(player))
                 .replace("{player}", "%1$s")

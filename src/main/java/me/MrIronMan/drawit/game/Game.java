@@ -5,53 +5,59 @@ import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.api.events.game.GameStateChangeEvent;
 import me.MrIronMan.drawit.game.utility.Cuboid;
 import me.MrIronMan.drawit.utility.OtherUtils;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 public class Game {
 
-    private GameManager gameManager;
+    private final GameManager gameManager;
 
-    private YamlConfiguration gameFile;
+    private final YamlConfiguration gameFile;
 
-    private String name;
-    private String displayName;
-    private World world;
-    private int minPlayers;
-    private int maxPlayers;
-    private Location lobbyLocation;
-    private Location drawerLocation;
-    private Cuboid board;
+    private final String name;
+    private final String displayName;
+    private final World world;
+    private final int minPlayers;
+    private final int maxPlayers;
+    private final Location lobbyLocation;
+    private final Location drawerLocation;
+    private final Cuboid board;
     private int round;
-    private ItemStack boardColor;
+    private final ItemStack boardColor;
 
-    private boolean enabled;
+    private final boolean enabled;
 
-    private List<UUID> players;
-    private List<UUID> spectators;
-    private List<String> words;
-    private HashMap<UUID, ItemStack> playerColorMap;
+    private final List<UUID> players;
+    private final List<UUID> spectators;
+    private final List<String> words;
+    private final HashMap<UUID, ItemStack> playerColorMap;
 
     private GameState gameState;
 
     public Game(String name) {
         this.name = name;
-        this.gameFile = YamlConfiguration.loadConfiguration(new File(DrawIt.getInstance().getDataFolder() + File.separator + "Games", name+".yml"));
+        this.gameFile = YamlConfiguration.loadConfiguration(new File(DrawIt.getInstance().getDataFolder() + File.separator + "Games", name + ".yml"));
         this.world = Bukkit.createWorld(new WorldCreator(name));
         this.displayName = gameFile.getString("display-name");
         this.enabled = gameFile.getBoolean("enabled");
         this.minPlayers = gameFile.getInt("min-players");
         this.maxPlayers = gameFile.getInt("max-players");
-        this.words = OtherUtils.getWords(maxPlayers*DrawIt.getConfigData().getGameWordsCount());
+        this.words = OtherUtils.getWords(maxPlayers * DrawIt.getConfigData().getGameWordsCount());
         this.gameManager = new GameManager(this);
         this.lobbyLocation = readLocation(gameFile.getString("locations.lobby"));
         this.drawerLocation = readLocation(gameFile.getString("locations.drawer"));
         this.board = new Cuboid(readLocation(gameFile.getString("locations.board-pos1")),
-               readLocation(gameFile.getString("locations.board-pos2")));
+                readLocation(gameFile.getString("locations.board-pos2")));
         this.round = 0;
         this.players = new ArrayList<>();
         this.spectators = new ArrayList<>();
@@ -95,18 +101,18 @@ public class Game {
         return players;
     }
 
-    public boolean isGameState(GameState gameState){
+    public boolean isGameState(GameState gameState) {
         return this.gameState == gameState;
+    }
+
+    public GameState getGameState() {
+        return gameState;
     }
 
     public void setGameState(GameState newState) {
         GameStateChangeEvent event = new GameStateChangeEvent(this, gameState, newState);
         Bukkit.getPluginManager().callEvent(event);
         this.gameState = newState;
-    }
-
-    public GameState getGameState() {
-        return gameState;
     }
 
     public Cuboid getBoard() {
@@ -116,7 +122,7 @@ public class Game {
     public ItemStack getPlayerColor(UUID uuid) {
         if (playerColorMap.containsKey(uuid)) {
             return playerColorMap.get(uuid);
-        }else {
+        } else {
             return XMaterial.BLACK_WOOL.parseItem();
         }
     }

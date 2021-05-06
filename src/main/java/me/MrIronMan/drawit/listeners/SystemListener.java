@@ -1,8 +1,8 @@
 package me.MrIronMan.drawit.listeners;
 
 import de.tr7zw.nbtapi.NBTItem;
-import me.MrIronMan.drawit.menu.UniqueMenu;
 import me.MrIronMan.drawit.menu.Menu;
+import me.MrIronMan.drawit.menu.UniqueMenu;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 public class SystemListener implements Listener {
 
     @EventHandler
-    public void onMenuClick(InventoryClickEvent e){
+    public void onMenuClick(InventoryClickEvent e) {
         InventoryHolder holder = e.getInventory().getHolder();
         if (holder instanceof Menu) {
             e.setCancelled(true);

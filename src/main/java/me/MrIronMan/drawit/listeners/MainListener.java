@@ -73,10 +73,10 @@ public class MainListener implements Listener {
                     if (DrawIt.getInstance().isInGame(player)) {
                         Game game = DrawIt.getInstance().getGame(player);
                         player.teleport(game.getLobbyLocation());
-                    }else if (DrawIt.getInstance().isInSetup(player)) {
+                    } else if (DrawIt.getInstance().isInSetup(player)) {
                         SetupGame setupGame = DrawIt.getInstance().getSetupGame(player);
                         player.teleport(setupGame.getWorld().getSpawnLocation());
-                    }else {
+                    } else {
                         player.teleport(DrawIt.getInstance().getLobbyLocation());
                     }
                 }
