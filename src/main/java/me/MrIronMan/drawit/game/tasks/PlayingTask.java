@@ -32,7 +32,7 @@ public class PlayingTask extends BukkitRunnable {
     @Override
     public void run() {
         game.getGameManager().updateSidebars(time);
-        if (game.getPlayers().isEmpty()) {
+        if (game.getUuids().isEmpty()) {
             startNext();
         }
         else if (game.getGameManager().getCurrentDrawer() == null) {

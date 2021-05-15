@@ -4,8 +4,8 @@ import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.data.ConfigData;
 import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.game.Game;
-import me.MrIronMan.drawit.sql.PlayerData;
-import me.MrIronMan.drawit.sql.PlayerDataType;
+import me.MrIronMan.drawit.database.PlayerData;
+import me.MrIronMan.drawit.database.PlayerDataType;
 import me.MrIronMan.drawit.utility.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -22,7 +22,7 @@ public class RestartingTask extends BukkitRunnable {
     public RestartingTask(Game game) {
         this.game = game;
         game.getBoard().burn(game.getBoardColor());
-        for (UUID uuid : game.getPlayers()) {
+        for (UUID uuid : game.getUuids()) {
             Player player = Bukkit.getPlayer(uuid);
             PlayerData pd = DrawIt.getPlayerData(player);
             pd.addData(PlayerDataType.POINTS, game.getGameManager().getPoint(player));
@@ -51,13 +51,13 @@ public class RestartingTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        List<UUID> players = new ArrayList<>(game.getPlayers());
+        List<UUID> players = new ArrayList<>(game.getUuids());
         for (UUID uuid : players) {
             Player player = Bukkit.getPlayer(uuid);
-            game.getPlayers().remove(uuid);
+            game.getUuids().remove(uuid);
             DrawIt.getInstance().activateLobbySettings(player);
         }
-        game.getPlayers().clear();
+        game.getUuids().clear();
         List<UUID> spectators = new ArrayList<>(game.getSpectators());
         for (UUID uuid : spectators) {
             Player player = Bukkit.getPlayer(uuid);

@@ -1,4 +1,4 @@
-package me.MrIronMan.drawit.commands;
+package me.MrIronMan.drawit.api.commands;
 
 import org.bukkit.command.CommandSender;
 

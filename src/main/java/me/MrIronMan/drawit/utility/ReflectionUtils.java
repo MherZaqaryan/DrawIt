@@ -71,4 +71,5 @@ public final class ReflectionUtils {
     public static boolean isLegacy() {
         return ReflectionUtils.VERSION.contains("1_8") || ReflectionUtils.VERSION.contains("1_9") || ReflectionUtils.VERSION.contains("1_10") || ReflectionUtils.VERSION.contains("1_11") || ReflectionUtils.VERSION.contains("1_12");
     }
+
 }

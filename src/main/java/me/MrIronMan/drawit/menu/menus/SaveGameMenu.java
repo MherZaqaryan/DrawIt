@@ -45,25 +45,24 @@ public class SaveGameMenu extends Menu {
         Player player = (Player) e.getWhoClicked();
         if (e.getSlot() == 15) {
             if (e.getClick().equals(ClickType.LEFT)) {
-                if (minPlayers < maxPlayers) {
-                    minPlayers = minPlayers+1;
-                }
-            }else if (e.getClick().equals(ClickType.RIGHT)){
-                if (minPlayers > 1) {
-                    minPlayers = minPlayers-1;
-                }
+                if (minPlayers >= maxPlayers) return;
+                minPlayers = minPlayers+1;
+            }
+            else if (e.getClick().equals(ClickType.RIGHT)){
+                if (minPlayers <= 1) return;
+                minPlayers = minPlayers-1;
             }
             XSound.play(player, "CLICK,1,1");
             setMenuItems();
-        }else if (e.getSlot() == 16) {
+        }
+        else if (e.getSlot() == 16) {
             if (e.getClick().equals(ClickType.LEFT)) {
-                if (DrawIt.getConfigData().getGameWordsCount()*(maxPlayers+1) <= OtherUtils.getWordsCount()) {
-                    maxPlayers = maxPlayers+1;
-                }
-            }else if (e.getClick().equals(ClickType.RIGHT)){
-                if (maxPlayers > minPlayers) {
-                    maxPlayers = maxPlayers-1;
-                }
+                if (DrawIt.getConfigData().getGameWordsCount()*(maxPlayers+1) > OtherUtils.getWordsCount()) return;
+                maxPlayers = maxPlayers+1;
+            }
+            else if (e.getClick().equals(ClickType.RIGHT)){
+                if (maxPlayers <= minPlayers) return;
+                maxPlayers = maxPlayers-1;
             }
             XSound.play(player, "CLICK,1,1");
             setMenuItems();

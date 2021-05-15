@@ -5,7 +5,7 @@ import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.data.ConfigData;
 import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.game.Game;
-import me.MrIronMan.drawit.game.GameState;
+import me.MrIronMan.drawit.api.game.GameState;
 import me.MrIronMan.drawit.menu.Menu;
 import me.MrIronMan.drawit.menu.PlayerMenuUtility;
 import org.bukkit.Bukkit;
@@ -21,7 +21,7 @@ import java.util.List;
 public class SpectateMenu extends Menu {
 
     private HashMap<Integer, Game> gameSlotMap;
-    private Integer[] slots = DrawIt.getConfigData().getIntegerList(ConfigData.SPECTATE_MENU_SLOTS).toArray(new Integer[0]);
+    private final Integer[] slots = DrawIt.getConfigData().getIntegerList(ConfigData.SPECTATE_MENU_SLOTS).toArray(new Integer[0]);
 
     public SpectateMenu(PlayerMenuUtility playerMenuUtility) {
         super(playerMenuUtility);
@@ -46,25 +46,18 @@ public class SpectateMenu extends Menu {
             return;
         }
         NBTItem nbtItem = new NBTItem(item);
-        if (nbtItem.hasKey("name")) {
-            if (nbtItem.getString("name").equals("spectate-menu")) {
-                if (!nbtItem.getString("command").equals("none")) {
-                    Bukkit.dispatchCommand(player, nbtItem.getString("command"));
-                }
-            }
-        }
+        if (!nbtItem.getString("name").equals("spectate-menu")) return;
+        if (nbtItem.getString("command").equals("none")) return;
+        Bukkit.dispatchCommand(player, nbtItem.getString("command"));
     }
 
     @Override
     public void setMenuItems() {
         for (ItemStack item : DrawIt.getConfigData().getSpectateMenuItems()) {
-            if (item == null || item.getType().equals(Material.AIR)) return;
+            if (item == null || item.getType().equals(Material.AIR)) continue;
             NBTItem nbti = new NBTItem(item);
-            if (nbti.hasKey("name")) {
-                if (nbti.getString("name").equals("spectate-menu")) {
-                    inventory.setItem(nbti.getInteger("slot"), item);
-                }
-            }
+            if (!nbti.getString("name").equals("spectate-menu")) continue;
+            inventory.setItem(nbti.getInteger("slot"), item);
         }
 
         this.gameSlotMap = new HashMap<>();
@@ -72,13 +65,12 @@ public class SpectateMenu extends Menu {
         games.removeIf(game -> !game.isGameState(GameState.PLAYING));
 
         int index = 0;
-        if (!games.isEmpty()) {
-            for (Game game : games) {
-                if (index > slots.length || game == null) break;
-                inventory.setItem(slots[index], DrawIt.getConfigData().getItem(ConfigData.SPECTATE_MENU_GAME, game));
-                gameSlotMap.put(slots[index], game);
-                index++;
-            }
+        if (games.isEmpty()) return;
+        for (Game game : games) {
+            if (index > slots.length || game == null) break;
+            inventory.setItem(slots[index], DrawIt.getConfigData().getItem(ConfigData.SPECTATE_MENU_GAME, game));
+            gameSlotMap.put(slots[index], game);
+            index++;
         }
     }
 

@@ -13,13 +13,9 @@ import java.util.stream.IntStream;
 
 public abstract class Menu implements InventoryHolder, ItemUtil {
 
-
     protected PlayerMenuUtility playerMenuUtility;
     protected Inventory inventory;
-    protected ItemStack FILLER_GLASS = makeItem(XMaterial.WHITE_STAINED_GLASS_PANE.parseItem(), " ");
     protected ItemStack GRAY_GLASS_PANE = makeItem(XMaterial.GRAY_STAINED_GLASS_PANE.parseItem(), " ");
-    protected ItemStack LIGHT_GRAY_GLASS_PANE = makeItem(XMaterial.LIGHT_GRAY_STAINED_GLASS_PANE.parseItem(), " ");
-    protected ItemStack BLACK_GLASS_PANE = makeItem(XMaterial.BLACK_STAINED_GLASS_PANE.parseItem(), " ");
 
     public Menu(PlayerMenuUtility playerMenuUtility) {
         this.playerMenuUtility = playerMenuUtility;

@@ -1,4 +1,4 @@
-package me.MrIronMan.drawit.game;
+package me.MrIronMan.drawit.api.game;
 
 public enum GameState {
 

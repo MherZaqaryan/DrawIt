@@ -1,13 +1,11 @@
 package me.MrIronMan.drawit.commands.subCommands.game;
 
 import me.MrIronMan.drawit.DrawIt;
-import me.MrIronMan.drawit.commands.SubCommand;
+import me.MrIronMan.drawit.api.commands.SubCommand;
 import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.utility.OtherUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.UUID;
 
 public class LeaveGameCommand extends SubCommand {
 

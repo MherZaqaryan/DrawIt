@@ -1,4 +1,4 @@
-package me.MrIronMan.drawit.game.utility;
+package me.MrIronMan.drawit.api.game;
 
 public enum DrawerTool {
 

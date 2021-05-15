@@ -35,20 +35,17 @@ public class ColorPickerMenu extends Menu {
     public void handleMenu(InventoryClickEvent e) {
         if (e.getCurrentItem() == null || e.getCurrentItem().getType().equals(Material.AIR)) return;
         Player player = (Player) e.getWhoClicked();
-        if (DrawIt.getInstance().isInGame(player)) {
-            Game game = DrawIt.getInstance().getGame(player);
-            player.closeInventory();
-            XSound.play(player.getLocation(), DrawIt.getConfigData().getString(ConfigData.SOUND_COLOR_PICK));
-            game.setPlayerColor(player.getUniqueId(), e.getCurrentItem());
-        }
+        if (!DrawIt.getInstance().isInGame(player)) return;
+        Game game = DrawIt.getInstance().getGame(player);
+        player.closeInventory();
+        XSound.play(player.getLocation(), DrawIt.getConfigData().getString(ConfigData.SOUND_COLOR_PICK));
+        game.setPlayerColor(player.getUniqueId(), e.getCurrentItem());
     }
 
     @Override
     public void setMenuItems() {
         HashMap<Integer, ItemStack> colorPickerMap = OtherUtils.getColorPicker();
-        for (int i : colorPickerMap.keySet()) {
-            inventory.setItem(i, colorPickerMap.get(i));
-        }
+        colorPickerMap.keySet().forEach(i -> inventory.setItem(i, colorPickerMap.get(i)));
     }
 
 }

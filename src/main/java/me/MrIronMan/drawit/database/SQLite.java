@@ -1,4 +1,4 @@
-package me.MrIronMan.drawit.sql;
+package me.MrIronMan.drawit.database;
 
 import me.MrIronMan.drawit.DrawIt;
 

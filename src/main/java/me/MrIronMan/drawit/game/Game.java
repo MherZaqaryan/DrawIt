@@ -3,6 +3,7 @@ package me.MrIronMan.drawit.game;
 import com.cryptomorin.xseries.XMaterial;
 import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.api.events.game.GameStateChangeEvent;
+import me.MrIronMan.drawit.api.game.GameState;
 import me.MrIronMan.drawit.game.utility.Cuboid;
 import me.MrIronMan.drawit.utility.OtherUtils;
 import org.bukkit.Bukkit;
@@ -10,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
@@ -21,7 +23,6 @@ import java.util.UUID;
 public class Game {
 
     private final GameManager gameManager;
-
     private final YamlConfiguration gameFile;
 
     private final String name;
@@ -97,7 +98,13 @@ public class Game {
         return drawerLocation;
     }
 
-    public List<UUID> getPlayers() {
+    public List<UUID> getUuids() {
+        return players;
+    }
+
+    public List<Player> getPlayers() {
+        List<Player> players = new ArrayList<>();
+        getUuids().forEach(id -> players.add(Bukkit.getPlayer(id)));
         return players;
     }
 

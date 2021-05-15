@@ -1,13 +1,11 @@
 package me.MrIronMan.drawit.commands.subCommands.util;
 
 import me.MrIronMan.drawit.DrawIt;
-import me.MrIronMan.drawit.commands.SubCommand;
-import me.MrIronMan.drawit.data.MessagesData;
+import me.MrIronMan.drawit.api.commands.SubCommand;
 import me.MrIronMan.drawit.data.PluginMessages;
-import me.MrIronMan.drawit.sql.PlayerData;
-import me.MrIronMan.drawit.sql.PlayerDataType;
+import me.MrIronMan.drawit.database.PlayerData;
+import me.MrIronMan.drawit.database.PlayerDataType;
 import me.MrIronMan.drawit.utility.OtherUtils;
-import me.MrIronMan.drawit.utility.PermissionsUtil;
 import me.MrIronMan.drawit.utility.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;

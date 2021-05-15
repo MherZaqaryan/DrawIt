@@ -1,8 +1,7 @@
 package me.MrIronMan.drawit.api.events.game;
 
 import me.MrIronMan.drawit.game.Game;
-import me.MrIronMan.drawit.game.GameState;
-import org.bukkit.entity.Player;
+import me.MrIronMan.drawit.api.game.GameState;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 

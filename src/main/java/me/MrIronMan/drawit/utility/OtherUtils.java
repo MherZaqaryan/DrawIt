@@ -89,11 +89,14 @@ public class OtherUtils {
         int seconds = timer % 60;
         if (minutes < 10 && seconds < 10) {
             return "0" + minutes + s + "0" + seconds;
-        }else if (minutes < 10) {
+        }
+        else if (minutes < 10) {
             return "0" + minutes + s + seconds;
-        }else if (seconds < 10) {
+        }
+        else if (seconds < 10) {
             return minutes + s + "0" + seconds;
-        }else {
+        }
+        else {
             return minutes + s + seconds;
         }
     }
@@ -107,12 +110,14 @@ public class OtherUtils {
         if (args.length == 4) {
             World world = Bukkit.getWorld(args[3]);
             return new Location(world, x, y, z);
-        }else if (args.length == 6) {
+        }
+        else if (args.length == 6) {
             float yaw = Float.parseFloat(args[3]);
             float pitch = Float.parseFloat(args[4]);
             World world = Bukkit.getWorld(args[5]);
             return new Location(world, x, y, z, yaw, pitch);
-        }else {
+        }
+        else {
             DrawIt.getInstance().getLogger().warning("Cannot load location with meta data: " + loc);
             return null;
         }
@@ -139,7 +144,8 @@ public class OtherUtils {
         try {
             out.writeUTF("Connect");
             out.writeUTF(ConfigData.LOBBY_SERVER);
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             DrawIt.getInstance().getLogger().warning("Cant connect to lobby server!");
         }
         player.sendPluginMessage(DrawIt.getInstance(), "BungeeCord", b.toByteArray());
@@ -149,10 +155,9 @@ public class OtherUtils {
     public static boolean isOnline(String p) {
         boolean online = false;
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player.getName().equalsIgnoreCase(p)) {
-                online = true;
-                break;
-            }
+            if (!player.getName().equalsIgnoreCase(p)) continue;
+            online = true;
+            break;
         }
         return online;
     }

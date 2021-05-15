@@ -4,7 +4,7 @@ import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.data.ConfigData;
 import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.game.Game;
-import me.MrIronMan.drawit.game.GameState;
+import me.MrIronMan.drawit.api.game.GameState;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class StartingTask extends BukkitRunnable {
@@ -22,7 +22,7 @@ public class StartingTask extends BukkitRunnable {
             cancel();
             game.getGameManager().startGame();
         }
-        else if ((game.getPlayers().size() < game.getMinPlayers() && !game.getGameManager().isForce()) || game.getPlayers().size() == 0) {
+        else if ((game.getUuids().size() < game.getMinPlayers() && !game.getGameManager().isForce()) || game.getUuids().size() == 0) {
             cancel();
             game.setGameState(GameState.WAITING);
         }else {

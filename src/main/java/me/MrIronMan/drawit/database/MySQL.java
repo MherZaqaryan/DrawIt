@@ -1,4 +1,4 @@
-package me.MrIronMan.drawit.sql;
+package me.MrIronMan.drawit.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public class MySQL {
 
-    private HikariDataSource ds;
+    public HikariDataSource dataSource;
     private Connection connection = null;
 
     public MySQL(String host, String port, String database, String username, String password) {
@@ -20,9 +20,9 @@ public class MySQL {
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-        ds = new HikariDataSource(config);
+        dataSource = new HikariDataSource(config);
         try {
-            this.connection = ds.getConnection();
+            this.connection = dataSource.getConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }
