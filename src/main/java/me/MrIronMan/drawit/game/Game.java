@@ -35,6 +35,7 @@ public class Game {
     private List<UUID> spectators;
     private List<String> words;
     private HashMap<UUID, ItemStack> playerColorMap;
+    private boolean drawerMovement;
 
     private GameState gameState;
 
@@ -44,6 +45,7 @@ public class Game {
         this.world = Bukkit.createWorld(new WorldCreator(name));
         this.displayName = gameFile.getString("display-name");
         this.enabled = gameFile.getBoolean("enabled");
+        this.drawerMovement = gameFile.getBoolean("allow-drawer-movement", false);
         this.minPlayers = gameFile.getInt("min-players");
         this.maxPlayers = gameFile.getInt("max-players");
         this.words = OtherUtils.getWords(maxPlayers*DrawIt.getConfigData().getGameWordsCount());
@@ -168,6 +170,10 @@ public class Game {
 
     public ItemStack getBoardColor() {
         return boardColor;
+    }
+
+    public boolean isDrawerMovement() {
+        return drawerMovement;
     }
 
     // Util
