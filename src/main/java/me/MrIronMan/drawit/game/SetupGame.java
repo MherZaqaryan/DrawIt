@@ -17,8 +17,8 @@ import java.text.DecimalFormat;
 public class SetupGame {
 
     private World world;
-    private final String name;
-    private final String displayName;
+    private String name;
+    private String displayName;
 
     private boolean enabled;
 
@@ -60,7 +60,35 @@ public class SetupGame {
 
     public void loadFiles() {
         this.gamesFolder = new File(DrawIt.getInstance().getDataFolder() + File.separator + "Games");
-        this.file = new File(gamesFolder, name + ".yml");
+        this.file = new File(gamesFolder, name+".yml");
+    }
+
+    public void setMinPlayers(int minPlayers) {
+        this.minPlayers = minPlayers;
+    }
+
+    public void setMaxPlayers(int maxPlayers) {
+        this.maxPlayers = maxPlayers;
+    }
+
+    public void setLobbyLocation(Location lobbyLocation) {
+        this.lobbyLocation = lobbyLocation;
+    }
+
+    public void setDrawerLocation(Location drawerLocation) {
+        this.drawerLocation = drawerLocation;
+    }
+
+    public void setBoardPos1(Location boardPos1) {
+        this.boardPos1 = boardPos1;
+    }
+
+    public void setBoardPos2(Location boardPos2) {
+        this.boardPos2 = boardPos2;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public String getName() {
@@ -71,56 +99,28 @@ public class SetupGame {
         return minPlayers;
     }
 
-    public void setMinPlayers(int minPlayers) {
-        this.minPlayers = minPlayers;
-    }
-
     public int getMaxPlayers() {
         return maxPlayers;
-    }
-
-    public void setMaxPlayers(int maxPlayers) {
-        this.maxPlayers = maxPlayers;
     }
 
     public Location getLobbyLocation() {
         return lobbyLocation;
     }
 
-    public void setLobbyLocation(Location lobbyLocation) {
-        this.lobbyLocation = lobbyLocation;
-    }
-
     public Location getDrawerLocation() {
         return drawerLocation;
-    }
-
-    public void setDrawerLocation(Location drawerLocation) {
-        this.drawerLocation = drawerLocation;
     }
 
     public Location getBoardPos1() {
         return boardPos1;
     }
 
-    public void setBoardPos1(Location boardPos1) {
-        this.boardPos1 = boardPos1;
-    }
-
     public Location getBoardPos2() {
         return boardPos2;
     }
 
-    public void setBoardPos2(Location boardPos2) {
-        this.boardPos2 = boardPos2;
-    }
-
     public boolean isEnabled() {
         return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
     }
 
     public World getWorld() {
@@ -130,13 +130,13 @@ public class SetupGame {
     public void save(Player player) {
         if (this.lobbyLocation == null) {
             player.sendMessage(customize("{game} &cLobby location not set."));
-        } else if (this.drawerLocation == null) {
+        }else if (this.drawerLocation == null) {
             player.sendMessage(customize("{game} &cDrawer location not set."));
-        } else if (this.boardPos1 == null) {
+        }else if (this.boardPos1 == null) {
             player.sendMessage(customize("{game} &cBoard position 1 not set."));
-        } else if (this.boardPos2 == null) {
+        }else if (this.boardPos2 == null) {
             player.sendMessage(customize("{game} &cBoard position 2 not set."));
-        } else {
+        }else {
             player.sendMessage(customize("{game} &aSaving game, please wait..."));
             if (createGameFile()) {
                 YamlConfiguration gameFile = YamlConfiguration.loadConfiguration(file);
@@ -156,12 +156,12 @@ public class SetupGame {
                 }
                 if (DrawIt.getInstance().getGames().contains(DrawIt.getInstance().getGame(name))) {
                     DrawIt.getInstance().restartGame(name);
-                } else {
+                }else {
                     DrawIt.getInstance().registerGame(name);
                 }
                 player.sendMessage(customize("{game} &eSuccessfully saved."));
                 DrawIt.getInstance().exitSetupMode(player);
-            } else {
+            }else {
                 player.sendMessage(customize("{game} &cSomething went wrong please check the console."));
             }
         }
@@ -186,7 +186,7 @@ public class SetupGame {
     }
 
     public String customize(String s) {
-        return TextUtil.colorize(s.replace("{game}", "&a[" + name + "&a]"));
+        return TextUtil.colorize(s.replace("{game}", "&a["+name+"&a]"));
     }
 
     public String writeLocation(Location loc, boolean advanced) {
@@ -202,7 +202,7 @@ public class SetupGame {
     }
 
     public TextComponent[] getCurrentMessage() {
-        return new TextComponent[]{
+        return new TextComponent[] {
                 PluginMessages.simpleText("&3&l&m----------------------------"),
                 PluginMessages.simpleText(""),
                 PluginMessages.simpleHover("  &b&lDraw&a&lIt &e&lSetup", "&aAuthor: &7MrIronMan (Spigot: Mher)"),

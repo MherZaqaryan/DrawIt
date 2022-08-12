@@ -11,12 +11,12 @@ import java.util.Set;
 
 public class FloodFill {
 
-    private final Set<Block> blockList;
+    private Set<Block> blockList;
 
-    private final Material material;
-    private final int data;
-    private final Cuboid board;
-    private final Block block;
+    private Material material;
+    private int data;
+    private Cuboid board;
+    private Block block;
 
     public FloodFill(Cuboid board, Block block, Material material, int data) {
         this.blockList = new HashSet<>();
@@ -37,7 +37,7 @@ public class FloodFill {
             if (BlockUtil.isAxsisZ(loc)) {
                 fillGrid(loc.clone().add(0, 0, 1).getBlock());
                 fillGrid(loc.clone().subtract(0, 0, 1).getBlock());
-            } else {
+            }else {
                 fillGrid(loc.clone().add(1, 0, 0).getBlock());
                 fillGrid(loc.clone().subtract(1, 0, 0).getBlock());
             }
@@ -50,7 +50,7 @@ public class FloodFill {
         for (Block b : blockList) {
             if (ReflectionUtils.isLegacy()) {
                 BlockUtil.setBlock(b, material, data);
-            } else {
+            }else {
                 BlockUtil.setBlock(b, material);
             }
         }

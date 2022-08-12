@@ -9,7 +9,12 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 public class SideBar {
 
@@ -85,11 +90,11 @@ public class SideBar {
         }
     }
 
-    private final Player player;
-    private final String id;
+    private Player player;
+    private String id;
 
     private String title = ChatColor.RESET.toString();
-    private final List<String> lines = new ArrayList<>();
+    private List<String> lines = new ArrayList<>();
 
     private boolean deleted = false;
 

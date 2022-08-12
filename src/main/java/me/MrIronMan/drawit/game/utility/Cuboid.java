@@ -1,19 +1,15 @@
 package me.MrIronMan.drawit.game.utility;
 
-import jdk.internal.util.xml.impl.Pair;
+import java.util.*;
+
 import me.MrIronMan.drawit.utility.BlockUtil;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Cuboid {
 
-    private final Location loc1;
-    private final Location loc2;
-
+    private Location loc1, loc2;
 
     public Cuboid(Location loc1, Location loc2) {
         this.loc1 = loc1;

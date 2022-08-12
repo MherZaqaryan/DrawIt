@@ -44,7 +44,7 @@ public class InteractListener implements Listener {
                             }
                         }
                     }
-                } else if (game.isGameState(GameState.PLAYING)) {
+                }else if (game.isGameState(GameState.PLAYING)) {
                     if (game.isSpectator(uuid)) {
                         if (nbti.hasKey("name")) {
                             if (nbti.getString("name").equals("spectate-item")) {
@@ -80,14 +80,15 @@ public class InteractListener implements Listener {
                         }.runTaskTimer(DrawIt.getInstance(), 0L, 1L);
                     }
                 }
-            } else if (e.getAction().equals(Action.LEFT_CLICK_BLOCK) || e.getAction().equals(Action.LEFT_CLICK_AIR)) {
-                if (game.getGameManager().isDrawer(player)) {
-                    if (nbti.hasKey("isPickable") && nbti.getBoolean("isPickable")) {
-                        new ColorPickerMenu(DrawIt.getPlayerMenuUtility(player)).open();
-                    }
-                }
             }
-        } else {
+            else if (e.getAction().equals(Action.LEFT_CLICK_BLOCK) || e.getAction().equals(Action.LEFT_CLICK_AIR)) {
+                 if (game.getGameManager().isDrawer(player)) {
+                     if (nbti.hasKey("isPickable") && nbti.getBoolean("isPickable")) {
+                         new ColorPickerMenu(DrawIt.getPlayerMenuUtility(player)).open();
+                     }
+                 }
+            }
+        }else {
             if (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
                 if (nbti.hasKey("name")) {
                     if (nbti.getString("name").equals("lobby-item")) {
