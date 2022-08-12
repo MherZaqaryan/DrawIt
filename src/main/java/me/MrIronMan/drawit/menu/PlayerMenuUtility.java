@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 public class PlayerMenuUtility {
 
     private GameSelector gameSelector;
-    private final Player player;
+    private Player player;
 
     public PlayerMenuUtility(Player player) {
         this.player = player;
