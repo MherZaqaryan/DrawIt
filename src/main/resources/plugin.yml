@@ -1,9 +1,9 @@
-main: me.MrIronMan.drawit.DrawIt
+main: club.mher.drawit.DrawIt
 name: DrawIt
-author: MrIronMan
-version: 1.0
+author: Mher Zaqaryan
+version: ${project.version}
 api-version: "1.13"
-description: DrawIt Mini-game by MrIronMan (MherZaqaryan)
+description: DrawIt Mini-game by Mher Zaqaryan
 softdepend: [PlaceholderAPI]
 
 permissions:

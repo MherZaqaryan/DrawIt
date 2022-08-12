@@ -1,6 +1,6 @@
 # DrawIt
 -----
-DrawIt Minigame by Mher Zaqaryan (MrIronMan)
+DrawIt Mini-game by Mher Zaqaryan
 -----
 What is DrawIt ?
 
