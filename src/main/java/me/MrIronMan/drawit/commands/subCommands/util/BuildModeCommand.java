@@ -10,21 +10,24 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class BuildModeCommand extends SubCommand {
-    public BuildModeCommand() {
-        super("build");
-    }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public boolean execute(CommandSender sender, String[] args) {
+
         Player player = (Player) sender;
 
-        if (!DrawIt.getBuildMode(player)) {
-            player.sendMessage(TextUtil.colorize(PluginMessages.BUILDMODE_ENABLED));
-            return;
+        if (player.hasPermission(PermissionsUtil.COMMAND_BUILD)) {
+            if (DrawIt.getBuildMode(player)) {
+                player.sendMessage(TextUtil.colorize(PluginMessages.BUILDMODE_DISABLED));
+            }else {
+                player.sendMessage(TextUtil.colorize(PluginMessages.BUILDMODE_ENABLED));
+            }
+            DrawIt.setBuildMode(player, !DrawIt.getBuildMode(player));
+        }else {
+            player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.NO_PERMS)));
         }
 
-        player.sendMessage(TextUtil.colorize(PluginMessages.BUILDMODE_DISABLED));
-        DrawIt.setBuildMode(player, !DrawIt.getBuildMode(player));
+        return true;
     }
 
 }

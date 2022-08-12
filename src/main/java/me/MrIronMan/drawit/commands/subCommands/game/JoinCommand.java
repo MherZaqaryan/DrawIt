@@ -11,26 +11,23 @@ import org.bukkit.entity.Player;
 
 public class JoinCommand extends SubCommand {
 
-    public JoinCommand() {
-        super("join");
-    }
-
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public boolean execute(CommandSender sender, String[] args) {
+
         Player player = (Player) sender;
 
-        if (args.length <= 1) {
+        if (args.length == 1) {
+            Game game = DrawIt.getInstance().getGame(args[0]);
+            if (game != null){
+                game.getGameManager().joinGame(player);
+            }else {
+                player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.GAME_NOT_FOUND)));
+            }
+        }else {
             player.sendMessage(TextUtil.colorize(PluginMessages.USAGE_COMMAND_JOIN));
-            return;
         }
 
-        Game game = DrawIt.getInstance().getGame(args[0]);
-
-        if (game == null) {
-            player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.GAME_NOT_FOUND)));
-            return;
-        }
-
-        game.getGameManager().joinGame(player);
+        return false;
     }
+
 }

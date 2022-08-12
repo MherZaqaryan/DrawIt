@@ -12,19 +12,22 @@ import org.bukkit.entity.Player;
 
 public class SaveCommand extends SubCommand {
 
-    public SaveCommand() {
-        super("save");
-    }
-
     @Override
-    public void execute(CommandSender sender, String[] args) {
-        Player player = (Player) sender;
+    public boolean execute(CommandSender sender, String[] args) {
 
-        if (!DrawIt.getInstance().isInSetup(player)) {
-            player.sendMessage(TextUtil.colorize(PluginMessages.NOT_IN_SETUP));
-            return;
+        Player player = (Player) sender;
+        if (player.hasPermission(PermissionsUtil.COMMAND_SETUP)) {
+            if (args.length == 0) {
+                if (DrawIt.getInstance().isInSetup(player)) {
+                    new SaveGameMenu(DrawIt.getPlayerMenuUtility(player)).open();
+                } else {
+                    player.sendMessage(TextUtil.colorize(PluginMessages.NOT_IN_SETUP));
+                }
+            }
+        }else {
+            player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.NO_PERMS)));
         }
-        new SaveGameMenu(DrawIt.getPlayerMenuUtility(player)).open();
+        return false;
     }
 
 }

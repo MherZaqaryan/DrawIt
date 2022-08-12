@@ -12,23 +12,23 @@ import org.bukkit.entity.Player;
 
 public class SetLobbyCommand extends SubCommand {
 
-    public SetLobbyCommand() {
-        super("setlobby");
-    }
-
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public boolean execute(CommandSender sender, String[] args) {
+
         Player player = (Player) sender;
-
-        if (!DrawIt.getInstance().isInSetup(player)) {
+        if (player.hasPermission(PermissionsUtil.COMMAND_SETUP)) {
+            if (DrawIt.getInstance().isInSetup(player)) {
+                SetupGame setupGame = DrawIt.getInstance().getSetupGame(player);
+                setupGame.setLobbyLocation(player.getLocation());
+                player.sendMessage(setupGame.customize("{game} &aYou have successfully set lobby location."));
+                PluginMessages.sendMessage(player, setupGame.getCurrentMessage());
+            } else {
+                player.sendMessage(TextUtil.colorize(PluginMessages.NOT_IN_SETUP));
+            }
+        }else {
             player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.NO_PERMS)));
-            return;
         }
-
-        SetupGame setupGame = DrawIt.getInstance().getSetupGame(player);
-        setupGame.setLobbyLocation(player.getLocation());
-        player.sendMessage(setupGame.customize("{game} &aYou have successfully set lobby location."));
-        PluginMessages.sendMessage(player, setupGame.getCurrentMessage());
+        return true;
     }
 
 }

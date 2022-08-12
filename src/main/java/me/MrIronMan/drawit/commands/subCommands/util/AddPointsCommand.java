@@ -14,37 +14,38 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class AddPointsCommand extends SubCommand {
-    public AddPointsCommand() {
-        super("selection");
-    }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public boolean execute(CommandSender sender, String[] args) {
         Player player = (Player) sender;
-
-        if (args.length != 2) {
-            player.sendMessage(TextUtil.colorize(PluginMessages.USAGE_COMMAND_ADD_POINTS));
-            return;
+        if (player.hasPermission(PermissionsUtil.COMMAND_ADDPOINTS)) {
+            if (args.length == 2) {
+                String playerName = args[0];
+                int amount;
+                try {
+                    amount = Integer.parseInt(args[1]);
+                    if (amount < 0) {
+                        player.sendMessage(TextUtil.colorize(PluginMessages.POINTS_NOT_POSITIVE));
+                    }
+                    if (OtherUtils.isOnline(playerName)) {
+                        Player playerToAdd = Bukkit.getPlayer(playerName);
+                        PlayerData playerData = DrawIt.getPlayerData(playerToAdd);
+                        playerData.addData(PlayerDataType.POINTS, amount);
+                        DrawIt.getInstance().updateSidebar(player);
+                        player.sendMessage(TextUtil.colorize(PluginMessages.POINTS_ADDED.replace("{player}", playerName).replace("{points}", String.valueOf(amount))));
+                    } else {
+                        player.sendMessage(TextUtil.colorize(PluginMessages.PLAYER_NOT_FOUND));
+                    }
+                } catch (NumberFormatException e) {
+                    player.sendMessage(TextUtil.colorize(PluginMessages.POINTS_NOT_NUMBER));
+                }
+            } else {
+                player.sendMessage(TextUtil.colorize(PluginMessages.USAGE_COMMAND_ADD_POINTS));
+            }
+        }else {
+            player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.NO_PERMS)));
         }
-
-        int amount = Math.max(1, Integer.parseInt(args[1]));
-        if (amount < 0) {
-            player.sendMessage(TextUtil.colorize(PluginMessages.POINTS_NOT_POSITIVE));
-        }
-
-        String target = args[0];
-
-        if (!OtherUtils.isOnline(target)) {
-            player.sendMessage(TextUtil.colorize(PluginMessages.PLAYER_NOT_FOUND));
-            return;
-        }
-
-        Player playerToAdd = Bukkit.getPlayer(target);
-        PlayerData playerData = DrawIt.getPlayerData(playerToAdd);
-        playerData.addData(PlayerDataType.POINTS, amount);
-        DrawIt.getInstance().updateSidebar(player);
-        player.sendMessage(TextUtil.colorize(PluginMessages.POINTS_ADDED.replace("{player}", target).replace("{points}", String.valueOf(amount))));
-
+        return true;
     }
 
 }

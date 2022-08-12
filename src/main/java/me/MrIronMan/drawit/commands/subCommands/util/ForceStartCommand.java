@@ -9,13 +9,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ForceStartCommand extends SubCommand {
-    public ForceStartCommand() {
-        super("forcestart");
-    }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public boolean execute(CommandSender sender, String[] args) {
         Player player = (Player) sender;
+
+        if (player.hasPermission(PermissionsUtil.COMMAND_FORCESTART)) {
             if (DrawIt.getInstance().isInGame(player)) {
                 Game game = DrawIt.getInstance().getGame(player);
                 if (game.isGameState(GameState.WAITING)) {
@@ -23,5 +22,9 @@ public class ForceStartCommand extends SubCommand {
                     game.getGameManager().startCountdown();
                 }
             }
+        }
+
+        return true;
     }
+
 }

@@ -11,33 +11,35 @@ import me.MrIronMan.drawit.utility.TextUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Locale;
-
 public class DeleteCommand extends SubCommand {
 
-    public DeleteCommand() {
-        super("delete");
-    }
-
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public boolean execute(CommandSender sender, String[] args) {
         Player player = (Player) sender;
-        if (args.length <= 1) {
-            Game game = DrawIt.getInstance().getGame(args[0].toLowerCase());
 
-            if (game == null) {
-                player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.GAME_NOT_FOUND)));
-                return;
+        if (player.hasPermission(PermissionsUtil.COMMANDS_DELETE)) {
+            if (args.length == 1) {
+                String gameName = args[0];
+                if (DrawIt.getInstance().getGame(gameName) != null) {
+                    Game game = DrawIt.getInstance().getGame(gameName);
+                    if (!game.isEnabled()) {
+                        SetupGame setupGame = new SetupGame(game);
+                        setupGame.remove();
+                        player.sendMessage(TextUtil.colorize(PluginMessages.GAME_REMOVED).replace("%game%", gameName));
+                        return true;
+                    }else {
+                        player.sendMessage(TextUtil.colorize(PluginMessages.DISABLE_GAME));
+                    }
+                }else {
+                    player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.GAME_NOT_FOUND)));
+                }
+            } else {
+                player.sendMessage(TextUtil.colorize(PluginMessages.USAGE_COMMAND_DELETE));
             }
-
-            if (game.isEnabled()) {
-                player.sendMessage(TextUtil.colorize(PluginMessages.DISABLE_GAME));
-                return;
-            }
-
-            SetupGame setupGame = new SetupGame(game);
-            setupGame.remove();
-            player.sendMessage(TextUtil.colorize(PluginMessages.GAME_REMOVED).replace("%game%", game.getName()));
+        }else {
+            player.sendMessage(TextUtil.colorize(MessagesData.NO_PERMS));
         }
+
+        return true;
     }
 }
