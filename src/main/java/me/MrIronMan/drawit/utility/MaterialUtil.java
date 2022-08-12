@@ -6,9 +6,16 @@ public class MaterialUtil {
 
     public static String getMaterial(XMaterial material) {
         if (material == null || material.parseMaterial() == null) return "";
-        if (!ReflectionUtils.isLegacy()) return material.parseMaterial().toString();
-        if (material.getData() == 0) return material.parseMaterial().toString();
-        return material.parseMaterial().toString() + ":" + material.getData();
+        if (ReflectionUtils.isLegacy()) {
+            if (material.getData() != 0) {
+
+                return material.parseMaterial().toString() + ":" + material.getData();
+            }else {
+                return material.parseMaterial().toString();
+            }
+        }else {
+            return material.parseMaterial().toString();
+        }
     }
 
 }

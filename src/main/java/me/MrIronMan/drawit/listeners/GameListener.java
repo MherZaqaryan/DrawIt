@@ -15,12 +15,13 @@ public class GameListener implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        if (!DrawIt.getInstance().isInGame(player)) return;
-        Game game = DrawIt.getInstance().getGame(player);
-        if (!game.getGameManager().isDrawer(player)) return;
-        if (event.getFrom().getBlockX() != event.getTo().getBlockX() ||
-                event.getFrom().getBlockZ() != event.getTo().getBlockZ()) {
-            player.teleport(event.getFrom());
+        if (DrawIt.getInstance().isInGame(player)) {
+            Game game = DrawIt.getInstance().getGame(player);
+            if (game.getGameManager().isDrawer(player)) {
+                if (event.getFrom().getBlockX() != event.getTo().getBlockX() || event.getFrom().getBlockZ() != event.getTo().getBlockZ()) {
+                    player.teleport(event.getFrom());
+                }
+            }
         }
     }
 

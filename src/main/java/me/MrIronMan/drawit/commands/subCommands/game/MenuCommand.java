@@ -1,12 +1,14 @@
 package me.MrIronMan.drawit.commands.subCommands.game;
 
 import me.MrIronMan.drawit.DrawIt;
-import me.MrIronMan.drawit.api.commands.SubCommand;
+import me.MrIronMan.drawit.commands.SubCommand;
 import me.MrIronMan.drawit.data.MessagesData;
+import me.MrIronMan.drawit.data.PluginMessages;
 import me.MrIronMan.drawit.game.Game;
 import me.MrIronMan.drawit.menu.menus.GameSelector;
 import me.MrIronMan.drawit.menu.menus.SpectateMenu;
 import me.MrIronMan.drawit.menu.menus.TeleporterMenu;
+import me.MrIronMan.drawit.utility.TextUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -35,13 +37,13 @@ public class MenuCommand extends SubCommand {
 
         if (args[0].equalsIgnoreCase("Teleporter")) {
             if (!DrawIt.getInstance().isInGame(player)) {
-                player.sendMessage(DrawIt.getMessagesData().getString(MessagesData.NOT_IN_GAME));
+                player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.NOT_IN_GAME)));
                 return;
             }
             Game game = DrawIt.getInstance().getGame(player);
             if (game.isSpectator(player.getUniqueId())) {
                 new TeleporterMenu(DrawIt.getPlayerMenuUtility(player), game).open();
-            } else player.sendMessage(DrawIt.getMessagesData().getString(MessagesData.NOT_SPECTATING));
+            } else player.sendMessage(TextUtil.colorize(DrawIt.getMessagesData().getString(MessagesData.NOT_SPECTATING)));
         }
     }
 

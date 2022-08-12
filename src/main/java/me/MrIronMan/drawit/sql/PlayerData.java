@@ -1,6 +1,7 @@
-package me.MrIronMan.drawit.database;
+package me.MrIronMan.drawit.sql;
 
 import me.MrIronMan.drawit.DrawIt;
+import me.MrIronMan.drawit.data.ConfigData;
 import org.bukkit.entity.Player;
 
 import java.sql.Connection;

@@ -54,10 +54,11 @@ public class WordChooseMenu extends UniqueMenu {
     @Override
     public void handleMenu(InventoryClickEvent e) {
         Player player = (Player) e.getWhoClicked();
-        if (!wordMap.containsKey(e.getSlot())) return;
-        isChooses = true;
-        player.closeInventory();
-        game.getGameManager().setWord(wordMap.get(e.getSlot()));
+        if (wordMap.containsKey(e.getSlot())) {
+            isChooses = true;
+            player.closeInventory();
+            game.getGameManager().setWord(wordMap.get(e.getSlot()));
+        }
     }
 
     @Override
@@ -79,7 +80,9 @@ public class WordChooseMenu extends UniqueMenu {
         ItemMeta itemMeta = item.getItemMeta();
         itemMeta.setDisplayName(TextUtil.colorize(itemMeta.getDisplayName().replace("{word}", word)));
         List<String> newLore = new ArrayList<>();
-        itemMeta.getLore().forEach(s -> newLore.add(TextUtil.colorize(s.replace("{word}", word))));
+        for (String s : itemMeta.getLore()) {
+            newLore.add(TextUtil.colorize(s.replace("{word}", word)));
+        }
         itemMeta.setLore(newLore);
         item.setItemMeta(itemMeta);
         return item;

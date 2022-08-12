@@ -2,7 +2,9 @@ package me.MrIronMan.drawit.commands;
 
 import com.cryptomorin.xseries.XSound;
 import me.MrIronMan.drawit.DrawIt;
-import me.MrIronMan.drawit.api.commands.SubCommand;
+import me.MrIronMan.drawit.commands.subCommands.game.*;
+import me.MrIronMan.drawit.commands.subCommands.setup.*;
+import me.MrIronMan.drawit.commands.subCommands.util.*;
 import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.data.PluginMessages;
 import me.MrIronMan.drawit.utility.PermissionsUtil;

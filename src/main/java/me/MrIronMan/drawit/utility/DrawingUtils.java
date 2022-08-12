@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+
 import java.util.Random;
 import java.util.UUID;
 
@@ -31,11 +32,12 @@ public class DrawingUtils {
     }
 
     public void thinBrush(Block block) {
-        if (!board.isIn(block)) return;
-        if (ReflectionUtils.isLegacy()) {
-            BlockUtil.setBlock(block, game.getPlayerColor(uuid).getType(), game.getPlayerColor(uuid).getDurability());
-        }else {
-            BlockUtil.setBlock(block, game.getPlayerColor(uuid).getType());
+        if (board.isIn(block)) {
+            if (ReflectionUtils.isLegacy()) {
+                BlockUtil.setBlock(block, game.getPlayerColor(uuid).getType(), game.getPlayerColor(uuid).getDurability());
+            }else {
+                BlockUtil.setBlock(block, game.getPlayerColor(uuid).getType());
+            }
         }
     }
 
@@ -47,16 +49,17 @@ public class DrawingUtils {
                 block.getLocation().clone().add(1.0D, 0.0D, 0.0D).getBlock(),
                 block.getLocation().clone().subtract(1.0D, 0.0D, 0.0D).getBlock()
         };
-        if (BlockUtil.isAxisZ(block.getLocation())) {
+        if (BlockUtil.isAxsisZ(block.getLocation())) {
             crossBlocks[3] = block.getLocation().clone().add(0.0D, 0.0D, 1.0D).getBlock();
             crossBlocks[4] = block.getLocation().clone().subtract(0.0D, 0.0D, 1.0D).getBlock();
         }
         for (Block b : crossBlocks) {
-            if (!board.isIn(b)) continue;
-            if (ReflectionUtils.isLegacy()) {
-                BlockUtil.setBlock(b, game.getPlayerColor(uuid).getType(), game.getPlayerColor(uuid).getDurability());
-            }else {
-                BlockUtil.setBlock(b, game.getPlayerColor(uuid).getType());
+            if (board.isIn(b)) {
+                if (ReflectionUtils.isLegacy()) {
+                    BlockUtil.setBlock(b, game.getPlayerColor(uuid).getType(), game.getPlayerColor(uuid).getDurability());
+                }else {
+                    BlockUtil.setBlock(b, game.getPlayerColor(uuid).getType());
+                }
             }
         }
     }
@@ -64,7 +67,7 @@ public class DrawingUtils {
     public void sprayCan(Block block) {
         Location p1 = block.getLocation().add(0.0D, 2.0D, 2.0D);
         Location p2;
-        if (BlockUtil.isAxisZ(block.getLocation())) {
+        if (BlockUtil.isAxsisZ(block.getLocation())) {
              p2 = block.getLocation().subtract(0.0D, 2.0D, 2.0D);
         }else {
             p2 = block.getLocation().subtract(2.0D, 2.0D, 0.0D);
@@ -72,12 +75,14 @@ public class DrawingUtils {
 
         for (Block b : OtherUtils.getBlocks(p1, p2)) {
             Random random = new Random();
-            if (!board.isIn(b)) continue;
-            if (random.nextInt(3) != 1) continue;
-            if (ReflectionUtils.isLegacy()) {
-                BlockUtil.setBlock(b, game.getPlayerColor(uuid).getType(), game.getPlayerColor(uuid).getDurability());
-            }else {
-                BlockUtil.setBlock(b, game.getPlayerColor(uuid).getType());
+            if (board.isIn(b)) {
+                if (random.nextInt(3) == 1) {
+                    if (ReflectionUtils.isLegacy()) {
+                        BlockUtil.setBlock(b, game.getPlayerColor(uuid).getType(), game.getPlayerColor(uuid).getDurability());
+                    }else {
+                        BlockUtil.setBlock(b, game.getPlayerColor(uuid).getType());
+                    }
+                }
             }
         }
         XSound.play(player, DrawIt.getConfigData().getString(ConfigData.SOUND_SPRAY_CANVAS));

@@ -1,4 +1,4 @@
-package me.MrIronMan.drawit.database;
+package me.MrIronMan.drawit.sql;
 
 public enum PlayerDataType {
 

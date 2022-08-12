@@ -1,5 +1,6 @@
 package me.MrIronMan.drawit.game.utility;
 
+import jdk.internal.util.xml.impl.Pair;
 import me.MrIronMan.drawit.utility.BlockUtil;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -13,23 +14,20 @@ public class Cuboid {
     private final Location loc1;
     private final Location loc2;
 
-    int topBlockX, bottomBlockX;
-    int topBlockY, bottomBlockY;
-    int topBlockZ, bottomBlockZ;
 
     public Cuboid(Location loc1, Location loc2) {
         this.loc1 = loc1;
         this.loc2 = loc2;
-        this.topBlockX = Math.max(loc1.getBlockX(), loc2.getBlockX());
-        this.bottomBlockX = Math.min(loc1.getBlockX(), loc2.getBlockX());
-        this.topBlockY = Math.max(loc1.getBlockY(), loc2.getBlockY());
-        this.bottomBlockY = Math.min(loc1.getBlockY(), loc2.getBlockY());
-        this.topBlockZ = Math.max(loc1.getBlockZ(), loc2.getBlockZ());
-        this.bottomBlockZ = Math.min(loc1.getBlockZ(), loc2.getBlockZ());
     }
 
     public List<Block> getBlocks() {
         List<Block> blocks = new ArrayList<>();
+        int topBlockX = Math.max(loc1.getBlockX(), loc2.getBlockX());
+        int bottomBlockX = Math.min(loc1.getBlockX(), loc2.getBlockX());
+        int topBlockY = Math.max(loc1.getBlockY(), loc2.getBlockY());
+        int bottomBlockY = Math.min(loc1.getBlockY(), loc2.getBlockY());
+        int topBlockZ = Math.max(loc1.getBlockZ(), loc2.getBlockZ());
+        int bottomBlockZ = Math.min(loc1.getBlockZ(), loc2.getBlockZ());
         for (int x = bottomBlockX; x <= topBlockX; x++) {
             for (int z = bottomBlockZ; z <= topBlockZ; z++) {
                 for (int y = bottomBlockY; y <= topBlockY; y++) {

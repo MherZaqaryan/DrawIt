@@ -1,8 +1,8 @@
 package me.MrIronMan.drawit.support;
 
 import me.MrIronMan.drawit.DrawIt;
-import me.MrIronMan.drawit.database.PlayerData;
-import me.MrIronMan.drawit.database.PlayerDataType;
+import me.MrIronMan.drawit.sql.PlayerData;
+import me.MrIronMan.drawit.sql.PlayerDataType;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;

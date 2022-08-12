@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.List;
 
 import me.MrIronMan.drawit.utility.OtherUtils;
-import me.MrIronMan.drawit.utility.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -93,7 +92,7 @@ public class DataManager {
     }
 
     public String getString(String path) {
-        return TextUtil.colorize(getConfig().getString(path));
+        return getConfig().getString(path);
     }
 
     public List<String> getStringList(String path) {

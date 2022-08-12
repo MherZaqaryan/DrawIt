@@ -13,16 +13,20 @@ import java.util.List;
 public class TextUtil {
 
     public static String colorize(String s) {
-        return s == null ? " " : ChatColor.translateAlternateColorCodes('&', s.replace("{prefix}", prefix()));
+        if (s == null) return "";
+        return ChatColor.translateAlternateColorCodes('&', s.replace("{prefix}", prefix()));
     }
 
     public static String strip(String s) {
-        return s == null ? " " : ChatColor.stripColor(s);
+        if (s == null) return "";
+        return ChatColor.stripColor(s);
     }
 
     public static List<String> colorize(List<String> s) {
         List<String> newList = new ArrayList<>();
-        s.forEach(st -> newList.add(colorize(st)));
+        for (String str : s) {
+            newList.add(colorize(str));
+        }
         return newList;
     }
 
@@ -41,7 +45,9 @@ public class TextUtil {
 
     public static List<String> getByPlaceholders(List<String> list, Player player) {
         List<String> changedList = new ArrayList<>();
-        list.forEach(s -> changedList.add(getByPlaceholders(s, player)));
+        for (String s : list) {
+            changedList.add(getByPlaceholders(s, player));
+        }
         return changedList;
     }
 

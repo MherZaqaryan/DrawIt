@@ -9,19 +9,18 @@ import me.MrIronMan.drawit.commands.subCommands.setup.*;
 import me.MrIronMan.drawit.commands.subCommands.util.*;
 import me.MrIronMan.drawit.data.*;
 import me.MrIronMan.drawit.game.Game;
-import me.MrIronMan.drawit.api.game.GameState;
+import me.MrIronMan.drawit.game.GameState;
 import me.MrIronMan.drawit.game.SetupGame;
 import me.MrIronMan.drawit.listeners.*;
 import me.MrIronMan.drawit.menu.PlayerMenuUtility;
-import me.MrIronMan.drawit.database.MySQL;
-import me.MrIronMan.drawit.database.PlayerData;
-import me.MrIronMan.drawit.database.PlayerDataType;
-import me.MrIronMan.drawit.database.SQLite;
+import me.MrIronMan.drawit.sql.MySQL;
+import me.MrIronMan.drawit.sql.PlayerData;
+import me.MrIronMan.drawit.sql.PlayerDataType;
+import me.MrIronMan.drawit.sql.SQLite;
 import me.MrIronMan.drawit.game.utility.SideBar;
 import me.MrIronMan.drawit.support.PlaceholderAPI;
 import me.MrIronMan.drawit.utility.*;
 import org.bukkit.*;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -63,68 +62,14 @@ public class DrawIt extends JavaPlugin {
     public void onEnable() {
         instance = this;
         this.metrics = new Metrics(this, 11065);
-
-        Arrays.asList(
-                "§b __                  ",
-                "§b|  \\  _  _      §a| |_ ",
-                "§b|__/ |  (_| \\)/ §a| |_ ",
-                "",
-                "§cAuthor: §aMrIronMan (Mher Zaqaryan)",
-                "§cVersion: §a" + getDescription().getVersion()
-        ).forEach(s -> Bukkit.getConsoleSender().sendMessage(s));
-
-        config = new ConfigData(this, getDataFolder().getPath(), "Config");
-        messages = new MessagesData(this, getDataFolder().getPath(), "Messages");
-        words = new WordsData(this, getDataFolder().getPath(), "Words");
-
-        ReflectionUtils.registerCommand("DrawIt", new DrawItCommand("DrawIt"));
-        ReflectionUtils.registerCommand("Leave", new LeaveCommand("Leave"));
-        ReflectionUtils.registerCommand("Skip", new SkipCommand("Skip"));
-
-        Arrays.asList(
-                new GameListener(),
-                new InteractListener(),
-                new SystemListener(),
-                new JoinQuitListener(),
-                new ChatListener(),
-                new MainListener())
-                .forEach(listener -> getServer().getPluginManager().registerEvents(listener, this));
-
-        if (!ReflectionUtils.VERSION.contains("1_8")) {
-            Bukkit.getPluginManager().registerEvents(new SwapItemListener(), this);
-        }
-
-        if (getConfigData().isMySql()) {
-            this.mySQL = new MySQL(
-                    getConfigData().getMySqlInfo().get(0),
-                    getConfigData().getMySqlInfo().get(1),
-                    getConfigData().getMySqlInfo().get(2),
-                    getConfigData().getMySqlInfo().get(3),
-                    getConfigData().getMySqlInfo().get(4));
-        }
-        else {
-            this.sqLite = new SQLite();
-        }
-
-        new PlayerData();
-
-        File gamesFolder = new File(getDataFolder().getPath() + File.separator + "Games");
-        File[] gameFiles = gamesFolder.listFiles();
-
-        if (gameFiles == null) return;
-
-        for (File gameFile : gameFiles) {
-            StringBuilder sb = new StringBuilder(gameFile.getName());
-            if (!gameFile.getName().endsWith(".yml")) return;
-            Game game = new Game(sb.delete(sb.length()-4, sb.length()).toString());
-            registerGame(game);
-        }
-
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            isPlaceholderAPI = true;
-            new PlaceholderAPI().register();
-            getLogger().info("Hook into PlaceholderAPI support...");
-        }
+        loggerMessage();
+        loadDataFiles();
+        loadCommands();
+        registerListeners();
+        loadDataFiles();
+        connectDatabase();
+        loadGames();
+        placeholderApiHook();
 
         subCommands.addAll(Arrays.asList(
                 new SetMainLobbyCommand(),
@@ -144,7 +89,6 @@ public class DrawIt extends JavaPlugin {
                 new ForceStartCommand(),
                 new ReloadCommand()
         ));
-
     }
 
     @Override
@@ -157,10 +101,28 @@ public class DrawIt extends JavaPlugin {
 
     public static PlayerMenuUtility getPlayerMenuUtility(Player p) {
         PlayerMenuUtility playerMenuUtility;
-        if (playerMenuUtilityMap.containsKey(p)) return playerMenuUtilityMap.get(p);
-        playerMenuUtility = new PlayerMenuUtility(p);
-        playerMenuUtilityMap.put(p, playerMenuUtility);
-        return playerMenuUtility;
+        if (!(playerMenuUtilityMap.containsKey(p))) {
+            playerMenuUtility = new PlayerMenuUtility(p);
+            playerMenuUtilityMap.put(p, playerMenuUtility);
+            return playerMenuUtility;
+        } else {
+            return playerMenuUtilityMap.get(p);
+        }
+    }
+
+    public void connectDatabase() {
+        if (getConfigData().isMySql()) {
+            this.mySQL = new MySQL(
+                getConfigData().getMySqlInfo().get(0),
+                getConfigData().getMySqlInfo().get(1),
+                getConfigData().getMySqlInfo().get(2),
+                getConfigData().getMySqlInfo().get(3),
+                getConfigData().getMySqlInfo().get(4)
+            );
+        }else {
+            this.sqLite = new SQLite();
+        }
+        new PlayerData();
     }
 
     public void disconnectDatabase() {
@@ -171,13 +133,56 @@ public class DrawIt extends JavaPlugin {
         }
     }
 
+    public void registerListeners() {
+        Arrays.asList(
+            new GameListener(),
+            new InteractListener(),
+            new SystemListener(),
+            new JoinQuitListener(),
+            new ChatListener(),
+            new MainListener())
+            .forEach(listener -> getServer().getPluginManager().registerEvents(listener, this));
+        if (!ReflectionUtils.VERSION.contains("1_8")) {
+            Bukkit.getPluginManager().registerEvents(new SwapItemListener(), this);
+        }
+    }
+
+    public void loadDataFiles() {
+        config = new ConfigData(this, getDataFolder().getPath(), "Config");
+        messages = new MessagesData(this, getDataFolder().getPath(), "Messages");
+        words = new WordsData(this, getDataFolder().getPath(), "Words");
+    }
+
+    public void loadCommands() {
+        ReflectionUtils.registerCommand("DrawIt", new DrawItCommand("DrawIt"));
+        ReflectionUtils.registerCommand("Leave", new LeaveCommand("Leave"));
+        ReflectionUtils.registerCommand("Skip", new SkipCommand("Skip"));
+    }
+
+    public void loadGames() {
+        File gamesFolder = new File(getDataFolder().getPath() + File.separator + "Games");
+        File[] gameFiles = gamesFolder.listFiles();
+        if (gameFiles == null) return;
+        for (File gameFile : gameFiles) {
+            StringBuilder sb = new StringBuilder(gameFile.getName());
+            if (gameFile.getName().endsWith(".yml")) {
+                Game game = new Game(sb.delete(sb.length()-4, sb.length()).toString());
+                registerGame(game);
+            }
+        }
+    }
+
     public List<Game> getGames() {
         return this.games;
     }
 
     public Set<World> getGamesWorlds() {
         Set<World> worlds = new HashSet<>();
-        games.stream().filter(Game::isEnabled).forEach(game -> worlds.add(game.getWorld()));
+        for (Game game : games) {
+            if (game.isEnabled()) {
+                worlds.add(game.getWorld());
+            }
+        }
         return worlds;
     }
 
@@ -222,8 +227,9 @@ public class DrawIt extends JavaPlugin {
     public void quickJoinGame(Player player) {
         HashMap<Game, Integer> gameMap = new HashMap<>();
         for (Game game : games) {
-            if (!(game.isGameState(GameState.STARTING) || game.isGameState(GameState.WAITING))) continue;
-            gameMap.put(game, game.getUuids().size());
+            if (game.isGameState(GameState.STARTING) || game.isGameState(GameState.WAITING)) {
+                gameMap.put(game, game.getPlayers().size());
+            }
         }
         List<Map.Entry<Game, Integer>> list = new ArrayList<>(gameMap.entrySet());
         list.sort((e1, e2) -> -e1.getValue().compareTo(e2.getValue()));
@@ -257,7 +263,7 @@ public class DrawIt extends JavaPlugin {
         pi.setArmorContents(null);
         for (ItemStack item : getConfigData().getLobbyItems()) {
             NBTItem nbti = new NBTItem(item);
-            if (!item.getType().toString().contains("SKULL_ITEM")) {
+            if (item.getType().toString().contains("SKULL_ITEM")) {
                 SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
                 skullMeta.setOwner(player.getDisplayName());
                 item.setItemMeta(skullMeta);
@@ -289,20 +295,23 @@ public class DrawIt extends JavaPlugin {
     public void updateSidebar(Player player) {
         List<String> newLines = new ArrayList<>();
         PlayerData pd = DrawIt.getPlayerData(player);
-        getMessagesData().getStringList(MessagesData.BOARD_LOBBY_LINES)
-                .forEach(s -> newLines.add(s
-                        .replace("{player}", player.getDisplayName())
-                        .replace("{points}", String.valueOf(pd.getData(PlayerDataType.POINTS)))
-                        .replace("{games_played}", String.valueOf(pd.getData(PlayerDataType.GAMES_PLAYED)))
-                        .replace("{victories}", String.valueOf(pd.getData(PlayerDataType.VICTORIES)))
-                        .replace("{correct_guesses}", String.valueOf(pd.getData(PlayerDataType.CORRECT_GUESSES)))
-                        .replace("{incorrect_guesses}", String.valueOf(pd.getData(PlayerDataType.INCORRECT_GUESSES)))
-                        .replace("{skips}", String.valueOf(pd.getData(PlayerDataType.SKIPS)))));
+        for (String s : getMessagesData().getStringList(MessagesData.BOARD_LOBBY_LINES)) {
+            newLines.add(s
+                .replace("{player}", player.getDisplayName())
+                .replace("{points}", String.valueOf(pd.getData(PlayerDataType.POINTS)))
+                .replace("{games_played}", String.valueOf(pd.getData(PlayerDataType.GAMES_PLAYED)))
+                .replace("{victories}", String.valueOf(pd.getData(PlayerDataType.VICTORIES)))
+                .replace("{correct_guesses}", String.valueOf(pd.getData(PlayerDataType.CORRECT_GUESSES)))
+                .replace("{incorrect_guesses}", String.valueOf(pd.getData(PlayerDataType.INCORRECT_GUESSES)))
+                .replace("{skips}", String.valueOf(pd.getData(PlayerDataType.SKIPS))));
+        }
         lobbySidebarMap.get(player).updateLines(TextUtil.getByPlaceholders(newLines, player));
     }
 
     public static PlayerData getPlayerData(Player player) {
-        if (!playerDataMap.containsKey(player)) playerDataMap.put(player, new PlayerData(player));
+        if (!playerDataMap.containsKey(player)) {
+            playerDataMap.put(player, new PlayerData(player));
+        }
         return playerDataMap.get(player);
     }
 
@@ -312,9 +321,8 @@ public class DrawIt extends JavaPlugin {
         WorldCreator wc = new WorldCreator(setupGame.getName());
         World world = wc.createWorld();
         player.getInventory().clear();
-        player.setGameMode(GameMode.SURVIVAL);
+        player.setGameMode(GameMode.CREATIVE);
         player.teleport(world.getSpawnLocation());
-        player.setAllowFlight(true);
         player.setFlying(true);
     }
 
@@ -343,9 +351,11 @@ public class DrawIt extends JavaPlugin {
 
     public void teleportToLobby(Player player) {
         player.teleport(getLobbyLocation());
-        if (isLobbySet()) return;
-        if (!player.hasPermission(PermissionsUtil.COMMAND_SETMAINLOBBY)) return;
-        player.sendMessage(TextUtil.colorize(PluginMessages.LOBBY_NOT_SET));
+        if (!isLobbySet()) {
+            if (player.hasPermission(PermissionsUtil.COMMAND_SETMAINLOBBY)) {
+                player.sendMessage(TextUtil.colorize(PluginMessages.LOBBY_NOT_SET));
+            }
+        }
     }
 
     public boolean isLobbySet() {
@@ -353,15 +363,34 @@ public class DrawIt extends JavaPlugin {
     }
 
     public static void updateGameSelector() {
-        playerMenuUtilityMap.values().stream()
-                .filter(m -> m.getGameSelector() != null)
-                .forEach(m -> m.getGameSelector().setMenuItems());
+        for (PlayerMenuUtility pmu : playerMenuUtilityMap.values()) {
+            if (pmu.getGameSelector() != null) {
+                pmu.getGameSelector().setMenuItems();
+            }
+        }
+    }
+
+    private void loggerMessage() {
+        Bukkit.getConsoleSender().sendMessage("§b __                  ");
+        Bukkit.getConsoleSender().sendMessage("§b|  \\  _  _      §a| |_ ");
+        Bukkit.getConsoleSender().sendMessage("§b|__/ |  (_| \\)/ §a| |_ ");
+        Bukkit.getConsoleSender().sendMessage("");
+        Bukkit.getConsoleSender().sendMessage("§cAuthor: §aMrIronMan (Mher)");
+        Bukkit.getConsoleSender().sendMessage("§cVersion: §a" + getDescription().getVersion());
+    }
+
+    private void placeholderApiHook() {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            isPlaceholderAPI = true;
+            new PlaceholderAPI().register();
+            getLogger().info("Hook into PlaceholderAPI support...");
+        }
     }
 
     public List<Player> getLobbyPlayers() {
         List<Player> playerList = new ArrayList<>(Bukkit.getOnlinePlayers());
         for (Game game : games) {
-            for (UUID uuid : game.getUuids()) {
+            for (UUID uuid : game.getPlayers()) {
                 playerList.remove(Bukkit.getPlayer(uuid));
             }
         }
@@ -371,7 +400,7 @@ public class DrawIt extends JavaPlugin {
     public List<Player> getGamePlayers() {
         List<Player> playerList = new ArrayList<>();
         for (Game game : games) {
-            for (UUID uuid : game.getUuids()) {
+            for (UUID uuid : game.getPlayers()) {
                 playerList.add(Bukkit.getPlayer(uuid));
             }
             for (UUID uuid : game.getSpectators()) {
@@ -427,8 +456,7 @@ public class DrawIt extends JavaPlugin {
     }
 
     public boolean isIn(Player player) {
-        return player.getLocation().getWorld().equals(getLobbyWorld()) ||
-                getGamesWorlds().contains(player.getLocation().getWorld());
+        return player.getLocation().getWorld().equals(getLobbyWorld()) || getGamesWorlds().contains(player.getLocation().getWorld());
     }
 
 }

@@ -130,44 +130,40 @@ public class SetupGame {
     public void save(Player player) {
         if (this.lobbyLocation == null) {
             player.sendMessage(customize("{game} &cLobby location not set."));
-        }
-        else if (this.drawerLocation == null) {
+        } else if (this.drawerLocation == null) {
             player.sendMessage(customize("{game} &cDrawer location not set."));
-        }
-        else if (this.boardPos1 == null) {
+        } else if (this.boardPos1 == null) {
             player.sendMessage(customize("{game} &cBoard position 1 not set."));
-        }
-        else if (this.boardPos2 == null) {
+        } else if (this.boardPos2 == null) {
             player.sendMessage(customize("{game} &cBoard position 2 not set."));
-        }
-        else {
+        } else {
             player.sendMessage(customize("{game} &aSaving game, please wait..."));
-            if (!createGameFile()) {
-                player.sendMessage(customize("{game} &cSomething went wrong please check the console."));
-                return;
-            }
-            YamlConfiguration gameFile = YamlConfiguration.loadConfiguration(file);
-            gameFile.set("display-name", displayName);
-            gameFile.set("enabled", enabled);
-            gameFile.set("min-players", minPlayers);
-            gameFile.set("max-players", maxPlayers);
-            gameFile.set("locations.lobby", writeLocation(lobbyLocation, true));
-            gameFile.set("locations.drawer", writeLocation(drawerLocation, true));
-            gameFile.set("locations.board-pos1", writeLocation(boardPos1, false));
-            gameFile.set("locations.board-pos2", writeLocation(boardPos2, false));
-            gameFile.set("advanced-settings.board-color", "WOOL:0");
-            try {
-                gameFile.save(file);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (DrawIt.getInstance().getGames().contains(DrawIt.getInstance().getGame(name))) {
-                DrawIt.getInstance().restartGame(name);
+            if (createGameFile()) {
+                YamlConfiguration gameFile = YamlConfiguration.loadConfiguration(file);
+                gameFile.set("display-name", displayName);
+                gameFile.set("enabled", enabled);
+                gameFile.set("min-players", minPlayers);
+                gameFile.set("max-players", maxPlayers);
+                gameFile.set("locations.lobby", writeLocation(lobbyLocation, true));
+                gameFile.set("locations.drawer", writeLocation(drawerLocation, true));
+                gameFile.set("locations.board-pos1", writeLocation(boardPos1, false));
+                gameFile.set("locations.board-pos2", writeLocation(boardPos2, false));
+                gameFile.set("advanced-settings.board-color", "WOOL:0");
+                try {
+                    gameFile.save(file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (DrawIt.getInstance().getGames().contains(DrawIt.getInstance().getGame(name))) {
+                    DrawIt.getInstance().restartGame(name);
+                } else {
+                    DrawIt.getInstance().registerGame(name);
+                }
+                player.sendMessage(customize("{game} &eSuccessfully saved."));
+                DrawIt.getInstance().exitSetupMode(player);
             } else {
-                DrawIt.getInstance().registerGame(name);
+                player.sendMessage(customize("{game} &cSomething went wrong please check the console."));
             }
-            player.sendMessage(customize("{game} &eSuccessfully saved."));
-            DrawIt.getInstance().exitSetupMode(player);
         }
     }
 
@@ -177,7 +173,9 @@ public class SetupGame {
     }
 
     public boolean createGameFile() {
-        if (!gamesFolder.exists()) gamesFolder.mkdir();
+        if (!gamesFolder.exists()) {
+            gamesFolder.mkdir();
+        }
         try {
             file.createNewFile();
             return true;

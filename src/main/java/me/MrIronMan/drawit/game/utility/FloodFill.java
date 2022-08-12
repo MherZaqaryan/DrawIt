@@ -34,7 +34,7 @@ public class FloodFill {
         if (BlockUtil.isSame(b, block)) {
             Location loc = b.getLocation();
             blockList.add(b);
-            if (BlockUtil.isAxisZ(loc)) {
+            if (BlockUtil.isAxsisZ(loc)) {
                 fillGrid(loc.clone().add(0, 0, 1).getBlock());
                 fillGrid(loc.clone().subtract(0, 0, 1).getBlock());
             } else {

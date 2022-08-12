@@ -5,7 +5,7 @@ import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.data.ConfigData;
 import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.game.Game;
-import me.MrIronMan.drawit.api.game.GameState;
+import me.MrIronMan.drawit.game.GameState;
 import me.MrIronMan.drawit.menu.menus.WordChooseMenu;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -29,7 +29,7 @@ public class WordChooseTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        if (game.getUuids().isEmpty()) {
+        if (game.getPlayers().isEmpty()) {
             cancel();
             game.setGameState(GameState.WAITING);
         }

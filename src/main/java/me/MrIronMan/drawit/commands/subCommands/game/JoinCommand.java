@@ -1,7 +1,7 @@
 package me.MrIronMan.drawit.commands.subCommands.game;
 
 import me.MrIronMan.drawit.DrawIt;
-import me.MrIronMan.drawit.api.commands.SubCommand;
+import me.MrIronMan.drawit.commands.SubCommand;
 import me.MrIronMan.drawit.data.MessagesData;
 import me.MrIronMan.drawit.data.PluginMessages;
 import me.MrIronMan.drawit.game.Game;

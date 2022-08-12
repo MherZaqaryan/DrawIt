@@ -5,10 +5,10 @@ import de.tr7zw.nbtapi.NBTItem;
 import me.MrIronMan.drawit.DrawIt;
 import me.MrIronMan.drawit.api.data.DataManager;
 import me.MrIronMan.drawit.game.Game;
-import me.MrIronMan.drawit.api.game.GameState;
-import me.MrIronMan.drawit.api.game.DrawerTool;
-import me.MrIronMan.drawit.database.PlayerData;
-import me.MrIronMan.drawit.database.PlayerDataType;
+import me.MrIronMan.drawit.game.GameState;
+import me.MrIronMan.drawit.game.utility.DrawerTool;
+import me.MrIronMan.drawit.sql.PlayerData;
+import me.MrIronMan.drawit.sql.PlayerDataType;
 import me.MrIronMan.drawit.utility.MaterialUtil;
 import me.MrIronMan.drawit.utility.TextUtil;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -177,7 +177,6 @@ public class ConfigData extends DataManager {
         config.addDefault(PLAYER_RANKING +".200000-250000.format", "&e&lMichelangelo");
         config.addDefault(PLAYER_RANKING +".250000-300000.format", "&e&lLeonardo da Vinci");
         config.addDefault(PLAYER_RANKING +".other.format", "&a&lVincent van Gogh");
-
         config.options().copyDefaults(true);
         save();
     }
@@ -288,7 +287,7 @@ public class ConfigData extends DataManager {
             List<String> newLore = new ArrayList<>();
             for (String s : itemMeta.getLore()) {
                 newLore.add(s
-                        .replace("{in}", String.valueOf(game.getUuids().size()))
+                        .replace("{in}", String.valueOf(game.getPlayers().size()))
                         .replace("{max}", String.valueOf(game.getMaxPlayers()))
                         .replace("{state}", GameState.getName(game.getGameState())));
             }
@@ -355,53 +354,53 @@ public class ConfigData extends DataManager {
         return getIntegerList(ConfigData.SELECT_WORD_MENU_SETTINGS_SLOTS).size();
     }
 
-    public static final String CHAT_FORMAT = "use-chat-format",
+    public static String CHAT_FORMAT = "use-chat-format";
 
-     GAMES_MENU_SETTINGS_SIZE = "games-menu.settings.size",
-     GAMES_MENU_SETTINGS_SLOTS = "games-menu.settings.slots",
-     GAMES_MENU_SETTINGS_WAITING = "games-menu.settings.waiting",
-     GAMES_MENU_SETTINGS_STARTING = "games-menu.settings.starting",
-     GAMES_MENU_SETTINGS_PLAYING = "games-menu.settings.playing",
-     GAMES_MENU_SETTINGS_WAITING_SLOTS = "games-menu.settings.waiting-slots",
-     GAMES_MENU_SETTINGS_SHOW_PLAYINGS = "games-menu.settings.show-playings",
-     GAMES_MENU_ITEMS = "games-menu.items",
+    public static String GAMES_MENU_SETTINGS_SIZE = "games-menu.settings.size";
+    public static String GAMES_MENU_SETTINGS_SLOTS = "games-menu.settings.slots";
+    public static String GAMES_MENU_SETTINGS_WAITING = "games-menu.settings.waiting";
+    public static String GAMES_MENU_SETTINGS_STARTING = "games-menu.settings.starting";
+    public static String GAMES_MENU_SETTINGS_PLAYING = "games-menu.settings.playing";
+    public static String GAMES_MENU_SETTINGS_WAITING_SLOTS = "games-menu.settings.waiting-slots";
+    public static String GAMES_MENU_SETTINGS_SHOW_PLAYINGS = "games-menu.settings.show-playings";
+    public static String GAMES_MENU_ITEMS = "games-menu.items";
 
-     SELECT_WORD_MENU_SETTINGS_SIZE = "select-word-menu.settings.size",
-     SELECT_WORD_MENU_SETTINGS_SLOTS = "select-word-menu.settings.slots",
-     SELECT_WORD_MENU_WORD_ITEM = "select-word-menu.word-item",
+    public static String SELECT_WORD_MENU_SETTINGS_SIZE = "select-word-menu.settings.size";
+    public static String SELECT_WORD_MENU_SETTINGS_SLOTS = "select-word-menu.settings.slots";
+    public static String SELECT_WORD_MENU_WORD_ITEM = "select-word-menu.word-item";
 
-     SPECTATE_MENU_SIZE = "spectate-menu.settings.size",
-     SPECTATE_MENU_SLOTS = "spectate-menu.settings.slots",
-     SPECTATE_MENU_GAME = "spectate-menu.settings.game",
-     SPECTATE_MENU_ITEMS = "spectate-menu.items",
+    public static String SPECTATE_MENU_SIZE = "spectate-menu.settings.size";
+    public static String SPECTATE_MENU_SLOTS = "spectate-menu.settings.slots";
+    public static String SPECTATE_MENU_GAME = "spectate-menu.settings.game";
+    public static String SPECTATE_MENU_ITEMS = "spectate-menu.items";
 
-     LOBBY_ITEMS = "lobby-items",
-     WAITING_ITEMS = "waiting-items",
-     SPECTATE_ITEMS = "spectate-items",
+    public static String LOBBY_ITEMS = "lobby-items";
+    public static String WAITING_ITEMS = "waiting-items";
+    public static String SPECTATE_ITEMS = "spectate-items";
 
-     COLOR_PICKER = "color-picker",
-     LOBBY_LOCATION = "lobby-location",
-     LOBBY_SERVER = "lobby-server",
+    public static String COLOR_PICKER = "color-picker";
+    public static String LOBBY_LOCATION = "lobby-location";
+    public static String LOBBY_SERVER = "lobby-server";
 
-     COUNTDOWN_STARTING = "countdowns.starting",
-     COUNTDOWN_WORD_CHOOSE = "countdowns.word-choose",
-     COUNTDOWN_PER_ROUND = "countdowns.per-round",
-     COUNTDOWN_AFTER_ROUND = "countdowns.after-round",
-     COUNTDOWN_RESTART = "countdowns.restart",
+    public static String COUNTDOWN_STARTING = "countdowns.starting";
+    public static String COUNTDOWN_WORD_CHOOSE = "countdowns.word-choose";
+    public static String COUNTDOWN_PER_ROUND = "countdowns.per-round";
+    public static String COUNTDOWN_AFTER_ROUND = "countdowns.after-round";
+    public static String COUNTDOWN_RESTART = "countdowns.restart";
 
-     SOUND_UNDER_5 = "sounds.starting-under-5",
-     SOUND_DRAWER_WORD_CHOOSE = "sounds.word-choose",
-     SOUND_SPRAY_CANVAS = "sounds.spray-canvas",
-     SOUND_LETTER_EXPLAIN = "sounds.letter-explain",
-     SOUND_WORD_GUESS = "sounds.word-guess",
-     SOUND_GAME_OVER = "sounds.game-over",
-     SOUND_COLOR_PICK = "sounds.color-pick",
-     SOUND_LESS_TIME = "sounds.less-time",
+    public static String SOUND_UNDER_5 = "sounds.starting-under-5";
+    public static String SOUND_DRAWER_WORD_CHOOSE = "sounds.word-choose";
+    public static String SOUND_SPRAY_CANVAS = "sounds.spray-canvas";
+    public static String SOUND_LETTER_EXPLAIN = "sounds.letter-explain";
+    public static String SOUND_WORD_GUESS = "sounds.word-guess";
+    public static String SOUND_GAME_OVER = "sounds.game-over";
+    public static String SOUND_COLOR_PICK = "sounds.color-pick";
+    public static String SOUND_LESS_TIME = "sounds.less-time";
 
-     STATS_POINTS_DRAWER_PER_RIGHT_WORD = "stats.points.drawer.per-right-word",
-     STATS_POINTS_GUESSER = "stats.points.guesser",
-     STATS_POINTS_GUESSER_OTHER = "stats.points.guesser.other",
+    public static String STATS_POINTS_DRAWER_PER_RIGHT_WORD = "stats.points.drawer.per-right-word";
+    public static String STATS_POINTS_GUESSER = "stats.points.guesser";
+    public static String STATS_POINTS_GUESSER_OTHER = "stats.points.guesser.other";
 
-     PLAYER_RANKING = "player-ranking";
+    public static String PLAYER_RANKING = "player-ranking";
 
 }
